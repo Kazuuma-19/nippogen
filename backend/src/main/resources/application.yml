@@ -5,5 +5,5 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
 
-  jooq:
-    sql-dialect: POSTGRES
+  flyway:
+    enabled: true
