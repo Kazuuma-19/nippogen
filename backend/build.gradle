@@ -1,7 +1,15 @@
+buildscript {
+    dependencies {
+        classpath("org.flywaydb:flyway-database-postgresql:11.11.1")
+    }
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.4'
 	id 'io.spring.dependency-management' version '1.1.7'
+    id "org.flywaydb.flyway" version "11.11.1"
+	id 'nu.studer.jooq' version '8.0'
 }
 
 group = 'com.example'
@@ -33,6 +41,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+	jooqGenerator 'org.postgresql:postgresql:42.7.7'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -40,4 +49,45 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+flyway {
+    url = 'jdbc:postgresql://localhost:5432/valet_ai'
+    user = 'postgres'
+    password = 'postgres'
+}
+
+jooq {
+	version = dependencyManagement.importedProperties['jooq.version']
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = true  // default (can be omitted)
+
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://localhost:5432/valet_ai'
+                    user = 'postgres'
+                    password = 'postgres'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                    }
+                    target {
+                        packageName = 'com.example.backend.jooq'
+                        directory = 'build/generated-src/jooq/main'  // default (can be omitted)
+                    }
+                    strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                }
+            }
+        }
+    }
+}
+
+tasks.named("generateJooq") {
+    dependsOn("flywayMigrate")
 }
