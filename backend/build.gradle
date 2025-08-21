@@ -36,8 +36,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jooq'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.flywaydb:flyway-core'
-	implementation 'org.flywaydb:flyway-database-postgresql'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -52,7 +50,7 @@ tasks.named('test') {
 }
 
 flyway {
-    url = 'jdbc:postgresql://localhost:5432/valet_ai'
+    url = 'jdbc:postgresql://localhost:5433/valet_ai'
     user = 'postgres'
     password = 'postgres'
 }
@@ -61,13 +59,13 @@ jooq {
 	version = dependencyManagement.importedProperties['jooq.version']
     configurations {
         main {
-            generateSchemaSourceOnCompilation = true  // default (can be omitted)
+            generateSchemaSourceOnCompilation = false
 
             generationTool {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc {
                     driver = 'org.postgresql.Driver'
-                    url = 'jdbc:postgresql://localhost:5432/valet_ai'
+                    url = 'jdbc:postgresql://localhost:5433/valet_ai'
                     user = 'postgres'
                     password = 'postgres'
                 }
@@ -88,6 +86,7 @@ jooq {
     }
 }
 
+// generateJooqをする前にflywayのマイグレーションを実行する
 tasks.named("generateJooq") {
     dependsOn("flywayMigrate")
 }
