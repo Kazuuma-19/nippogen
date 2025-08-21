@@ -13,7 +13,7 @@ ready:
 	make back-ready
 
 front:
-	cd frontend && npm run dev
+	cd frontend && npm run start
 
 build:
 	cd backend && ./gradlew build 
