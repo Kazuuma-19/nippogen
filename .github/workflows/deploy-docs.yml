@@ -47,7 +47,7 @@ jobs:
     - name: Start services with Docker Compose
       working-directory: ./backend
       run: |
-        docker-compose up -d
+        docker compose up -d
         sleep 30
         
     - name: Generate OpenAPI spec
@@ -57,7 +57,7 @@ jobs:
         
     - name: Stop services
       working-directory: ./backend
-      run: docker-compose down
+      run: docker compose down
         
     - name: Generate API documentation
       working-directory: ./backend
