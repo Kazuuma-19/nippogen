@@ -153,7 +153,7 @@ cd backend && ./gradlew generateJooq
 ### Issue Management
 - **Task Management**: Use GitHub Issues to track all development tasks and bugs
 - **Issue Creation**: Create issues for all features, bugs, and improvements before starting work
-- **Issue Templates**: Use provided GitHub issue templates for consistency
+- **Issue Templates**: **MUST** use GitHub issue template located in `.github/ISSUE_TEMPLATE/issue_template.md`
 - **Linking**: Reference issue numbers in commits and PRs (e.g., `#123`, `fixes #456`)
 
 ### Commit Guidelines
@@ -181,7 +181,7 @@ cd backend && ./gradlew generateJooq
 
 ### Pull Request Process
 - **Language**: Write PR titles and descriptions in Japanese
-- **PR Templates**: Use provided GitHub PR templates for all pull requests
+- **PR Templates**: **MUST** use GitHub PR templates located in `.github/pull_request_template.md`
 - **Branch Naming**: Use descriptive branch names (e.g., `feature/user-auth`, `fix/login-bug`)
 - **Review Requirements**: 
   - All PRs must be reviewed by @Kazuuma-19
@@ -211,7 +211,7 @@ cd backend && ./gradlew generateJooq
 
 ### Development Flow
 1. **Issue Creation & Planning**:
-   - Create GitHub Issue for the task
+   - Create GitHub Issue using **MANDATORY** template `.github/ISSUE_TEMPLATE/issue_template.md`
    - Break down the issue into specific subtasks using checkboxes:
      ```markdown
      ## タスク一覧
@@ -236,7 +236,7 @@ cd backend && ./gradlew generateJooq
 
 4. **Completion**:
    - Ensure all subtasks are checked off
-   - Create PR with implementation reasoning
+   - Create PR using **MANDATORY** template `.github/pull_request_template.md`
    - Request review from @Kazuuma-19
    - Address feedback and wait for approval
 
@@ -245,7 +245,7 @@ cd backend && ./gradlew generateJooq
 2. Review `/docs` directory before development
 3. Implement changes with granular commits
 4. Update issue with task completion checkmarks
-5. Create PR with proper template
+5. Create PR using **MANDATORY** template `.github/pull_request_template.md`
 6. Request review from @Kazuuma-19
 7. Address review feedback
 8. Wait for approval before merging
