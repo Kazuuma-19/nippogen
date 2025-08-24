@@ -307,6 +307,25 @@ make db-setup
   - `feature/10-ai-report-generation`
   - `feature/14-api-settings-screen`
 
+## Lombokガイドライン
+
+### 使用推奨アノテーション
+- `@Getter` / `@Setter`: フィールドレベルまたはクラスレベルでgetter/setter生成
+- `@Builder`: Builderパターン実装
+- `@RequiredArgsConstructor`: final/非nullフィールドのコンストラクタ生成
+- `@AllArgsConstructor`: 全フィールドのコンストラクタ生成
+- `@NoArgsConstructor`: デフォルトコンストラクタ生成
+- `@Slf4j`: ログ用
+- `@ToString`: toString()メソッド生成
+- `@EqualsAndHashCode`: equals()とhashCode()メソッド生成
+
+### 使用禁止アノテーション
+- `@Data`: mutabilityとtoString/hashCode/equalsの自動生成によるリスクがあるため使用禁止
+
+### DTOクラス設計原則
+- イミュータブルオブジェクト推奨: `@Getter + @Builder + @RequiredArgsConstructor + final fields`
+- ConfigurationPropertiesクラス: `@Getter + @Setter` (Spring Bootの要件)
+
 ## 環境要件
 
 - **Java**: 21 (build.gradle で設定)
