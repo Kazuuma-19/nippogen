@@ -61,15 +61,19 @@ jobs:
         
     - name: Generate API documentation
       working-directory: ./backend
-      run: redocly build-docs openapi.json --output=redoc-static.html
+      run: |
+        mkdir -p docs
+        redocly build-docs openapi.json --output=docs/index.html
       
     - name: Setup Pages
       uses: actions/configure-pages@v4
+      with:
+        enablement: true
       
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ./backend/redoc-static.html
+        path: ./backend/docs
 
   deploy:
     environment:
