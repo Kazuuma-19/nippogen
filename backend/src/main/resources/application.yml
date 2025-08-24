@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://db:5432/valet_ai
+    url: jdbc:postgresql://db:5432/nippogen
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
