@@ -2,8 +2,8 @@ services:
   app:
     build:
       context: .
-    image: valet-ai-backend:latest
-    container_name: valet-ai-backend
+    image: nippogen-backend:latest
+    container_name: nippogen-backend
     ports:
       - "8080:8080"
     depends_on:
@@ -11,9 +11,9 @@ services:
 
   db:
     image: postgres:17
-    container_name: valet-ai-postgres
+    container_name: nippogen-postgres
     environment:
-      POSTGRES_DB: valet_ai
+      POSTGRES_DB: nippogen
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:

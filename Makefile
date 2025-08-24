@@ -36,4 +36,4 @@ down-v:
 
 # postgreSQL操作
 psql:
-	cd backend && docker compose exec db psql -U postgres -d valet_ai
+	cd backend && docker compose exec db psql -U postgres -d nippogen

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Architecture
 
-Valet AI is a full-stack application with a clear separation between frontend and backend:
+Nippogen is a full-stack application with a clear separation between frontend and backend:
 
 ### Backend (Spring Boot + Java 21)
 - **Framework**: Spring Boot 3.5.4 with Java 21
@@ -113,13 +113,13 @@ cd backend && ./gradlew generateJooq
 
 ### Development Database
 - **Host**: localhost:5433 (to avoid conflicts with local PostgreSQL)
-- **Database**: valet_ai
+- **Database**: nippogen
 - **User**: postgres
 - **Password**: postgres
 
 ### Container Database (for backend connection)
 - **Host**: db:5432
-- **Database**: valet_ai
+- **Database**: nippogen
 - **User**: postgres
 - **Password**: postgres
 
