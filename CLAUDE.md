@@ -156,6 +156,15 @@ cd backend && ./gradlew generateJooq
 - **Issue Templates**: **MUST** use GitHub issue template located in `.github/ISSUE_TEMPLATE/issue_template.md`
 - **Linking**: Reference issue numbers in commits and PRs (e.g., `#123`, `fixes #456`)
 
+### Project Board Management
+- **Project Board**: https://github.com/users/Kazuuma-19/projects/14
+- **Column Structure**:
+  - **Backlog**: このプロジェクトで作成するすべてのタスクを追加
+  - **Ready**: MVPで実装する内容
+  - **In Progress**: 実装中の内容
+  - **Done**: 終わった内容（こちらで操作するのでIn Progressからは移動させない）
+- **Issue Assignment**: すべてのIssueをBacklogに追加し、実装準備ができたものをReadyに移動
+
 ### Commit Guidelines
 - **Commit Granularity**: Make small, focused commits with single responsibility
 - **Language**: Write commit messages in Japanese
@@ -226,9 +235,10 @@ cd backend && ./gradlew generateJooq
 2. **Pre-Development**:
    - Review `/docs` directory for relevant documentation
    - Understand existing architecture and patterns
-   - Create feature branch from main
+   - **MUST create feature branch from main before any implementation**
 
 3. **Implementation**:
+   - **ALWAYS work on feature branch, NEVER on main directly**
    - Work through subtasks systematically
    - Check off completed subtasks with ✅ in the issue
    - Make granular commits in Japanese
@@ -241,15 +251,23 @@ cd backend && ./gradlew generateJooq
    - Address feedback and wait for approval
 
 ### Code Review Process
-1. Create feature branch from main
+1. **MUST create feature branch from main before any implementation**
 2. Review `/docs` directory before development
-3. Implement changes with granular commits
-4. Update issue with task completion checkmarks
-5. Create PR using **MANDATORY** template `.github/pull_request_template.md`
-6. Request review from @Kazuuma-19
-7. Address review feedback
-8. Wait for approval before merging
-9. **NEVER** merge your own PRs
+3. **ALWAYS work on feature branch, NEVER on main directly**
+4. Implement changes with granular commits
+5. Update issue with task completion checkmarks
+6. Create PR using **MANDATORY** template `.github/pull_request_template.md`
+7. Request review from @Kazuuma-19
+8. Address review feedback
+9. Wait for approval before merging
+10. **NEVER** merge your own PRs
+
+### Branch Naming Convention
+- **Format**: `feature/issue-number-short-description`
+- **Examples**: 
+  - `feature/6-database-migration`
+  - `feature/10-ai-report-generation`
+  - `feature/14-api-settings-screen`
 
 ## Environment Requirements
 
