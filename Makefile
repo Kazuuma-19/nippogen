@@ -37,3 +37,16 @@ down-v:
 # postgreSQL操作
 psql:
 	cd backend && docker compose exec db psql -U postgres -d nippogen
+
+# データベースマイグレーション
+migrate:
+	cd backend && ./gradlew flywayMigrate
+
+# JOOQ生成クラス更新
+jooq:
+	cd backend && ./gradlew generateJooq
+
+# マイグレーション + JOOQ生成
+db-setup:
+	make migrate
+	make jooq
