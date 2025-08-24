@@ -148,6 +148,109 @@ cd backend && ./gradlew generateJooq
 3. Run `npm run generate-types` in frontend
 4. Use updated TypeScript types for type-safe API calls
 
+## GitHub Workflow & Development Process
+
+### Issue Management
+- **Task Management**: Use GitHub Issues to track all development tasks and bugs
+- **Issue Creation**: Create issues for all features, bugs, and improvements before starting work
+- **Issue Templates**: Use provided GitHub issue templates for consistency
+- **Linking**: Reference issue numbers in commits and PRs (e.g., `#123`, `fixes #456`)
+
+### Commit Guidelines
+- **Commit Granularity**: Make small, focused commits with single responsibility
+- **Language**: Write commit messages in Japanese
+- **Commit Messages**: Follow conventional commit format with Japanese descriptions:
+  ```
+  type(scope): 日本語での説明
+  
+  - feat: 新機能
+  - fix: バグ修正
+  - docs: ドキュメント変更
+  - style: フォーマット変更
+  - refactor: リファクタリング
+  - test: テスト追加
+  - chore: 保守作業
+  ```
+- **Examples**:
+  ```
+  feat(api): ユーザー認証エンドポイントを追加
+  fix(frontend): ログインページのナビゲーション問題を修正
+  docs(readme): インストール手順を更新
+  refactor(backend): データベース接続処理をリファクタリング
+  ```
+
+### Pull Request Process
+- **Language**: Write PR titles and descriptions in Japanese
+- **PR Templates**: Use provided GitHub PR templates for all pull requests
+- **Branch Naming**: Use descriptive branch names (e.g., `feature/user-auth`, `fix/login-bug`)
+- **Review Requirements**: 
+  - All PRs must be reviewed by @Kazuuma-19
+  - Do NOT self-merge PRs - wait for review approval
+  - Address all review comments before requesting re-review
+- **PR Creation**: Always include:
+  - **変更内容**: Clear description of changes in Japanese
+  - **関連Issue**: Reference to related issues
+  - **実装の思考プロセス**: Explain the reasoning behind implementation decisions
+    - なぜこのアプローチを選択したか
+    - 他の選択肢と比較検討した内容
+    - 実装時に考慮した点や制約
+    - 将来の拡張性や保守性への配慮
+  - **テスト手順**: Testing instructions
+  - **スクリーンショット**: Screenshots/recordings for UI changes
+  - **影響範囲**: Scope of changes and potential impacts
+
+### Documentation Guidelines
+- **Documentation Location**: Create all project documentation under `/docs` directory
+- **Pre-Development Review**: Always review existing documentation in `/docs` before starting development
+- **Documentation Types**:
+  - Architecture decisions (ADR)
+  - API specifications
+  - Setup guides
+  - Troubleshooting guides
+  - Design documents
+
+### Development Flow
+1. **Issue Creation & Planning**:
+   - Create GitHub Issue for the task
+   - Break down the issue into specific subtasks using checkboxes:
+     ```markdown
+     ## タスク一覧
+     - [ ] データベースマイグレーション作成
+     - [ ] APIエンドポイント実装
+     - [ ] フロントエンド画面作成
+     - [ ] テストコード追加
+     - [ ] ドキュメント更新
+     ```
+   - Assign appropriate labels and milestone
+
+2. **Pre-Development**:
+   - Review `/docs` directory for relevant documentation
+   - Understand existing architecture and patterns
+   - Create feature branch from main
+
+3. **Implementation**:
+   - Work through subtasks systematically
+   - Check off completed subtasks with ✅ in the issue
+   - Make granular commits in Japanese
+   - Update documentation as needed
+
+4. **Completion**:
+   - Ensure all subtasks are checked off
+   - Create PR with implementation reasoning
+   - Request review from @Kazuuma-19
+   - Address feedback and wait for approval
+
+### Code Review Process
+1. Create feature branch from main
+2. Review `/docs` directory before development
+3. Implement changes with granular commits
+4. Update issue with task completion checkmarks
+5. Create PR with proper template
+6. Request review from @Kazuuma-19
+7. Address review feedback
+8. Wait for approval before merging
+9. **NEVER** merge your own PRs
+
 ## Environment Requirements
 
 - **Java**: 21 (configured in build.gradle)
