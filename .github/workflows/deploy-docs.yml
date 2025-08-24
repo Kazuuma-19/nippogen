@@ -1,0 +1,87 @@
+name: Deploy API Documentation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        
+    - name: Install Redocly CLI
+      run: npm install -g @redocly/cli
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      
+    - name: Build Spring Boot JAR
+      working-directory: ./backend
+      run: ./gradlew clean build
+      
+    - name: Start services with Docker Compose
+      working-directory: ./backend
+      run: |
+        docker compose up -d
+        sleep 30
+        
+    - name: Generate OpenAPI spec
+      working-directory: ./backend
+      run: |
+        curl -o openapi.json http://localhost:8080/api-docs
+        
+    - name: Stop services
+      working-directory: ./backend
+      run: docker compose down
+        
+    - name: Generate API documentation
+      working-directory: ./backend
+      run: |
+        mkdir -p docs
+        redocly build-docs openapi.json --output=docs/index.html
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./backend/docs
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
