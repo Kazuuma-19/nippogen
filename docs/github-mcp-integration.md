@@ -46,35 +46,120 @@ Issue #7の実装として、GitHub公式のModel Context Protocol (MCP) Server�
 - **パラメータ**: owner, repo, since, until, path
 - **戻り値**: コミット一覧
 
-## アーキテクチャ設計
+## アーキテクチャ設計（オニオンアーキテクチャ準拠）
 
 ### システム構成
 ```
-GitHubController -> GitHubMcpService -> GitHub MCP Server -> GitHub API
+Interface Layer -> Application Layer -> Domain Layer <- Infrastructure Layer
+     ↓                    ↓                 ↓                    ↓
+GitHubController -> GitHubUseCase -> GitHubRepository <- GitHubMcpRepository
+                                         (Interface)         (Implementation)
 ```
 
 ### パッケージ構造
 ```
 com.example.backend/
-├── config/
-│   └── McpConfig.java           # MCP設定クラス
-├── controller/
-│   └── GitHubController.java    # REST APIエンドポイント
-├── service/
-│   └── GitHubMcpService.java    # MCP通信サービス
-├── dto/
-│   ├── PullRequestDto.java      # PR情報DTO
-│   └── CommitDto.java           # コミット情報DTO
-└── exception/
-    ├── GitHubMcpException.java  # MCP専用例外
-    └── GlobalExceptionHandler.java # グローバル例外ハンドラー
+├── domain/
+│   ├── entities/
+│   │   ├── PullRequest.java         # PRエンティティ
+│   │   └── GitHubCommit.java        # コミットエンティティ
+│   ├── repositories/
+│   │   └── GitHubRepository.java    # GitHubリポジトリインターフェース
+│   └── services/
+│       └── GitHubDomainService.java # ドメインサービス
+├── application/
+│   ├── usecases/
+│   │   └── GitHubUseCase.java       # GitHubユースケース
+│   └── dto/
+│       ├── PullRequestDto.java      # PR情報DTO
+│       └── CommitDto.java           # コミット情報DTO
+├── infrastructure/
+│   ├── repositories/
+│   │   └── GitHubMcpRepository.java # MCP通信実装
+│   ├── config/
+│   │   └── McpConfig.java           # MCP設定クラス
+│   └── external/
+│       └── McpClient.java           # MCPクライアント
+├── interfaces/
+│   ├── controllers/
+│   │   └── GitHubController.java    # REST APIエンドポイント
+│   ├── dto/
+│   │   ├── PullRequestResponse.java # APIレスポンスDTO
+│   │   └── CommitResponse.java      # APIレスポンスDTO
+│   └── mappers/
+│       └── GitHubResponseMapper.java # DTO変換
+└── shared/
+    └── exceptions/
+        ├── GitHubMcpException.java  # MCP専用例外
+        └── GlobalExceptionHandler.java # グローバル例外ハンドラー
 ```
 
-## 実装詳細
+## 実装詳細（オニオンアーキテクチャ準拠）
 
-### McpConfig
+### Domain Layer
+
+#### GitHubRepository (Interface)
 ```java
-@Configuration
+public interface GitHubRepository {
+    List<PullRequest> findPullRequestsByDate(String owner, String repo, LocalDate date);
+    List<GitHubCommit> findCommitsByDate(String owner, String repo, LocalDate date);
+    boolean testConnection(String owner, String repo);
+}
+```
+
+#### PullRequest (Entity)
+```java
+@Getter
+@Builder
+@RequiredArgsConstructor
+public class PullRequest {
+    private final Long id;
+    private final Integer number;
+    private final String title;
+    private final String body;
+    private final String state;
+    private final String author;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime mergedAt;
+    private final String baseBranch;
+    private final String headBranch;
+    // ビジネスロジック
+    public boolean isMerged() { return mergedAt != null; }
+    public boolean isCreatedOnDate(LocalDate date) { /* 実装 */ }
+}
+```
+
+### Application Layer
+
+#### GitHubUseCase
+```java
+@Service
+@RequiredArgsConstructor
+public class GitHubUseCase {
+    private final GitHubRepository gitHubRepository;
+    private final GitHubResponseMapper responseMapper;
+    
+    public List<PullRequestDto> getPullRequestsForDate(String owner, String repo, LocalDate date) {
+        List<PullRequest> pullRequests = gitHubRepository.findPullRequestsByDate(owner, repo, date);
+        return responseMapper.toPullRequestDtos(pullRequests);
+    }
+    
+    public List<CommitDto> getCommitsForDate(String owner, String repo, LocalDate date) {
+        List<GitHubCommit> commits = gitHubRepository.findCommitsByDate(owner, repo, date);
+        return responseMapper.toCommitDtos(commits);
+    }
+    
+    public boolean testConnection(String owner, String repo) {
+        return gitHubRepository.testConnection(owner, repo);
+    }
+}
+```
+
+### Infrastructure Layer
+
+#### McpConfig
+```java
+@Component
 @ConfigurationProperties(prefix = "mcp.github")
 @Getter
 @Setter
@@ -89,55 +174,121 @@ public class McpConfig {
 }
 ```
 
-### GitHubMcpService
-主要メソッド：
-- `testConnection(owner, repo)`: get_repositoryツール使用
-- `getPullRequestsForDate(owner, repo, date)`: search_issuesツール使用
-- `getCommitsForDate(owner, repo, date)`: list_commitsツール使用
-
-### DTOクラス設計
-
-#### PullRequestDto
+#### GitHubMcpRepository (Implementation)
 ```java
-@Getter
-@Builder
+@Repository
 @RequiredArgsConstructor
-public class PullRequestDto {
-    private final Long id;
-    private final Integer number;
-    private final String title;
-    private final String body;
-    private final String state;
-    private final String author;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
-    private final LocalDateTime mergedAt;
-    private final String baseBranch;
-    private final String headBranch;
-    private final List<String> reviewers;
-    private final Integer additions;
-    private final Integer deletions;
-    private final Integer changedFiles;
-    private final String htmlUrl;
+@Slf4j
+public class GitHubMcpRepository implements GitHubRepository {
+    private final McpClient mcpClient;
+    private final McpConfig mcpConfig;
+    
+    @Override
+    public List<PullRequest> findPullRequestsByDate(String owner, String repo, LocalDate date) {
+        // MCP search_issues ツール使用実装
+    }
+    
+    @Override
+    public List<GitHubCommit> findCommitsByDate(String owner, String repo, LocalDate date) {
+        // MCP list_commits ツール使用実装
+    }
+    
+    @Override
+    public boolean testConnection(String owner, String repo) {
+        // MCP get_repository ツール使用実装
+    }
 }
 ```
 
-#### CommitDto
+### Interface Layer
+
+#### GitHubController
 ```java
-@Getter
-@Builder
+@RestController
+@RequestMapping("/api/external/github")
 @RequiredArgsConstructor
-public class CommitDto {
-    private final String sha;
-    private final String message;
-    private final String author;
-    private final String authorEmail;
-    private final LocalDateTime date;
-    private final Integer additions;
-    private final Integer deletions;
-    private final Integer total;
-    private final String htmlUrl;
+@Tag(name = "GitHub API", description = "GitHub MCP統合API")
+public class GitHubController {
+    private final GitHubUseCase gitHubUseCase;
+    private final GitHubResponseMapper responseMapper;
+    
+    @GetMapping("/pull-requests")
+    public ResponseEntity<List<PullRequestResponse>> getPullRequests(
+            @RequestParam String owner,
+            @RequestParam String repo,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        
+        List<PullRequestDto> pullRequests = gitHubUseCase.getPullRequestsForDate(owner, repo, date);
+        List<PullRequestResponse> responses = responseMapper.toPullRequestResponses(pullRequests);
+        return ResponseEntity.ok(responses);
+    }
 }
+```
+
+## レイヤー別責務
+
+### Domain Layer (Core)
+- **責務**: ビジネスロジック、ドメインルール
+- **依存関係**: なし（他のレイヤーに依存しない）
+- **主要クラス**: 
+  - `PullRequest`, `GitHubCommit` (エンティティ)
+  - `GitHubRepository` (インターフェース)
+  - `GitHubDomainService` (ドメインサービス)
+
+### Application Layer  
+- **責務**: ユースケース実行、アプリケーション固有のロジック
+- **依存関係**: Domain Layer のみに依存
+- **主要クラス**:
+  - `GitHubUseCase` (ユースケース)
+  - `PullRequestDto`, `CommitDto` (データ転送)
+
+### Infrastructure Layer
+- **責務**: 外部システム連携、技術的実装詳細
+- **依存関係**: Domain Layer のインターフェースを実装
+- **主要クラス**:
+  - `GitHubMcpRepository` (リポジトリ実装)
+  - `McpClient`, `McpConfig` (MCP統合)
+
+### Interface Layer
+- **責務**: 外部からのリクエスト処理、レスポンス変換
+- **依存関係**: Application Layer に依存
+- **主要クラス**:
+  - `GitHubController` (REST API)
+  - `PullRequestResponse`, `CommitResponse` (API専用DTO)
+  - `GitHubResponseMapper` (DTO変換)
+
+## 設定管理
+
+### McpConfig設計
+`McpConfig`は`@ConfigurationProperties`でapplication.ymlの設定値を管理：
+
+```java
+@Component
+@ConfigurationProperties(prefix = "mcp.github")
+@Getter
+@Setter
+public class McpConfig {
+    private String serverExecutable = "npx -y @modelcontextprotocol/server-github";
+    private String githubToken;        // ${GITHUB_TOKEN}
+    private String transport = "stdio";
+    private int connectionTimeout = 10000;
+    private int readTimeout = 30000;
+    private int maxRetries = 3;
+    private int retryDelay = 2000;
+}
+```
+
+### application.yml
+```yaml
+mcp:
+  github:
+    server-executable: "npx -y @modelcontextprotocol/server-github"
+    github-token: "${GITHUB_TOKEN}"  # 環境変数から取得
+    transport: "stdio"
+    connection-timeout: 10000
+    read-timeout: 30000
+    max-retries: 3
+    retry-delay: 2000
 ```
 
 ## REST APIエンドポイント
@@ -220,16 +371,33 @@ export GITHUB_TOKEN=ghp_your_personal_access_token
 
 ## MCP通信実装方針
 
-### 現在の状態
+### 現在の状態（オニオンアーキテクチャ移行前）
 - 基本的なREST APIエンドポイント実装完了
 - DTO・設定クラス・例外処理実装完了  
 - 実際のMCP通信部分は未実装（TODO）
 
-### 次のステップ（実装予定）
-1. **MCPクライアント統合**: ProcessBuilderまたはMCPクライアントライブラリの選定・統合
-2. **MCP通信実装**: stdio transportでのGitHub MCP Server通信
-3. **レスポンス変換**: MCPレスポンスからDTO変換ロジック
-4. **エラーハンドリング強化**: MCP特有のエラー対応
+### 次のステップ（オニオンアーキテクチャ移行）
+1. **Domain Layer実装**: 
+   - `PullRequest`, `GitHubCommit` エンティティ作成
+   - `GitHubRepository` インターフェース定義
+   - ドメインサービス実装
+
+2. **Application Layer実装**:
+   - `GitHubUseCase` 作成
+   - アプリケーション層のDTO定義
+
+3. **Infrastructure Layer実装**:
+   - `GitHubMcpRepository` でリポジトリ実装
+   - `McpClient` でMCP通信実装
+   - `McpConfig` をInfrastructure層に移動
+
+4. **Interface Layer実装**:
+   - `GitHubController` をInterface層に移動
+   - APIレスポンス専用DTOとマッパー作成
+
+5. **MCP通信実装**: 
+   - stdio transportでのGitHub MCP Server通信
+   - エラーハンドリング強化
 
 ## テスト・動作確認
 

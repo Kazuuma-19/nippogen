@@ -1,8 +1,8 @@
-package com.example.backend.controller;
+package com.example.backend.interfaces.controllers;
 
-import com.example.backend.dto.CommitDto;
-import com.example.backend.dto.PullRequestDto;
-import com.example.backend.service.GitHubMcpService;
+import com.example.backend.application.dto.CommitDto;
+import com.example.backend.application.dto.PullRequestDto;
+import com.example.backend.application.usecases.GitHubUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GitHubController {
     
-    private final GitHubMcpService gitHubMcpService;
+    private final GitHubUseCase gitHubUseCase;
     
     @GetMapping("/test")
     @Operation(
@@ -58,7 +58,7 @@ public class GitHubController {
             @Parameter(description = "Repository name", example = "Hello-World", required = true) 
             @RequestParam String repo) {
         
-        boolean isConnected = gitHubMcpService.testConnection(owner, repo);
+        boolean isConnected = gitHubUseCase.testConnection(owner, repo);
         return ResponseEntity.ok(isConnected);
     }
     
@@ -104,7 +104,7 @@ public class GitHubController {
             ) 
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         
-        List<PullRequestDto> prs = gitHubMcpService.getPullRequestsForDate(owner, repo, date);
+        List<PullRequestDto> prs = gitHubUseCase.getPullRequestsForDate(owner, repo, date);
         return ResponseEntity.ok(prs);
     }
     
@@ -150,7 +150,7 @@ public class GitHubController {
             ) 
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         
-        List<CommitDto> commits = gitHubMcpService.getCommitsForDate(owner, repo, date);
+        List<CommitDto> commits = gitHubUseCase.getCommitsForDate(owner, repo, date);
         return ResponseEntity.ok(commits);
     }
 }
