@@ -55,7 +55,7 @@ tasks.named('test') {
 }
 
 flyway {
-    url = 'jdbc:postgresql://localhost:5433/nippogen'
+    url = 'jdbc:postgresql://localhost:5434/nippogen'
     user = 'postgres'
     password = 'postgres'
 }
@@ -70,7 +70,7 @@ jooq {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc {
                     driver = 'org.postgresql.Driver'
-                    url = 'jdbc:postgresql://localhost:5433/nippogen'
+                    url = 'jdbc:postgresql://localhost:5434/nippogen'
                     user = 'postgres'
                     password = 'postgres'
                 }
