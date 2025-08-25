@@ -1,22 +1,25 @@
-package com.example.backend.service;
+package com.example.backend.infrastructure.repositories;
 
-import com.example.backend.config.McpConfig;
-import com.example.backend.dto.CommitDto;
-import com.example.backend.dto.PullRequestDto;
-import com.example.backend.exception.GitHubMcpException;
+import com.example.backend.application.dto.CommitDto;
+import com.example.backend.application.dto.PullRequestDto;
+import com.example.backend.domain.entities.GitHubCommit;
+import com.example.backend.domain.entities.PullRequest;
+import com.example.backend.domain.repositories.GitHubRepository;
+import com.example.backend.infrastructure.config.McpConfig;
+import com.example.backend.shared.exceptions.GitHubMcpException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Repository
 @RequiredArgsConstructor
 @Slf4j
-public class GitHubMcpService {
+public class GitHubMcpRepository implements GitHubRepository {
     
     private final McpConfig mcpConfig;
     
@@ -24,6 +27,7 @@ public class GitHubMcpService {
      * GitHub公式MCP Server経由で接続をテスト
      * 使用可能なツール: search_repositories, get_repository, list_issues等
      */
+    @Override
     public boolean testConnection(String owner, String repo) {
         try {
             log.info("Testing GitHub MCP connection for {}/{}", owner, repo);
@@ -48,7 +52,8 @@ public class GitHubMcpService {
      * GitHub公式MCP Server経由で指定日のPR情報を取得
      * 使用ツール: search_issues (type:pr)
      */
-    public List<PullRequestDto> getPullRequestsForDate(String owner, String repo, LocalDate date) {
+    @Override
+    public List<PullRequest> findPullRequestsByDate(String owner, String repo, LocalDate date) {
         try {
             log.info("Fetching PRs via GitHub MCP for {}/{} on {}", owner, repo, date);
             
@@ -61,9 +66,9 @@ public class GitHubMcpService {
             
             // TODO: 実際のMCP通信実装
             // MCPクライアントでsearch_issuesツールを呼び出し
-            // レスポンスをPullRequestDtoに変換
+            // レスポンスをPullRequestエンティティに変換
             
-            List<PullRequestDto> pullRequests = new ArrayList<>();
+            List<PullRequest> pullRequests = new ArrayList<>();
             // サンプル実装（実際のMCP通信後に置き換え）
             
             log.info("Found {} PRs for {}/{} on {}", pullRequests.size(), owner, repo, date);
@@ -79,7 +84,8 @@ public class GitHubMcpService {
      * GitHub公式MCP Server経由で指定日のコミット情報を取得
      * 使用ツール: get_repository (commits endpoint)
      */
-    public List<CommitDto> getCommitsForDate(String owner, String repo, LocalDate date) {
+    @Override
+    public List<GitHubCommit> findCommitsByDate(String owner, String repo, LocalDate date) {
         try {
             log.info("Fetching commits via GitHub MCP for {}/{} on {}", owner, repo, date);
             
@@ -91,9 +97,9 @@ public class GitHubMcpService {
             
             // TODO: 実際のMCP通信実装
             // MCPクライアントでget_repository (commits)を呼び出し
-            // レスポンスをCommitDtoに変換
+            // レスポンスをGitHubCommitエンティティに変換
             
-            List<CommitDto> commits = new ArrayList<>();
+            List<GitHubCommit> commits = new ArrayList<>();
             // サンプル実装（実際のMCP通信後に置き換え）
             
             log.info("Found {} commits for {}/{} on {}", commits.size(), owner, repo, date);
