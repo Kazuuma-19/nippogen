@@ -24,6 +24,11 @@
 ### コミットガイドライン
 
 - **コミット粒度**: 単一責任の小さく集中したコミットを作成
+- **コミット戦略**: **rebaseではなく、細かく複数のコミットを作成することを推奨**
+  - 各論理的変更を個別のコミットに分ける
+  - ファイル作成、修正、削除は可能な限り別コミットに分離
+  - 機能実装とテスト追加、ドキュメント更新は別々のコミット
+  - リファクタリングと新機能追加は別々のコミット
 - **言語**: コミットメッセージは日本語で記述
 - **コミットメッセージ**: 日本語説明付きの conventional commit 形式に従う:
 
@@ -45,6 +50,21 @@
   fix(frontend): ログインページのナビゲーション問題を修正
   docs(readme): インストール手順を更新
   refactor(backend): データベース接続処理をリファクタリング
+  ```
+
+- **推奨コミットパターン**:
+  ```
+  # 良い例：論理的に分離された複数コミット
+  feat(domain): PullRequestエンティティを追加
+  feat(domain): GitHubRepositoryインターフェースを追加
+  feat(application): GitHubUseCaseを実装
+  feat(infrastructure): GitHubMcpRepositoryを実装
+  feat(presentation): GitHubControllerを実装
+  test(github): GitHubUseCase単体テストを追加
+  docs(github): GitHub MCP統合仕様書を更新
+
+  # 避ける例：すべてを1つのコミットにまとめる
+  feat(github): GitHub MCP統合機能を完全実装
   ```
 
 ### プルリクエストプロセス
