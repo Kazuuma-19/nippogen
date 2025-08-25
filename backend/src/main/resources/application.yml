@@ -5,6 +5,27 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
 
+  ai:
+    mcp:
+      client:
+        enabled: true
+        type: SYNC
+        request-timeout: 30s
+        stdio:
+          connections:
+            github:
+              command: "npx -y @modelcontextprotocol/server-github"
+              env:
+                GITHUB_TOKEN: "${GITHUB_TOKEN}"
+            toggl:
+              command: "npx -y @taiseimiyaji/toggl-mcp-server"
+              env:
+                TOGGL_API_TOKEN: "${TOGGL_API_TOKEN}"
+            notion:
+              command: "npx -y @makenotion/notion-mcp-server"
+              env:
+                NOTION_TOKEN: "${NOTION_TOKEN}"
+
 springdoc:
   api-docs:
     path: /api-docs

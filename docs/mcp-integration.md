@@ -62,8 +62,9 @@ Controllers        ->   UseCases      -> Repositories  <- Spring AI MCP
 - **主要ツール**: `get_repository`, `search_issues`, `list_commits`
 
 ### Toggl Track MCP
-- **パッケージ**: `@modelcontextprotocol/server-toggl`
-- **実行**: `npx -y @modelcontextprotocol/server-toggl`
+- **リポジトリ**: https://github.com/taiseimiyaji/toggl-mcp-server
+- **パッケージ**: `@taiseimiyaji/toggl-mcp-server`
+- **実行**: `npx -y @taiseimiyaji/toggl-mcp-server`
 - **主要ツール**: 作業時間取得、プロジェクト別集計
 
 ### Notion MCP Server
@@ -93,7 +94,7 @@ spring:
               env:
                 GITHUB_TOKEN: "${GITHUB_TOKEN}"
             toggl:
-              command: "npx -y @modelcontextprotocol/server-toggl"
+              command: "npx -y @taiseimiyaji/toggl-mcp-server"
               env:
                 TOGGL_API_TOKEN: "${TOGGL_API_TOKEN}"
             notion:
