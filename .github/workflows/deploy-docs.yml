@@ -52,10 +52,7 @@ jobs:
         
     - name: Generate OpenAPI spec
       working-directory: ./backend
-      run: |
-        curl -o openapi.json http://localhost:8080/api-docs
-        echo "Generated OpenAPI spec:"
-        cat openapi.json | jq . | head -10
+      run: curl -o openapi.json http://localhost:8080/api-docs
         
     - name: Stop services
       working-directory: ./backend
