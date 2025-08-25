@@ -8,7 +8,7 @@ spring:
   ai:
     mcp:
       client:
-        enabled: false  # 一旦無効化してテスト
+        enabled: false
         name: nippogen-mcp-client
         version: 1.0.0
         type: SYNC
@@ -16,11 +16,9 @@ spring:
         sse:
           connections:
             github:
-              url: "${MCP_GITHUB_URL:http://localhost:3000}"
-            toggl:
-              url: "${MCP_TOGGL_URL:http://localhost:3001}"
-            notion:
-              url: "${MCP_NOTION_URL:http://localhost:3002}"
+              url: "https://api.githubcopilot.com/mcp/x/repos"
+              headers:
+                Authorization: "Bearer ${GITHUB_TOKEN}"
         toolcallback:
           enabled: true
 
