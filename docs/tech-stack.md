@@ -25,10 +25,83 @@ Infrastructure Layer
 ├── config/         # 設定
 └── security/       # セキュリティ
 
-Interface Layer
+Presentation Layer
 ├── controllers/    # REST API
 ├── dto/           # レスポンス/リクエストDTO
 └── mappers/       # DTOマッピング
+```
+
+## 詳細パッケージ構成
+
+### Backend: オニオンアーキテクチャ実装
+
+```
+com.example.backend/
+├── domain/                              # Domain Layer (Core)
+│   ├── entities/
+│   │   ├── PullRequest.java            # PRエンティティ
+│   │   ├── GitHubCommit.java           # コミットエンティティ
+│   │   └── User.java                   # ユーザーエンティティ
+│   ├── repositories/
+│   │   ├── GitHubRepository.java       # GitHub統合リポジトリIF
+│   │   ├── ReportRepository.java       # 日報リポジトリIF
+│   │   └── UserRepository.java         # ユーザーリポジトリIF
+│   └── services/
+│       ├── GitHubDomainService.java    # GitHub業務ロジック
+│       └── ReportDomainService.java    # 日報業務ロジック
+│
+├── application/                         # Application Layer
+│   ├── usecases/
+│   │   ├── GitHubUseCase.java          # GitHub統合ユースケース
+│   │   ├── ReportGenerationUseCase.java # 日報生成ユースケース
+│   │   └── UserUseCase.java            # ユーザー管理ユースケース
+│   └── dto/
+│       ├── PullRequestDto.java         # PR情報DTO
+│       ├── CommitDto.java              # コミット情報DTO
+│       ├── ReportDto.java              # 日報DTO
+│       └── UserDto.java                # ユーザーDTO
+│
+├── infrastructure/                      # Infrastructure Layer
+│   ├── repositories/
+│   │   ├── GitHubMcpRepository.java    # GitHub MCP実装
+│   │   ├── JooqReportRepository.java   # 日報JOOQ実装
+│   │   └── JooqUserRepository.java     # ユーザーJOOQ実装
+│   ├── external/
+│   │   ├── McpClient.java              # MCPクライアント
+│   │   ├── OpenAiClient.java           # OpenAI API統合
+│   │   └── TogglClient.java            # Toggl Track統合
+│   ├── config/
+│   │   ├── McpConfig.java              # MCP設定
+│   │   ├── OpenAiConfig.java           # OpenAI設定
+│   │   └── DatabaseConfig.java         # データベース設定
+│   └── security/
+│       └── EncryptionService.java      # APIキー暗号化
+│
+├── presentation/                        # Presentation Layer
+│   ├── controllers/
+│   │   ├── GitHubController.java       # GitHub API エンドポイント
+│   │   ├── ReportController.java       # 日報API エンドポイント
+│   │   ├── UserController.java         # ユーザーAPI エンドポイント
+│   │   └── TestController.java         # テスト用エンドポイント
+│   ├── dto/
+│   │   ├── PullRequestResponse.java    # PR APIレスポンス
+│   │   ├── CommitResponse.java         # コミット APIレスポンス
+│   │   ├── ReportResponse.java         # 日報 APIレスポンス
+│   │   └── ErrorResponse.java          # エラーレスポンス
+│   └── mappers/
+│       ├── GitHubResponseMapper.java   # GitHub DTO変換
+│       ├── ReportResponseMapper.java   # 日報 DTO変換
+│       └── UserResponseMapper.java     # ユーザー DTO変換
+│
+└── shared/                             # Shared Layer
+    ├── exceptions/
+    │   ├── GitHubMcpException.java     # GitHub MCP例外
+    │   ├── ReportGenerationException.java # 日報生成例外
+    │   ├── ValidationException.java    # バリデーション例外
+    │   └── GlobalExceptionHandler.java # グローバル例外ハンドラー
+    └── utils/
+        ├── DateTimeUtils.java          # 日時ユーティリティ
+        └── ValidationUtils.java        # バリデーションユーティリティ
 ```
 
 ### Frontend: Feature-based アーキテクチャ
