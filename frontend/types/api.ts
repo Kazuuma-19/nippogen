@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/test/hello": {
+    "/api/external/github/test": {
         parameters: {
             query?: never;
             header?: never;
@@ -12,10 +12,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Simple hello endpoint
-         * @description Returns a simple hello message
+         * Test GitHub connection
+         * @description Test GitHub repository connection via MCP to verify access permissions and repository existence
          */
-        get: operations["hello"];
+        get: operations["testConnection"];
         put?: never;
         post?: never;
         delete?: never;
@@ -24,7 +24,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/test/hello/{name}": {
+    "/api/external/github/pull-requests": {
         parameters: {
             query?: never;
             header?: never;
@@ -32,10 +32,30 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Personalized hello endpoint
-         * @description Returns a personalized hello message
+         * Get pull requests for date
+         * @description Retrieve all pull requests created, updated, or merged on the specified date via MCP
          */
-        get: operations["helloWithName"];
+        get: operations["getPullRequestsForDate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/external/github/commits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get commits for date
+         * @description Retrieve all commits made on the specified date via MCP
+         */
+        get: operations["getCommitsForDate"];
         put?: never;
         post?: never;
         delete?: never;
@@ -47,7 +67,49 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
+    schemas: {
+        PullRequestDto: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int32 */
+            number?: number;
+            title?: string;
+            body?: string;
+            state?: string;
+            author?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            /** Format: date-time */
+            mergedAt?: string;
+            baseBranch?: string;
+            headBranch?: string;
+            reviewers?: string[];
+            /** Format: int32 */
+            additions?: number;
+            /** Format: int32 */
+            deletions?: number;
+            /** Format: int32 */
+            changedFiles?: number;
+            htmlUrl?: string;
+        };
+        CommitDto: {
+            sha?: string;
+            message?: string;
+            author?: string;
+            authorEmail?: string;
+            /** Format: date-time */
+            date?: string;
+            /** Format: int32 */
+            additions?: number;
+            /** Format: int32 */
+            deletions?: number;
+            /** Format: int32 */
+            total?: number;
+            htmlUrl?: string;
+        };
+    };
     responses: never;
     parameters: never;
     requestBodies: never;
@@ -56,44 +118,177 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    hello: {
+    testConnection: {
         parameters: {
-            query?: never;
+            query: {
+                /**
+                 * @description Repository owner/organization name
+                 * @example octocat
+                 */
+                owner: string;
+                /**
+                 * @description Repository name
+                 * @example Hello-World
+                 */
+                repo: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Connection test completed successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": string;
+                    "application/json": boolean;
+                };
+            };
+            /** @description Invalid request parameters (missing owner or repo) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Internal server error or MCP connection failure */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };
     };
-    helloWithName: {
+    getPullRequestsForDate: {
         parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                name: string;
+            query: {
+                /**
+                 * @description Repository owner/organization name
+                 * @example octocat
+                 */
+                owner: string;
+                /**
+                 * @description Repository name
+                 * @example Hello-World
+                 */
+                repo: string;
+                /**
+                 * @description Target date in ISO format (YYYY-MM-DD)
+                 * @example 2024-01-15
+                 */
+                date: string;
             };
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Pull requests retrieved successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": string;
+                    "application/json": components["schemas"]["PullRequestDto"];
+                };
+            };
+            /** @description Invalid request parameters or date format */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Repository not found or access denied */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Internal server error or MCP connection failure */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    getCommitsForDate: {
+        parameters: {
+            query: {
+                /**
+                 * @description Repository owner/organization name
+                 * @example octocat
+                 */
+                owner: string;
+                /**
+                 * @description Repository name
+                 * @example Hello-World
+                 */
+                repo: string;
+                /**
+                 * @description Target date in ISO format (YYYY-MM-DD)
+                 * @example 2024-01-15
+                 */
+                date: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Commits retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitDto"];
+                };
+            };
+            /** @description Invalid request parameters or date format */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Repository not found or access denied */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Internal server error or MCP connection failure */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };
