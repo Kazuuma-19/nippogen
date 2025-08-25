@@ -19,5 +19,17 @@ services:
     ports:
       - "5434:5432" # localのpostgresとの競合を防ぐため
 
+  # MCPサーバーは後で追加予定
+  # GitHub MCP Server
+  # mcp-github:
+  #   image: node:18-alpine
+  #   container_name: nippogen-mcp-github
+  #   working_dir: /app
+  #   command: sh -c "npm install -g @modelcontextprotocol/server-github && mcp-github-server"
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GITHUB_TOKEN=${GITHUB_TOKEN}
+
 volumes:
   db-data:
