@@ -1,4 +1,4 @@
-package com.example.backend.controller;
+package com.example.backend.presentation.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -50,49 +50,12 @@ Issue #7の実装として、GitHub公式のModel Context Protocol (MCP) Server�
 
 ### システム構成
 ```
-Interface Layer -> Application Layer -> Domain Layer <- Infrastructure Layer
+Presentation Layer -> Application Layer -> Domain Layer <- Infrastructure Layer
      ↓                    ↓                 ↓                    ↓
 GitHubController -> GitHubUseCase -> GitHubRepository <- GitHubMcpRepository
                                          (Interface)         (Implementation)
 ```
 
-### パッケージ構造
-```
-com.example.backend/
-├── domain/
-│   ├── entities/
-│   │   ├── PullRequest.java         # PRエンティティ
-│   │   └── GitHubCommit.java        # コミットエンティティ
-│   ├── repositories/
-│   │   └── GitHubRepository.java    # GitHubリポジトリインターフェース
-│   └── services/
-│       └── GitHubDomainService.java # ドメインサービス
-├── application/
-│   ├── usecases/
-│   │   └── GitHubUseCase.java       # GitHubユースケース
-│   └── dto/
-│       ├── PullRequestDto.java      # PR情報DTO
-│       └── CommitDto.java           # コミット情報DTO
-├── infrastructure/
-│   ├── repositories/
-│   │   └── GitHubMcpRepository.java # MCP通信実装
-│   ├── config/
-│   │   └── McpConfig.java           # MCP設定クラス
-│   └── external/
-│       └── McpClient.java           # MCPクライアント
-├── interfaces/
-│   ├── controllers/
-│   │   └── GitHubController.java    # REST APIエンドポイント
-│   ├── dto/
-│   │   ├── PullRequestResponse.java # APIレスポンスDTO
-│   │   └── CommitResponse.java      # APIレスポンスDTO
-│   └── mappers/
-│       └── GitHubResponseMapper.java # DTO変換
-└── shared/
-    └── exceptions/
-        ├── GitHubMcpException.java  # MCP専用例外
-        └── GlobalExceptionHandler.java # グローバル例外ハンドラー
-```
 
 ## 実装詳細（オニオンアーキテクチャ準拠）
 
@@ -200,7 +163,7 @@ public class GitHubMcpRepository implements GitHubRepository {
 }
 ```
 
-### Interface Layer
+### Presentation Layer
 
 #### GitHubController
 ```java
@@ -249,7 +212,7 @@ public class GitHubController {
   - `GitHubMcpRepository` (リポジトリ実装)
   - `McpClient`, `McpConfig` (MCP統合)
 
-### Interface Layer
+### Presentation Layer
 - **責務**: 外部からのリクエスト処理、レスポンス変換
 - **依存関係**: Application Layer に依存
 - **主要クラス**:
@@ -391,8 +354,8 @@ export GITHUB_TOKEN=ghp_your_personal_access_token
    - `McpClient` でMCP通信実装
    - `McpConfig` をInfrastructure層に移動
 
-4. **Interface Layer実装**:
-   - `GitHubController` をInterface層に移動
+4. **Presentation Layer実装**:
+   - `GitHubController` をPresentation層に移動
    - APIレスポンス専用DTOとマッパー作成
 
 5. **MCP通信実装**: 
