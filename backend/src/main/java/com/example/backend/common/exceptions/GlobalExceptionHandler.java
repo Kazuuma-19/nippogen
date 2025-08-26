@@ -15,19 +15,6 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
     
-    @ExceptionHandler(GitHubMcpException.class)
-    public ResponseEntity<Map<String, Object>> handleGitHubMcpException(GitHubMcpException e) {
-        log.error("GitHub MCP error: {}", e.getMessage(), e);
-        
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", e.getErrorCode());
-        errorResponse.put("message", e.getMessage());
-        errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", e.getStatusCode());
-        
-        return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
-    }
-    
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
         log.error("Parameter type mismatch: {}", e.getMessage());
