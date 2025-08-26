@@ -10,7 +10,6 @@ spring:
       api:
         base-url: https://api.github.com
         token: ${GITHUB_TOKEN}
-        timeout: 30s
 
 springdoc:
   api-docs:

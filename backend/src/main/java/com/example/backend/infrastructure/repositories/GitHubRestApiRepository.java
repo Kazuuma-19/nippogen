@@ -7,7 +7,7 @@ import com.example.backend.infrastructure.github.client.GitHubRestApiClient;
 import com.example.backend.infrastructure.github.dto.GitHubCommitDto;
 import com.example.backend.infrastructure.github.dto.GitHubPullRequestDto;
 import com.example.backend.infrastructure.github.dto.GitHubSearchResultDto;
-import com.example.backend.shared.exceptions.GitHubMcpException;
+import com.example.backend.common.exceptions.GitHubMcpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

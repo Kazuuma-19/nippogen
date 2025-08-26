@@ -1,4 +1,4 @@
-package com.example.backend.shared.exceptions;
+package com.example.backend.common.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

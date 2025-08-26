@@ -1,4 +1,4 @@
-package com.example.backend.shared.exceptions;
+package com.example.backend.common.exceptions;
 
 import lombok.Getter;
 
