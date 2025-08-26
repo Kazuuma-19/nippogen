@@ -30,6 +30,9 @@ back:
 	make build
 	make up
 
+openapi:
+	cd backend && ./gradlew generateOpenApiDocs
+
 # dockerのvolume(DBのデータ)も削除
 down-v:
 	cd backend && docker compose down -v
