@@ -38,12 +38,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11'
 	
-	// Spring AI MCP Client統合（非Jakarta Swagger依存関係除外で競合解決）
-	implementation('org.springframework.ai:spring-ai-mcp-client-spring-boot-starter:1.0.0-M6') {
-		exclude group: 'io.swagger.core.v3', module: 'swagger-annotations'
-		exclude group: 'io.swagger.core.v3', module: 'swagger-core'  
-		exclude group: 'io.swagger.core.v3', module: 'swagger-models'
-	}
+	// WebClient for GitHub REST API
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'

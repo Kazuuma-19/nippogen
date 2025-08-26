@@ -5,24 +5,12 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
 
-  ai:
-    mcp:
-      client:
-        enabled: true
-        name: nippogen-mcp-client
-        version: 1.0.0
-        type: SYNC
-        request-timeout: 30s
-        sse:
-          connections:
-            github:
-              url: "https://api.githubcopilot.com/mcp/"
-              headers:
-                Authorization: "Bearer ${GITHUB_TOKEN}"
-                X-MCP-Toolsets: "repos"
-                X-MCP-Readonly: "true"
-        toolcallback:
-          enabled: true
+  application:
+    github:
+      api:
+        base-url: https://api.github.com
+        token: ${GITHUB_TOKEN}
+        timeout: 30s
 
 springdoc:
   api-docs:
