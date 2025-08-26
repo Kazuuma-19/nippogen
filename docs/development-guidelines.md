@@ -179,3 +179,96 @@
 ### DTOクラス設計原則
 - イミュータブルオブジェクト推奨: `@Getter + @Builder + @RequiredArgsConstructor + final fields`
 - ConfigurationPropertiesクラス: `@Getter + @Setter` (Spring Bootの要件)
+
+## 外部API統合のベストプラクティス
+
+### GitHub API統合の実装パターン
+
+プロジェクトで実際に経験した**MCP → REST API直接実装**への移行から得られた教訓：
+
+#### 選択基準
+1. **安定性重視**: 成熟したREST APIを選択
+2. **シンプルさ**: 複雑なプロトコルスタックを避ける  
+3. **デバッグ容易性**: HTTP通信で問題を特定しやすく
+4. **長期保守性**: 公式APIの長期サポート保証
+
+#### 実装構造
+```java
+infrastructure/
+├── github/
+│   ├── client/GitHubRestApiClient.java      # WebClient利用
+│   ├── config/GitHubApiConfiguration.java   # Bean設定
+│   └── dto/                                 # レスポンスDTO群
+└── repositories/GitHubRestApiRepository.java # ドメイン変換
+```
+
+#### 設定例（application.yml）
+```yaml
+spring:
+  application:
+    github:
+      api:
+        base-url: https://api.github.com
+        token: ${GITHUB_TOKEN}
+        timeout: 30s
+```
+
+### MCP統合で学んだ失敗パターン
+
+#### 発生した問題
+- **バージョン互換性**: Spring AI MCP Client vs GitHub MCP Server のスキーマ不整合
+- **Docker複雑性**: コンテナ内Docker実行の権限問題
+- **デバッグ困難**: プロトコルスタック多層化による問題切り分けの難しさ
+- **プロジェクト廃止**: 実験的プロジェクトの突然のアーカイブ化
+
+#### 教訓
+1. **プロトコル選択**: 新しいプロトコルより成熟したREST APIを選択
+2. **依存関係**: 実験的プロジェクトへの依存を避ける
+3. **シンプルさ**: 複雑な設定よりも直接的な実装を優先
+4. **トラブルシュート**: HTTP/JSONレベルでデバッグできる構成を選択
+
+### 外部API統合の推奨パターン
+
+#### 1. WebClient利用パターン
+```java
+@Configuration
+public class ApiConfiguration {
+    @Bean
+    public WebClient apiWebClient() {
+        return WebClient.builder()
+            .baseUrl(baseUrl)
+            .defaultHeader("Authorization", "Bearer " + token)
+            .build();
+    }
+}
+```
+
+#### 2. DTO分離パターン
+- 外部API専用DTOと内部ドメインエンティティを分離
+- 変換ロジックをRepository層で実装
+- 外部APIの変更がドメイン層に影響しない設計
+
+#### 3. エラーハンドリング
+- `onErrorMap()` で外部API例外を内部例外に変換
+- リトライ機構とサーキットブレーカーの実装検討
+- ログレベルを適切に設定（外部API呼び出しの可視化）
+
+## トラブルシューティングガイド
+
+### よくある問題と解決策
+
+#### 1. ビルドエラー
+- **JOOQクラス未生成**: `./gradlew generateJooq` 実行
+- **OpenAPI型不整合**: `npm run generate-types` でフロントエンド型を再生成
+- **依存関係競合**: `./gradlew dependencies` で依存関係ツリーを確認
+
+#### 2. 外部API接続問題
+- **認証エラー**: 環境変数の設定確認（`.env`ファイル）
+- **レート制限**: APIリクエスト頻度を調整
+- **ネットワークエラー**: Docker環境でのポート設定確認
+
+#### 3. データベース問題
+- **マイグレーション失敗**: Flyway状態を確認し、必要に応じて修正
+- **JOOQ生成失敗**: データベースとアプリケーションの接続確認
+
+これらの経験を活かし、将来の外部API統合では**REST API直接実装**パターンを標準とする。

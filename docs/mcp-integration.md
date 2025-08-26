@@ -1,8 +1,33 @@
-# MCP統合仕様書
+# 【アーカイブ】MCP統合仕様書
 
-## 概要
+> **⚠️ 注意**: この文書はアーカイブされています。  
+> MCP統合は互換性問題により**GitHub REST API直接実装**に変更されました。  
+> 詳細は[開発ガイドライン](development-guidelines.md#外部api統合のベストプラクティス)を参照してください。
 
-NippogenプロジェクトにおけるModel Context Protocol (MCP) 統合の実装仕様書です。GitHub、Toggl Track、Notionなどの外部サービスとの連携をMCPを通じて行い、AI日報生成機能を実現します。
+---
+
+## アーカイブ理由
+
+### 発生した技術的問題
+- **互換性問題**: Spring AI MCP Client (1.0.0-M6) と GitHub MCP Server (2025年版) のスキーマ不整合
+- **Docker複雑性**: コンテナ内Docker実行の権限問題とアクセス設定の困難さ
+- **プロジェクト廃止**: Spring AI MCP実験的プロジェクトの2025年2月アーカイブ化
+- **デバッグ困難**: プロトコルスタック多層化による問題切り分けの困難さ
+
+### 採用した代替案
+GitHub REST API直接統合により以下を実現：
+- ✅ **安定性**: GitHub公式REST APIの成熟性と長期サポート
+- ✅ **シンプルさ**: 標準HTTP/JSON通信による理解しやすい実装  
+- ✅ **保守性**: Spring WebClientエコシステムとの自然な統合
+- ✅ **デバッグ性**: HTTPレベルでの問題特定とトラブルシューティング
+
+---
+
+## 概要（参考用）
+
+~~NippogenプロジェクトにおけるModel Context Protocol (MCP) 統合の実装仕様書です。GitHub、Toggl Track、Notionなどの外部サービスとの連携をMCPを通じて行い、AI日報生成機能を実現します。~~
+
+**実装済み**: GitHub REST API直接統合（GitHubRestApiRepository）
 
 ## アーキテクチャ決定
 
