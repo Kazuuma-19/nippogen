@@ -2,14 +2,12 @@ package com.example.backend.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Builder
-@RequiredArgsConstructor
 public class NotionPageDto {
     private final String id;
     private final String title;

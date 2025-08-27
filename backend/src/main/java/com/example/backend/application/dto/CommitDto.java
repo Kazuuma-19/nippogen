@@ -2,13 +2,11 @@ package com.example.backend.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
-@RequiredArgsConstructor
 public class CommitDto {
     private final String sha;
     private final String message;
