@@ -37,13 +37,25 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
         
-    - name: Build Spring Boot JAR
-      working-directory: ./backend
-      run: ./gradlew clean build
-
     - name: Create .env file
       run: echo "${{ secrets.ENV_FILE }}" > .env
       working-directory: ./backend
+      
+    - name: Start PostgreSQL for migration
+      working-directory: ./backend
+      run: |
+        docker compose up -d db
+        sleep 10
+        
+    - name: Run database migration and generate JOOQ
+      working-directory: ./backend
+      run: |
+        ./gradlew flywayMigrate
+        ./gradlew generateJooq
+        
+    - name: Build Spring Boot JAR
+      working-directory: ./backend
+      run: ./gradlew clean build
       
     - name: Start services with Docker Compose
       working-directory: ./backend
