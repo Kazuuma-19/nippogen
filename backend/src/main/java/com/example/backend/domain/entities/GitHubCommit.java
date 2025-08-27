@@ -2,8 +2,6 @@ package com.example.backend.domain.entities;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,7 +11,6 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Builder
-@RequiredArgsConstructor
 public class GitHubCommit {
     
     private final String sha;
