@@ -17,6 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PullRequest {
     
+    public enum Status {
+        OPEN,
+        CLOSED,
+        MERGED
+    }
+    
     private final Long id;
     private final Integer number;
     private final String title;

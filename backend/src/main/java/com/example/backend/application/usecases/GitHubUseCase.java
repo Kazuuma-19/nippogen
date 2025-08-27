@@ -4,7 +4,7 @@ import com.example.backend.application.dto.CommitDto;
 import com.example.backend.application.dto.PullRequestDto;
 import com.example.backend.domain.entities.GitHubCommit;
 import com.example.backend.domain.entities.PullRequest;
-import com.example.backend.domain.repositories.GitHubRepository;
+import com.example.backend.domain.repositories.IGitHubRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GitHubUseCase {
     
-    private final GitHubRepository gitHubRepository;
+    private final IGitHubRepository IGitHubRepository;
     
     /**
      * GitHub接続テスト
@@ -33,7 +33,7 @@ public class GitHubUseCase {
      */
     public boolean testConnection(String owner, String repo) {
         log.info("Testing GitHub connection for {}/{}", owner, repo);
-        return gitHubRepository.testConnection(owner, repo);
+        return IGitHubRepository.testConnection(owner, repo);
     }
     
     /**
@@ -47,7 +47,7 @@ public class GitHubUseCase {
     public List<PullRequestDto> getPullRequestsForDate(String owner, String repo, LocalDate date) {
         log.info("Fetching pull requests for {}/{} on {}", owner, repo, date);
         
-        List<PullRequest> pullRequests = gitHubRepository.findPullRequestsByDate(owner, repo, date);
+        List<PullRequest> pullRequests = IGitHubRepository.findPullRequestsByDate(owner, repo, date);
         
         return pullRequests.stream()
                 .map(this::toPullRequestDto)
@@ -65,7 +65,7 @@ public class GitHubUseCase {
     public List<CommitDto> getCommitsForDate(String owner, String repo, LocalDate date) {
         log.info("Fetching commits for {}/{} on {}", owner, repo, date);
         
-        List<GitHubCommit> commits = gitHubRepository.findCommitsByDate(owner, repo, date);
+        List<GitHubCommit> commits = IGitHubRepository.findCommitsByDate(owner, repo, date);
         
         return commits.stream()
                 .map(this::toCommitDto)

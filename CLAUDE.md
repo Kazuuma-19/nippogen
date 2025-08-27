@@ -116,9 +116,19 @@ make db-setup
 
 ## プロジェクト構造
 
-### バックエンド構造
+### バックエンド構造（オニオンアーキテクチャ）
 
 - `src/main/java/com/example/backend/` - メインアプリケーションコード
+  - `application/` - アプリケーション層（ユースケース、DTO）
+  - `domain/` - ドメイン層（エンティティ、リポジトリインターface）
+  - `infrastructure/` - インフラ層（データアクセス、外部API）
+    - `github/` - GitHub REST API統合
+      - `client/` - APIクライアント（GitHubRestApiClient）
+      - `config/` - WebClient設定（GitHubApiConfiguration）
+      - `dto/` - GitHub APIレスポンスDTO群
+    - `repositories/` - リポジトリ実装
+  - `presentation/` - プレゼンテーション層（コントローラー）
+  - `shared/` - 共通機能（例外処理等）
 - `src/main/resources/db/migration/` - Flyway マイグレーションファイル
 - `src/main/resources/application.yml` - Spring 設定
 - `build/generated-src/jooq/main/` - 生成された JOOQ クラス
@@ -155,10 +165,13 @@ make db-setup
 
 ### バックエンド開発
 
-- API ドキュメントには SpringDoc アノテーション（`@Operation`、`@Tag`）を使用
-- データベース変更は `src/main/resources/db/migration/` の Flyway マイグレーションで実行
-- スキーマ変更後は `./gradlew generateJooq` で JOOQ クラスを再生成
-- REST API 規約に従い `/api/` プレフィックスを使用
+- **オニオンアーキテクチャ**: ドメイン中心設計で依存関係を内向きに
+- **API ドキュメント**: SpringDoc アノテーション（`@Operation`、`@Tag`）を使用
+- **データベース変更**: `src/main/resources/db/migration/` の Flyway マイグレーションで実行
+- **JOOQ再生成**: スキーマ変更後は `./gradlew generateJooq` で JOOQ クラスを再生成
+- **REST API規約**: `/api/` プレフィックスを使用
+- **外部API統合**: WebClient を使用した型安全なHTTP通信
+- **GitHub API**: REST API直接使用（Personal Access Token認証）
 
 ### フロントエンド開発
 

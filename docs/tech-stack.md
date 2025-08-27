@@ -63,15 +63,23 @@ com.example.backend/
 │
 ├── infrastructure/                      # Infrastructure Layer
 │   ├── repositories/
-│   │   ├── GitHubMcpRepository.java    # GitHub MCP実装
+│   │   ├── GitHubRestApiRepository.java # GitHub REST API実装
 │   │   ├── JooqReportRepository.java   # 日報JOOQ実装
 │   │   └── JooqUserRepository.java     # ユーザーJOOQ実装
+│   ├── github/                         # GitHub API統合
+│   │   ├── client/
+│   │   │   └── GitHubRestApiClient.java # GitHub APIクライアント
+│   │   ├── config/
+│   │   │   └── GitHubApiConfiguration.java # WebClient設定
+│   │   └── dto/
+│   │       ├── GitHubRepositoryDto.java    # リポジトリDTO
+│   │       ├── GitHubPullRequestDto.java   # PR DTO
+│   │       ├── GitHubCommitDto.java        # コミットDTO
+│   │       └── GitHubSearchResultDto.java  # 検索結果DTO
 │   ├── external/
-│   │   ├── McpClient.java              # MCPクライアント
 │   │   ├── OpenAiClient.java           # OpenAI API統合
-│   │   └── TogglClient.java            # Toggl Track統合
+│   │   └── TogglClient.java            # Toggl Track統合（予定）
 │   ├── config/
-│   │   ├── McpConfig.java              # MCP設定
 │   │   ├── OpenAiConfig.java           # OpenAI設定
 │   │   └── DatabaseConfig.java         # データベース設定
 │   └── security/
@@ -95,7 +103,7 @@ com.example.backend/
 │
 └── shared/                             # Shared Layer
     ├── exceptions/
-    │   ├── GitHubMcpException.java     # GitHub MCP例外
+    │   ├── GitHubMcpException.java     # GitHub API例外
     │   ├── ReportGenerationException.java # 日報生成例外
     │   ├── ValidationException.java    # バリデーション例外
     │   └── GlobalExceptionHandler.java # グローバル例外ハンドラー
@@ -153,9 +161,13 @@ src/
 
 ### 4. 外部 API 連携
 
-- **MCP (Model Context Protocol)** で外部サービス接続
-  - GitHub、Toggl Track、Notion
+- **GitHub REST API** 直接統合
+  - WebClient を使用したHTTP通信
+  - Personal Access Token認証
+  - 機能: リポジトリアクセス、PR検索、コミット取得
   - レート制限対策: 基本的なリトライ + 待機のみ
+- **将来予定**: Toggl Track、Notion
+  - 実装方針: REST API直接統合（MCPからの移行完了）
 
 ### 5. HTTP クライアント
 
