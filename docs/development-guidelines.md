@@ -180,6 +180,21 @@
 - イミュータブルオブジェクト推奨: `@Getter + @Builder + @RequiredArgsConstructor + final fields`
 - ConfigurationPropertiesクラス: `@Getter + @Setter` (Spring Bootの要件)
 
+### Dependency Injection
+- **推奨**: `@RequiredArgsConstructor` を使用したコンストラクタインジェクション
+  - final フィールドでの依存関係宣言
+  - 不変性とテスタビリティの向上
+  - Spring推奨パターンに準拠
+- **例**:
+  ```java
+  @Service
+  @RequiredArgsConstructor
+  public class UserService {
+      private final UserRepository userRepository;
+      private final EmailService emailService;
+  }
+  ```
+
 ## 外部API統合のベストプラクティス
 
 ### GitHub API統合の実装パターン
