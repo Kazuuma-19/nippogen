@@ -83,7 +83,7 @@ jooq {
                     }
                     target {
                         packageName = 'com.example.backend.jooq'
-                        directory = 'build/generated-src/jooq/main'  // default (can be omitted)
+                        directory = 'src/jooq'  // default (can be omitted)
                     }
                     strategy {
                         name = 'com.example.backend.common.jooq.CustomGeneratorStrategy'
