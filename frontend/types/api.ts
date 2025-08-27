@@ -3,294 +3,777 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
-    "/api/external/github/test": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Test GitHub connection
-         * @description Test GitHub repository connection via MCP to verify access permissions and repository existence
-         */
-        get: operations["testConnection"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/external/github/pull-requests": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get pull requests for date
-         * @description Retrieve all pull requests created, updated, or merged on the specified date via MCP
-         */
-        get: operations["getPullRequestsForDate"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/external/github/commits": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get commits for date
-         * @description Retrieve all commits made on the specified date via MCP
-         */
-        get: operations["getCommitsForDate"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+  "/api/reports/{id}": {
+    /**
+     * Update daily report
+     * @description Update an existing daily report content
+     */
+    put: operations["updateReport"];
+    /**
+     * Delete daily report
+     * @description Delete a daily report
+     */
+    delete: operations["deleteReport"];
+  };
+  "/api/reports": {
+    /**
+     * Get daily reports list
+     * @description Retrieve daily reports with optional filtering by date range and status
+     */
+    get: operations["getReports"];
+    /**
+     * Create daily report
+     * @description Create a new daily report
+     */
+    post: operations["createReport"];
+  };
+  "/api/reports/{id}/approve": {
+    /**
+     * Approve daily report
+     * @description Approve a daily report, finalizing its content
+     */
+    post: operations["approveReport"];
+  };
+  "/api/reports/{id}/export": {
+    /**
+     * Export report as Markdown
+     * @description Export a daily report in Markdown format for download
+     */
+    get: operations["exportReport"];
+  };
+  "/api/reports/{date}": {
+    /**
+     * Get daily report by date
+     * @description Retrieve a specific daily report for the given date
+     */
+    get: operations["getReportByDate"];
+  };
+  "/api/external/toggl/today": {
+    /**
+     * Get today's time entries
+     * @description Retrieve all time entries for today from ToggleTrack. Backend automatically uses current date.
+     */
+    get: operations["getTodayTimeEntries"];
+  };
+  "/api/external/toggl/test": {
+    /**
+     * Test ToggleTrack connection
+     * @description Test ToggleTrack API connection to verify access permissions
+     */
+    get: operations["testConnection"];
+  };
+  "/api/external/notion/test": {
+    /**
+     * Test Notion connection
+     * @description Test Notion API connection to verify access permissions
+     */
+    get: operations["testConnection_1"];
+  };
+  "/api/external/notion/table": {
+    /**
+     * Get table content
+     * @description Retrieve all rows from the pre-configured Notion table
+     */
+    get: operations["getTableContent"];
+  };
+  "/api/external/notion/page": {
+    /**
+     * Get page content
+     * @description Retrieve content from the pre-configured Notion page
+     */
+    get: operations["getPageContent"];
+  };
+  "/api/external/github/test": {
+    /**
+     * Test GitHub connection
+     * @description Test GitHub repository connection via MCP to verify access permissions and repository existence
+     */
+    get: operations["testConnection_2"];
+  };
+  "/api/external/github/pull-requests": {
+    /**
+     * Get pull requests for date
+     * @description Retrieve all pull requests created, updated, or merged on the specified date via MCP
+     */
+    get: operations["getPullRequestsForDate"];
+  };
+  "/api/external/github/commits": {
+    /**
+     * Get commits for date
+     * @description Retrieve all commits made on the specified date via MCP
+     */
+    get: operations["getCommitsForDate"];
+  };
 }
+
 export type webhooks = Record<string, never>;
+
 export interface components {
-    schemas: {
-        PullRequestDto: {
-            /** Format: int64 */
-            id?: number;
-            /** Format: int32 */
-            number?: number;
-            title?: string;
-            body?: string;
-            state?: string;
-            author?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-            /** Format: date-time */
-            mergedAt?: string;
-            baseBranch?: string;
-            headBranch?: string;
-            reviewers?: string[];
-            /** Format: int32 */
-            additions?: number;
-            /** Format: int32 */
-            deletions?: number;
-            /** Format: int32 */
-            changedFiles?: number;
-            htmlUrl?: string;
-        };
-        CommitDto: {
-            sha?: string;
-            message?: string;
-            author?: string;
-            authorEmail?: string;
-            /** Format: date-time */
-            date?: string;
-            /** Format: int32 */
-            additions?: number;
-            /** Format: int32 */
-            deletions?: number;
-            /** Format: int32 */
-            total?: number;
-            htmlUrl?: string;
-        };
+  schemas: {
+    /** @description Report update request */
+    DailyReportUpdateRequestDto: {
+      editedContent?: string;
+      additionalNotes?: string;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    DailyReportDto: {
+      /** Format: uuid */
+      id?: string;
+      /** Format: uuid */
+      userId?: string;
+      /** Format: date */
+      reportDate?: string;
+      rawData?: string;
+      generatedContent?: string;
+      editedContent?: string;
+      finalContent?: string;
+      status?: string;
+      /** Format: int32 */
+      generationCount?: number;
+      additionalNotes?: string;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+      displayContent?: string;
+    };
+    /** @description Report creation request */
+    DailyReportCreateRequestDto: {
+      /** Format: uuid */
+      userId?: string;
+      /** Format: date */
+      reportDate?: string;
+      rawData?: string;
+      generatedContent?: string;
+      additionalNotes?: string;
+      valid?: boolean;
+    };
+    DailyReportListResponseDto: {
+      reports?: components["schemas"]["DailyReportDto"][];
+      /** Format: int32 */
+      totalCount?: number;
+      dateRange?: string;
+      status?: string;
+      /** Format: int32 */
+      actualCount?: number;
+    };
+    TimeEntryDto: {
+      /** Format: int64 */
+      id?: number;
+      description?: string;
+      projectName?: string;
+      /** Format: int64 */
+      projectId?: number;
+      /** Format: date-time */
+      startTime?: string;
+      /** Format: date-time */
+      endTime?: string;
+      /** Format: int64 */
+      durationSeconds?: number;
+      billable?: boolean;
+      userId?: string;
+      workspaceName?: string;
+      /** Format: int64 */
+      workspaceId?: number;
+      tags?: string[];
+    };
+    NotionTableRowDto: {
+      id?: string;
+      title?: string;
+      properties?: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+      url?: string;
+    };
+    NotionPageDto: {
+      id?: string;
+      title?: string;
+      content?: string;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+      url?: string;
+      tags?: string[];
+      status?: string;
+    };
+    PullRequestDto: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int32 */
+      number?: number;
+      title?: string;
+      body?: string;
+      state?: string;
+      author?: string;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+      /** Format: date-time */
+      mergedAt?: string;
+      baseBranch?: string;
+      headBranch?: string;
+      reviewers?: string[];
+      /** Format: int32 */
+      additions?: number;
+      /** Format: int32 */
+      deletions?: number;
+      /** Format: int32 */
+      changedFiles?: number;
+      htmlUrl?: string;
+    };
+    CommitDto: {
+      sha?: string;
+      message?: string;
+      author?: string;
+      authorEmail?: string;
+      /** Format: date-time */
+      date?: string;
+      /** Format: int32 */
+      additions?: number;
+      /** Format: int32 */
+      deletions?: number;
+      /** Format: int32 */
+      total?: number;
+      htmlUrl?: string;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
+
 export type $defs = Record<string, never>;
+
+export type external = Record<string, never>;
+
 export interface operations {
-    testConnection: {
-        parameters: {
-            query: {
-                /**
-                 * @description Repository owner/organization name
-                 * @example octocat
-                 */
-                owner: string;
-                /**
-                 * @description Repository name
-                 * @example Hello-World
-                 */
-                repo: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Connection test completed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": boolean;
-                };
-            };
-            /** @description Invalid request parameters (missing owner or repo) */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Internal server error or MCP connection failure */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+
+  /**
+   * Update daily report
+   * @description Update an existing daily report content
+   */
+  updateReport: {
+    parameters: {
+      path: {
+        /** @description Report ID */
+        id: string;
+      };
     };
-    getPullRequestsForDate: {
-        parameters: {
-            query: {
-                /**
-                 * @description Repository owner/organization name
-                 * @example octocat
-                 */
-                owner: string;
-                /**
-                 * @description Repository name
-                 * @example Hello-World
-                 */
-                repo: string;
-                /**
-                 * @description Target date in ISO format (YYYY-MM-DD)
-                 * @example 2024-01-15
-                 */
-                date: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Pull requests retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PullRequestDto"];
-                };
-            };
-            /** @description Invalid request parameters or date format */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Repository not found or access denied */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Internal server error or MCP connection failure */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DailyReportUpdateRequestDto"];
+      };
     };
-    getCommitsForDate: {
-        parameters: {
-            query: {
-                /**
-                 * @description Repository owner/organization name
-                 * @example octocat
-                 */
-                owner: string;
-                /**
-                 * @description Repository name
-                 * @example Hello-World
-                 */
-                repo: string;
-                /**
-                 * @description Target date in ISO format (YYYY-MM-DD)
-                 * @example 2024-01-15
-                 */
-                date: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Report updated successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DailyReportDto"];
         };
-        requestBody?: never;
-        responses: {
-            /** @description Commits retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CommitDto"];
-                };
-            };
-            /** @description Invalid request parameters or date format */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Repository not found or access denied */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Internal server error or MCP connection failure */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
+      };
+      /** @description Invalid request data or report not editable */
+      400: {
+        content: {
+          "application/json": unknown;
         };
+      };
+      /** @description Report not found */
+      404: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
     };
+  };
+  /**
+   * Delete daily report
+   * @description Delete a daily report
+   */
+  deleteReport: {
+    parameters: {
+      path: {
+        /** @description Report ID */
+        id: string;
+      };
+    };
+    responses: {
+      /** @description Report deleted successfully */
+      204: {
+        content: never;
+      };
+      /** @description Report not found */
+      404: {
+        content: never;
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Get daily reports list
+   * @description Retrieve daily reports with optional filtering by date range and status
+   */
+  getReports: {
+    parameters: {
+      query: {
+        /** @description User ID */
+        userId: string;
+        /**
+         * @description Start date for filtering (YYYY-MM-DD format)
+         * @example 2024-01-01
+         */
+        startDate?: string;
+        /**
+         * @description End date for filtering (YYYY-MM-DD format)
+         * @example 2024-12-31
+         */
+        endDate?: string;
+        /** @description Status filter */
+        status?: "DRAFT" | "EDITED" | "APPROVED";
+      };
+    };
+    responses: {
+      /** @description Reports retrieved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DailyReportListResponseDto"];
+        };
+      };
+      /** @description Invalid request parameters */
+      400: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Create daily report
+   * @description Create a new daily report
+   */
+  createReport: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DailyReportCreateRequestDto"];
+      };
+    };
+    responses: {
+      /** @description Report created successfully */
+      201: {
+        content: {
+          "application/json": components["schemas"]["DailyReportDto"];
+        };
+      };
+      /** @description Invalid request data or report already exists for the date */
+      400: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Approve daily report
+   * @description Approve a daily report, finalizing its content
+   */
+  approveReport: {
+    parameters: {
+      path: {
+        /** @description Report ID */
+        id: string;
+      };
+    };
+    responses: {
+      /** @description Report approved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DailyReportDto"];
+        };
+      };
+      /** @description Report not found */
+      404: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Export report as Markdown
+   * @description Export a daily report in Markdown format for download
+   */
+  exportReport: {
+    parameters: {
+      query?: {
+        /** @description User name for the export header */
+        userName?: string;
+      };
+      path: {
+        /** @description Report ID */
+        id: string;
+      };
+    };
+    responses: {
+      /** @description Markdown export successful */
+      200: {
+        content: {
+          "text/markdown": string;
+        };
+      };
+      /** @description Report not found */
+      404: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Get daily report by date
+   * @description Retrieve a specific daily report for the given date
+   */
+  getReportByDate: {
+    parameters: {
+      query: {
+        /** @description User ID */
+        userId: string;
+      };
+      path: {
+        /**
+         * @description Report date in YYYY-MM-DD format
+         * @example 2024-01-15
+         */
+        date: string;
+      };
+    };
+    responses: {
+      /** @description Report retrieved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DailyReportDto"];
+        };
+      };
+      /** @description Invalid date format */
+      400: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Report not found for the specified date */
+      404: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Get today's time entries
+   * @description Retrieve all time entries for today from ToggleTrack. Backend automatically uses current date.
+   */
+  getTodayTimeEntries: {
+    responses: {
+      /** @description Today's time entries retrieved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TimeEntryDto"];
+        };
+      };
+      /** @description Unauthorized - invalid ToggleTrack credentials */
+      401: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error or ToggleTrack API connection failure */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Test ToggleTrack connection
+   * @description Test ToggleTrack API connection to verify access permissions
+   */
+  testConnection: {
+    responses: {
+      /** @description Connection test completed successfully */
+      200: {
+        content: {
+          "application/json": boolean;
+        };
+      };
+      /** @description Internal server error or ToggleTrack API connection failure */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Test Notion connection
+   * @description Test Notion API connection to verify access permissions
+   */
+  testConnection_1: {
+    responses: {
+      /** @description Connection test completed successfully */
+      200: {
+        content: {
+          "application/json": boolean;
+        };
+      };
+      /** @description Internal server error or Notion API connection failure */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Get table content
+   * @description Retrieve all rows from the pre-configured Notion table
+   */
+  getTableContent: {
+    responses: {
+      /** @description Table content retrieved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["NotionTableRowDto"];
+        };
+      };
+      /** @description Table not found or access denied */
+      404: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error or Notion API connection failure */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Get page content
+   * @description Retrieve content from the pre-configured Notion page
+   */
+  getPageContent: {
+    responses: {
+      /** @description Page content retrieved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["NotionPageDto"];
+        };
+      };
+      /** @description Page not found or access denied */
+      404: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error or Notion API connection failure */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Test GitHub connection
+   * @description Test GitHub repository connection via MCP to verify access permissions and repository existence
+   */
+  testConnection_2: {
+    parameters: {
+      query: {
+        /**
+         * @description Repository owner/organization name
+         * @example octocat
+         */
+        owner: string;
+        /**
+         * @description Repository name
+         * @example Hello-World
+         */
+        repo: string;
+      };
+    };
+    responses: {
+      /** @description Connection test completed successfully */
+      200: {
+        content: {
+          "application/json": boolean;
+        };
+      };
+      /** @description Invalid request parameters (missing owner or repo) */
+      400: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error or MCP connection failure */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Get pull requests for date
+   * @description Retrieve all pull requests created, updated, or merged on the specified date via MCP
+   */
+  getPullRequestsForDate: {
+    parameters: {
+      query: {
+        /**
+         * @description Repository owner/organization name
+         * @example octocat
+         */
+        owner: string;
+        /**
+         * @description Repository name
+         * @example Hello-World
+         */
+        repo: string;
+        /**
+         * @description Target date in ISO format (YYYY-MM-DD)
+         * @example 2024-01-15
+         */
+        date: string;
+      };
+    };
+    responses: {
+      /** @description Pull requests retrieved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["PullRequestDto"];
+        };
+      };
+      /** @description Invalid request parameters or date format */
+      400: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Repository not found or access denied */
+      404: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error or MCP connection failure */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /**
+   * Get commits for date
+   * @description Retrieve all commits made on the specified date via MCP
+   */
+  getCommitsForDate: {
+    parameters: {
+      query: {
+        /**
+         * @description Repository owner/organization name
+         * @example octocat
+         */
+        owner: string;
+        /**
+         * @description Repository name
+         * @example Hello-World
+         */
+        repo: string;
+        /**
+         * @description Target date in ISO format (YYYY-MM-DD)
+         * @example 2024-01-15
+         */
+        date: string;
+      };
+    };
+    responses: {
+      /** @description Commits retrieved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CommitDto"];
+        };
+      };
+      /** @description Invalid request parameters or date format */
+      400: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Repository not found or access denied */
+      404: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error or MCP connection failure */
+      500: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
 }
