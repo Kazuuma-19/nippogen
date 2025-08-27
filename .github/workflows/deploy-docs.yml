@@ -50,8 +50,8 @@ jobs:
     - name: Run database migration and generate JOOQ
       working-directory: ./backend
       run: |
-        ./gradlew flywayMigrate
-        ./gradlew generateJooq
+        ./gradlew flywayMigrate -Pflyway.url=jdbc:postgresql://localhost:5432/nippogen
+        ./gradlew generateJooq -Pjooq.jdbc.url=jdbc:postgresql://localhost:5432/nippogen
         
     - name: Build Spring Boot JAR
       working-directory: ./backend
