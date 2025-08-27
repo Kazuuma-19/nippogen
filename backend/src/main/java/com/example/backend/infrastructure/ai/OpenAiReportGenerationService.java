@@ -114,7 +114,7 @@ public class OpenAiReportGenerationService implements ReportGenerationService {
     ) {
         StringBuilder prompt = new StringBuilder();
         prompt.append("## 日報作成対象日\n");
-        prompt.append(reportDate.format(DateTimeFormatter.of("yyyy年MM月dd日"))).append("\n\n");
+        prompt.append(reportDate.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"))).append("\n\n");
         
         prompt.append("## 利用可能なデータ\n\n");
         
@@ -167,7 +167,7 @@ public class OpenAiReportGenerationService implements ReportGenerationService {
     ) {
         StringBuilder prompt = new StringBuilder();
         prompt.append("## 日報再生成対象日\n");
-        prompt.append(reportDate.format(DateTimeFormatter.of("yyyy年MM月dd日"))).append("\n\n");
+        prompt.append(reportDate.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"))).append("\n\n");
         
         prompt.append("## 前回生成された日報\n");
         prompt.append("```markdown\n").append(previousContent).append("\n```\n\n");
