@@ -41,10 +41,10 @@ jobs:
       run: echo "${{ secrets.ENV_FILE }}" > .env
       working-directory: ./backend
       
-    - name: Start services with Docker Compose
+    - name: Start PostgreSQL for migration
       working-directory: ./backend
       run: |
-        docker compose up -d
+        docker compose up -d db
         sleep 15
         
     - name: Run database migration and generate JOOQ
@@ -56,6 +56,12 @@ jobs:
     - name: Build Spring Boot JAR
       working-directory: ./backend
       run: ./gradlew clean build
+      
+    - name: Start application with Docker Compose
+      working-directory: ./backend
+      run: |
+        docker compose up -d
+        sleep 20
         
     - name: Generate OpenAPI spec
       working-directory: ./backend
