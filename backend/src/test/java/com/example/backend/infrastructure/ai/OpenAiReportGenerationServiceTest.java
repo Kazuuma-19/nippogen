@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.openai.OpenAiChatModel;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,13 +26,13 @@ import static org.mockito.Mockito.*;
 class OpenAiReportGenerationServiceTest {
     
     @Mock
-    private ChatClient chatClient;
+    private OpenAiChatModel chatModel;
     
     private OpenAiReportGenerationService service;
     
     @BeforeEach
     void setUp() {
-        service = new OpenAiReportGenerationService(chatClient);
+        service = new OpenAiReportGenerationService(chatModel);
     }
     
     @Test
@@ -64,7 +64,7 @@ class OpenAiReportGenerationServiceTest {
         ChatResponse chatResponse = mock(ChatResponse.class);
         when(chatResponse.getResult()).thenReturn(generation);
         
-        when(chatClient.call(any(Prompt.class))).thenReturn(chatResponse);
+        when(chatModel.call(any(Prompt.class))).thenReturn(chatResponse);
         
         // When
         String result = service.generateReport(
@@ -75,7 +75,7 @@ class OpenAiReportGenerationServiceTest {
         assertThat(result).isEqualTo(expectedContent);
         
         // Verify
-        verify(chatClient, times(1)).call(any(Prompt.class));
+        verify(chatModel, times(1)).call(any(Prompt.class));
     }
     
     @Test
@@ -104,7 +104,7 @@ class OpenAiReportGenerationServiceTest {
         ChatResponse chatResponse = mock(ChatResponse.class);
         when(chatResponse.getResult()).thenReturn(generation);
         
-        when(chatClient.call(any(Prompt.class))).thenReturn(chatResponse);
+        when(chatModel.call(any(Prompt.class))).thenReturn(chatResponse);
         
         // When
         String result = service.generateReport(
@@ -115,7 +115,7 @@ class OpenAiReportGenerationServiceTest {
         assertThat(result).isEqualTo(expectedContent);
         
         // Verify
-        verify(chatClient, times(1)).call(any(Prompt.class));
+        verify(chatModel, times(1)).call(any(Prompt.class));
     }
     
     @Test
@@ -146,7 +146,7 @@ class OpenAiReportGenerationServiceTest {
         ChatResponse chatResponse = mock(ChatResponse.class);
         when(chatResponse.getResult()).thenReturn(generation);
         
-        when(chatClient.call(any(Prompt.class))).thenReturn(chatResponse);
+        when(chatModel.call(any(Prompt.class))).thenReturn(chatResponse);
         
         // When
         String result = service.regenerateReport(
@@ -158,7 +158,7 @@ class OpenAiReportGenerationServiceTest {
         assertThat(result).isEqualTo(expectedContent);
         
         // Verify
-        verify(chatClient, times(1)).call(any(Prompt.class));
+        verify(chatModel, times(1)).call(any(Prompt.class));
     }
     
     @Test
@@ -168,7 +168,7 @@ class OpenAiReportGenerationServiceTest {
         UUID userId = UUID.randomUUID();
         LocalDate reportDate = LocalDate.of(2024, 1, 15);
         
-        when(chatClient.call(any(Prompt.class)))
+        when(chatModel.call(any(Prompt.class)))
             .thenThrow(new RuntimeException("OpenAI API error"));
         
         // When & Then
@@ -180,6 +180,6 @@ class OpenAiReportGenerationServiceTest {
             .hasCauseInstanceOf(RuntimeException.class);
         
         // Verify
-        verify(chatClient, times(1)).call(any(Prompt.class));
+        verify(chatModel, times(1)).call(any(Prompt.class));
     }
 }

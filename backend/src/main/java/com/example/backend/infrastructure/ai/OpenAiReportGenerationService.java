@@ -3,11 +3,12 @@ package com.example.backend.infrastructure.ai;
 import com.example.backend.domain.services.ReportGenerationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,7 +26,7 @@ import java.util.UUID;
 @Slf4j
 public class OpenAiReportGenerationService implements ReportGenerationService {
     
-    private final ChatClient chatClient;
+    private final OpenAiChatModel chatModel;
     
     private static final String SYSTEM_PROMPT = """
         あなたは優秀なソフトウェアエンジニアの日報作成アシスタントです。
@@ -223,7 +224,8 @@ public class OpenAiReportGenerationService implements ReportGenerationService {
         messages.add(new UserMessage(userPrompt));
         
         Prompt prompt = new Prompt(messages);
+        ChatResponse response = chatModel.call(prompt);
         
-        return chatClient.call(prompt).getResult().getOutput().getContent();
+        return response.getResult().getOutput().getContent();
     }
 }
