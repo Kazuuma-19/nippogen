@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.Generation;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.openai.OpenAiChatModel;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class OpenAiReportGenerationServiceTest {
     
     @Mock
-    private OpenAiChatModel chatModel;
+    private ChatModel chatModel;
     
     private OpenAiReportGenerationService service;
     
