@@ -31,22 +31,19 @@ configurations {
 
 repositories {
 	mavenCentral()
-	maven {
-		name = "Spring Snapshots"
-		url = uri("https://repo.spring.io/snapshot")
-	}
-	maven {
-		name = "Central Portal Snapshots" 
-		url = uri("https://central.sonatype.com/repository/maven-snapshots/")
-	}
 }
 
 ext {
 	springAiVersion = "1.0.0-M6"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
+
 dependencies {
-	implementation platform("org.springframework.ai:spring-ai-bom:${springAiVersion}")
 	implementation 'org.springframework.boot:spring-boot-starter-jooq'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
