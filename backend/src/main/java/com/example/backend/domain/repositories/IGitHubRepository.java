@@ -10,7 +10,7 @@ import java.util.List;
  * GitHub統合のためのリポジトリインターフェース
  * インフラストラクチャ層で実装される
  */
-public interface GitHubRepository {
+public interface IGitHubRepository {
     
     /**
      * GitHub接続をテストする

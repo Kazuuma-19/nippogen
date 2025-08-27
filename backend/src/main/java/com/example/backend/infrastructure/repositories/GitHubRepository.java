@@ -2,12 +2,11 @@ package com.example.backend.infrastructure.repositories;
 
 import com.example.backend.domain.entities.GitHubCommit;
 import com.example.backend.domain.entities.PullRequest;
-import com.example.backend.domain.repositories.GitHubRepository;
+import com.example.backend.domain.repositories.IGitHubRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
  */
 @Repository
 @Slf4j
-public class GitHubRepositoryImpl implements GitHubRepository {
+public class GitHubRepository implements IGitHubRepository {
 
     @Override
     public boolean testConnection(String owner, String repo) {
