@@ -2,8 +2,6 @@ package com.example.backend.domain.entities;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +11,6 @@ import java.util.List;
  */
 @Getter
 @Builder
-@RequiredArgsConstructor
 public class NotionPage {
     
     private final String id;
