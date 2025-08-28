@@ -47,9 +47,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jooq'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0') {
-		exclude group: 'io.swagger.core.v3', module: 'swagger-annotations'
-	}
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 	implementation 'org.jooq:jooq-codegen'
