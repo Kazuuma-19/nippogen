@@ -19,7 +19,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </Link>
           
-          <Link href="/reports" asChild>
+          <Link href="/(tabs)/reports" asChild>
             <TouchableOpacity className="bg-white border-2 border-primary p-4 rounded-lg">
               <Text className="text-primary text-center font-semibold text-lg">
                 日報履歴

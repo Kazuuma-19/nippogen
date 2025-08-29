@@ -25,6 +25,12 @@ export default function ReportsLayout() {
           title: "日報生成",
         }}
       />
+      <Stack.Screen
+        name="[date]"
+        options={{
+          title: "日報詳細",
+        }}
+      />
     </Stack>
   );
 }

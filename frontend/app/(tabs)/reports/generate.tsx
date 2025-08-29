@@ -41,7 +41,7 @@ export default function GenerateReportScreen() {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       // For now, just navigate to the report detail page
-      router.push(`/reports/${selectedDate}`);
+      router.push(`/(tabs)/reports/${selectedDate}`);
       
       Alert.alert("成功", "日報が生成されました！");
       
