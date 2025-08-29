@@ -1,9 +1,14 @@
 package com.example.backend.application.usecases.reports;
 
-import com.example.backend.application.dto.*;
+import com.example.backend.application.dto.reports.DailyReportDto;
+import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.domain.reports.DailyReport;
 import com.example.backend.domain.reports.ReportStatus;
 import com.example.backend.domain.reports.IDailyReportRepository;
+import com.example.backend.presentation.controllers.reports.DailyReportCreateRequestDto;
+import com.example.backend.presentation.controllers.reports.DailyReportListResponseDto;
+import com.example.backend.presentation.controllers.reports.DailyReportUpdateRequestDto;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
