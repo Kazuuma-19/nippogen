@@ -14,7 +14,7 @@ export default function ReportsIndexScreen() {
 
       <View className="space-y-4">
         {/* Generate Report */}
-        <Link href="/(tabs)/reports/generate" asChild>
+        <Link href="/reports/generate" asChild>
           <TouchableOpacity className="bg-primary p-6 rounded-lg flex-row items-center">
             <View className="bg-white/20 p-3 rounded-lg mr-4">
               <Ionicons name="add-circle" size={32} color="white" />
