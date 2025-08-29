@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import java.util.List;
 
+import com.example.backend.application.dto.reports.DailyReportDto;
+
 /**
  * 日報リスト取得レスポンスDTO
  * 日報一覧取得時のレスポンス情報を転送するためのDTO
