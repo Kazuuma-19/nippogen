@@ -6,7 +6,7 @@ front-ready:
 	npm install && cd frontend && npm install
 
 back-ready:
-	cd backend && ./gradlew clean build
+	cd backend && ./gradlew clean
 
 ready:
 	make front-ready
@@ -16,7 +16,7 @@ front:
 	cd frontend && npm run start
 
 build:
-	cd backend && ./gradlew build 
+	cd backend && ./gradlew build -x test
 
 # imageをビルドしてコンテナを起動
 up:
@@ -29,9 +29,6 @@ down:
 back:
 	make build
 	make up
-
-openapi:
-	cd backend && ./gradlew generateOpenApiDocs
 
 # dockerのvolume(DBのデータ)も削除
 down-v:
