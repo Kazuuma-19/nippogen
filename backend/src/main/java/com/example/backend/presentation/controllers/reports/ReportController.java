@@ -1,6 +1,7 @@
 package com.example.backend.presentation.controllers.reports;
 
-import com.example.backend.application.dto.*;
+import com.example.backend.application.dto.reports.DailyReportDto;
+import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.application.usecases.reports.ReportUseCase;
 import com.example.backend.domain.reports.ReportStatus;
 import io.swagger.v3.oas.annotations.Operation;
