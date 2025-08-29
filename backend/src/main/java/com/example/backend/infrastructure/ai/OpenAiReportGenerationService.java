@@ -1,6 +1,6 @@
 package com.example.backend.infrastructure.ai;
 
-import com.example.backend.domain.services.ReportGenerationService;
+import com.example.backend.domain.reports.ReportGenerationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;

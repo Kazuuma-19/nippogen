@@ -1,4 +1,4 @@
-package com.example.backend.domain.enums;
+package com.example.backend.domain.reports;
 
 /**
  * 日報のステータスを表すenum

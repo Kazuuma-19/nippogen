@@ -1,7 +1,7 @@
-package com.example.backend.domain.repositories;
+package com.example.backend.domain.reports;
 
-import com.example.backend.domain.entities.DailyReport;
-import com.example.backend.domain.enums.ReportStatus;
+import com.example.backend.domain.reports.DailyReport;
+import com.example.backend.domain.reports.ReportStatus;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

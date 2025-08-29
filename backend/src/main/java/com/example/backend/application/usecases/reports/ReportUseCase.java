@@ -1,9 +1,9 @@
-package com.example.backend.application.usecases;
+package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.*;
-import com.example.backend.domain.entities.DailyReport;
-import com.example.backend.domain.enums.ReportStatus;
-import com.example.backend.domain.repositories.IDailyReportRepository;
+import com.example.backend.domain.reports.DailyReport;
+import com.example.backend.domain.reports.ReportStatus;
+import com.example.backend.domain.reports.IDailyReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

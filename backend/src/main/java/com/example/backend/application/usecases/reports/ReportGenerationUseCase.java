@@ -1,11 +1,13 @@
-package com.example.backend.application.usecases;
+package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.*;
+import com.example.backend.application.dto.reports.ReportGenerationRequestDto;
+import com.example.backend.application.dto.reports.ReportGenerationResponseDto;
+import com.example.backend.application.dto.reports.ReportRegenerationRequestDto;
 import com.example.backend.application.usecases.GitHubUseCase;
-import com.example.backend.application.usecases.ToggleTrackUseCase; 
 import com.example.backend.application.usecases.NotionUseCase;
-import com.example.backend.application.usecases.ReportUseCase;
-import com.example.backend.domain.services.ReportGenerationService;
+import com.example.backend.application.usecases.ToggleTrackUseCase;
+import com.example.backend.domain.reports.ReportGenerationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

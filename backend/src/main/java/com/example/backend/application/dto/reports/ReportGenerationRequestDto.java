@@ -1,4 +1,4 @@
-package com.example.backend.application.dto;
+package com.example.backend.application.dto.reports;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class ReportGenerationRequestDto {
     
     /**
      * 必須項目の検証
-     * 
+     *
      * @return すべての必須項目が設定されている場合true
      */
     public boolean isValid() {

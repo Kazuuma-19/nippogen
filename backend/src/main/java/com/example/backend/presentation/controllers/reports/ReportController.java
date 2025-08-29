@@ -1,8 +1,8 @@
-package com.example.backend.presentation.controllers;
+package com.example.backend.presentation.controllers.reports;
 
 import com.example.backend.application.dto.*;
-import com.example.backend.application.usecases.ReportUseCase;
-import com.example.backend.domain.enums.ReportStatus;
+import com.example.backend.application.usecases.reports.ReportUseCase;
+import com.example.backend.domain.reports.ReportStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

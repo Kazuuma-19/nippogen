@@ -1,4 +1,4 @@
-package com.example.backend.domain.services;
+package com.example.backend.domain.reports;
 
 import java.time.LocalDate;
 import java.util.UUID;
