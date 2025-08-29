@@ -4,8 +4,8 @@ import { useLocalSearchParams, router } from "expo-router";
 import type { components } from "../../types/api";
 
 // Import components that will be implemented next
-import ReportEditor from "../../src/features/reports/components/ReportEditor";
-import MarkdownPreview from "../../src/features/reports/components/MarkdownPreview";
+import ReportEditor from "../../../src/features/reports/components/ReportEditor";
+import MarkdownPreview from "../../../src/features/reports/components/MarkdownPreview";
 
 type DailyReport = components["schemas"]["DailyReportDto"];
 
