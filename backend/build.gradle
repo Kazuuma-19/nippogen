@@ -10,7 +10,6 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
     id "org.flywaydb.flyway" version "11.11.1"
 	id 'nu.studer.jooq' version '8.0'
-    id "org.springdoc.openapi-gradle-plugin" version "1.9.0"
 }
 
 group = 'com.example'
@@ -33,12 +32,23 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	springAiVersion = "1.0.0-M6"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jooq'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 	implementation 'org.jooq:jooq-codegen'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
@@ -83,7 +93,7 @@ jooq {
                     }
                     target {
                         packageName = 'com.example.backend.jooq'
-                        directory = 'src/jooq'  // default (can be omitted)
+                        directory = 'src/jooq'
                     }
                     strategy {
                         name = 'com.example.backend.common.jooq.CustomGeneratorStrategy'
@@ -97,11 +107,4 @@ jooq {
 // generateJooqをする前にflywayのマイグレーションを実行する
 tasks.named("generateJooq") {
     dependsOn("flywayMigrate")
-}
-
-openApi {
-    apiDocsUrl.set("http://localhost:8080/api-docs")
-    outputDir.set(file("openapi"))
-    outputFileName.set("openapi.json")
-    waitTimeInSeconds.set(10)
 }

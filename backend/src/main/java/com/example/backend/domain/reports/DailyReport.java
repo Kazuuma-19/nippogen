@@ -1,6 +1,5 @@
-package com.example.backend.domain.entities;
+package com.example.backend.domain.reports;
 
-import com.example.backend.domain.enums.ReportStatus;
 import lombok.Builder;
 import lombok.Getter;
 import java.time.LocalDate;
