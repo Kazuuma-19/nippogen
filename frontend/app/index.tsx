@@ -11,7 +11,7 @@ export default function HomeScreen() {
         </Text>
         
         <View className="w-full max-w-sm space-y-4">
-          <Link href="/(tabs)/reports/generate" asChild>
+          <Link href="/reports/generate" asChild>
             <TouchableOpacity className="bg-primary p-4 rounded-lg">
               <Text className="text-white text-center font-semibold text-lg">
                 日報を生成
@@ -19,7 +19,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </Link>
           
-          <Link href="/(tabs)/reports" asChild>
+          <Link href="/reports" asChild>
             <TouchableOpacity className="bg-white border-2 border-primary p-4 rounded-lg">
               <Text className="text-primary text-center font-semibold text-lg">
                 日報履歴

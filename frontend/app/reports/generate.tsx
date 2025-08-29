@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { router } from "expo-router";
-import type { components } from "../../../types/api";
+import type { components } from "@/types/api";
 
 type ReportGenerationRequest = components["schemas"]["ReportGenerationRequestDto"];
 
@@ -41,7 +41,7 @@ export default function GenerateReportScreen() {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       // For now, just navigate to the report detail page
-      router.push(`/(tabs)/reports/${selectedDate}`);
+      router.push(`/reports/${selectedDate}`);
       
       Alert.alert("成功", "日報が生成されました！");
       
