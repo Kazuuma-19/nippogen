@@ -1,13 +1,13 @@
 package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.*;
-import com.example.backend.application.dto.reports.ReportGenerationRequestDto;
-import com.example.backend.application.dto.reports.ReportGenerationResponseDto;
-import com.example.backend.application.dto.reports.ReportRegenerationRequestDto;
+import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
+import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
+import com.example.backend.presentation.dto.reports.ReportRegenerationRequestDto;
 import com.example.backend.application.usecases.GitHubUseCase;
 import com.example.backend.application.usecases.NotionUseCase;
 import com.example.backend.application.usecases.ToggleTrackUseCase;
-import com.example.backend.domain.reports.ReportGenerationService;
+import com.example.backend.domain.reports.IReportGenerationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @Slf4j
 public class ReportGenerationUseCase {
     
-    private final ReportGenerationService reportGenerationService;
+    private final IReportGenerationService reportGenerationService;
     private final GitHubUseCase gitHubUseCase;
     private final ToggleTrackUseCase toggleTrackUseCase;
     private final NotionUseCase notionUseCase;

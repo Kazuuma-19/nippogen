@@ -1,6 +1,6 @@
-package com.example.backend.infrastructure.ai;
+package com.example.backend.infrastructure.repositories.reports;
 
-import com.example.backend.domain.reports.ReportGenerationService;
+import com.example.backend.domain.reports.IReportGenerationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
@@ -15,11 +15,11 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
-public class OpenAiReportGenerationService implements ReportGenerationService {
+public class OpenAiIReportGenerationService implements IReportGenerationService {
     
     private final ChatClient chatClient;
     
-    public OpenAiReportGenerationService(ChatClient.Builder chatClientBuilder) {
+    public OpenAiIReportGenerationService(ChatClient.Builder chatClientBuilder) {
         this.chatClient = chatClientBuilder.build();
     }
     

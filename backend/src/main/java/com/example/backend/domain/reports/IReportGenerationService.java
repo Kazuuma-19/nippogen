@@ -7,7 +7,7 @@ import java.util.UUID;
  * AI日報生成サービスのドメインインターフェース
  * 日報生成・再生成の抽象化を提供
  */
-public interface ReportGenerationService {
+public interface IReportGenerationService {
     
     /**
      * 新規日報を生成する

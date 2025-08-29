@@ -1,11 +1,11 @@
 package com.example.backend.application.usecases;
 
 import com.example.backend.application.dto.*;
-import com.example.backend.application.dto.reports.ReportGenerationRequestDto;
-import com.example.backend.application.dto.reports.ReportGenerationResponseDto;
+import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
+import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
 import com.example.backend.application.usecases.reports.ReportGenerationUseCase;
 import com.example.backend.application.usecases.reports.ReportUseCase;
-import com.example.backend.domain.reports.ReportGenerationService;
+import com.example.backend.domain.reports.IReportGenerationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class ReportGenerationUseCaseTest {
     
     @Mock
-    private ReportGenerationService reportGenerationService;
+    private IReportGenerationService reportGenerationService;
     
     @Mock
     private GitHubUseCase gitHubUseCase;

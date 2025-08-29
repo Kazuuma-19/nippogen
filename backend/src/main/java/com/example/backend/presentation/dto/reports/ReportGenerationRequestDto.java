@@ -1,4 +1,4 @@
-package com.example.backend.application.dto.reports;
+package com.example.backend.presentation.dto.reports;
 
 import lombok.Builder;
 import lombok.Getter;

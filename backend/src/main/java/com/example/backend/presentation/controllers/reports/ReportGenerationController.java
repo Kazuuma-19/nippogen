@@ -1,8 +1,8 @@
 package com.example.backend.presentation.controllers.reports;
 
-import com.example.backend.application.dto.reports.ReportGenerationRequestDto;
-import com.example.backend.application.dto.reports.ReportGenerationResponseDto;
-import com.example.backend.application.dto.reports.ReportRegenerationRequestDto;
+import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
+import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
+import com.example.backend.presentation.dto.reports.ReportRegenerationRequestDto;
 import com.example.backend.application.usecases.reports.ReportGenerationUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
