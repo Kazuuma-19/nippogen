@@ -2,21 +2,12 @@ import { Stack } from "expo-router";
 
 export default function ReportsLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "#267D00",
-        },
-        headerTintColor: "#fff",
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
-      }}
-    >
+    <Stack>
       <Stack.Screen
         name="index"
         options={{
           title: "日報管理",
+          headerShown: false, // Use tab header instead
         }}
       />
       <Stack.Screen
