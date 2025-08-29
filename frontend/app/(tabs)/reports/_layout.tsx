@@ -14,6 +14,12 @@ export default function ReportsLayout() {
       }}
     >
       <Stack.Screen
+        name="index"
+        options={{
+          title: "日報管理",
+        }}
+      />
+      <Stack.Screen
         name="generate"
         options={{
           title: "日報生成",
