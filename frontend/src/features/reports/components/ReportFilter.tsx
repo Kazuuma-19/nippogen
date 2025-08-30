@@ -325,16 +325,18 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                   </View>
                   
                   {/* iOS Date Picker */}
-                  <View style={{ height: 200, backgroundColor: 'white' }}>
+                  <View style={{ minHeight: 280, backgroundColor: 'white', padding: 20 }}>
                     {DateTimePicker && (
                       <DateTimePicker
                         value={tempDate}
                         mode="date"
-                        display="spinner"
+                        display="compact"
                         onChange={handleDateChange}
+                        textColor="#000000"
+                        accentColor="#2563EB"
                         style={{ 
                           backgroundColor: 'white',
-                          height: 200,
+                          alignSelf: 'center',
                         }}
                       />
                     )}
