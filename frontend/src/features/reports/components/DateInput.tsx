@@ -44,8 +44,10 @@ export default function DateInput({ value, onChange }: DateInputProps) {
 
   return (
     <DateTimePicker
+      key={value}
       value={value ? new Date(value) : new Date()}
       mode="date"
+      themeVariant="light"
       onChange={handleNativeDateChange}
     />
   );
