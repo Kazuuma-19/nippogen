@@ -254,12 +254,25 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       }}
                       style={{
                         width: '100%',
-                        padding: '12px',
+                        padding: '12px 16px',
                         border: '1px solid #d1d5db',
                         borderRadius: '8px',
                         fontSize: '16px',
                         outline: 'none',
                         boxSizing: 'border-box',
+                        cursor: 'pointer',
+                        backgroundColor: '#ffffff',
+                        appearance: 'none',
+                        WebkitAppearance: 'none',
+                        MozAppearance: 'none',
+                      }}
+                      onFocus={(e: any) => {
+                        // Ensure the calendar opens when clicking anywhere on the input
+                        e.target.showPicker?.();
+                      }}
+                      onClick={(e: any) => {
+                        // Show picker on click for better UX
+                        e.target.showPicker?.();
                       }}
                     />
                   </View>
