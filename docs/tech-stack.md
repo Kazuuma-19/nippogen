@@ -127,17 +127,38 @@ src/
 │   │   ├── hooks/
 │   │   ├── stores/
 │   │   └── types/
-│   └── settings/       # 設定機能
-│       ├── components/
+│   └── settings/       # 設定機能（Issue #14で実装済み）
+│       ├── components/ # API認証情報管理UI
+│       │   ├── ApiServiceSelector.tsx         # サービス切り替えタブ
+│       │   ├── CredentialCard.tsx            # 認証情報カード表示
+│       │   ├── GitHubCredentialForm.tsx      # GitHub認証フォーム
+│       │   ├── GitHubCredentialSection.tsx   # GitHub認証セクション
+│       │   ├── NotionCredentialForm.tsx      # Notion認証フォーム
+│       │   ├── NotionCredentialSection.tsx   # Notion認証セクション
+│       │   ├── TogglCredentialForm.tsx       # Toggl認証フォーム
+│       │   ├── TogglCredentialSection.tsx    # Toggl認証セクション
+│       │   └── index.ts                      # エクスポート統合
 │       ├── hooks/
-│       ├── stores/
-│       └── types/
+│       │   └── useApiCredentials.ts          # API認証情報CRUD管理
+│       ├── schemas/                          # Zodバリデーション
+│       │   ├── gitHubCredential.ts           # GitHub認証バリデーション
+│       │   ├── notionCredential.ts           # Notion認証バリデーション
+│       │   └── togglCredential.ts            # Toggl認証バリデーション
+│       ├── stores/     # (将来実装予定)
+│       └── types/      # (将来実装予定)
 ├── shared/
 │   ├── components/     # 共通コンポーネント
 │   ├── hooks/          # 共通hooks
 │   ├── utils/          # ユーティリティ
+│   │   ├── apiClient.ts                      # API通信クライアント
+│   │   └── axiosInstance.ts                  # Axios設定
 │   └── types/          # 共通型定義
 └── app/               # Expo Router pages
+    ├── settings/       # 設定画面
+    │   ├── api-credentials.tsx               # API認証情報管理画面
+    │   ├── index.tsx                         # 設定メイン画面
+    │   └── _layout.tsx                       # 設定レイアウト
+    └── _layout.tsx     # メインナビゲーション（設定タブ追加）
 ```
 
 ## 決定技術スタック
@@ -197,18 +218,22 @@ src/
 - **Language**: TypeScript (strict mode)
 - **Styling**: TailwindCSS (NativeWind)
 - **Routing**: Expo Router (file-based)
-- **HTTP**: Axios
+- **HTTP**: Axios (axiosInstance設定済み)
+- **Form Management**: TanStack Form v2 (Issue #14で導入)
+- **Validation**: Zod (Issue #14で導入)
+- **State Management**: React hooks + custom hooks (Zustand将来導入予定)
 
 ## 開発方針
 
 ### MVP 実装優先順位
 
-1. データベース設計・マイグレーション
-2. 外部 API 連携（MCP）
-3. AI 日報生成機能
-4. 基本的な CRUD API
-5. フロントエンド基本画面
-6. 認証機能（最後）
+1. データベース設計・マイグレーション ✅
+2. 外部 API 連携（REST API直接実装） ✅
+3. **API認証情報管理UI** ✅ (Issue #14完了)
+4. AI 日報生成機能
+5. 基本的な CRUD API
+6. フロントエンド基本画面
+7. 認証機能（最後）
 
 ### コーディング規約
 
