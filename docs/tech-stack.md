@@ -2,7 +2,8 @@
 
 ## 決定日
 
-2025-08-24
+2025-08-24  
+**更新**: 2025-08-30 (React Hook Form移行)
 
 ## 基本アーキテクチャ
 
@@ -127,17 +128,40 @@ src/
 │   │   ├── hooks/
 │   │   ├── stores/
 │   │   └── types/
-│   └── settings/       # 設定機能
-│       ├── components/
-│       ├── hooks/
-│       ├── stores/
-│       └── types/
+│   └── settings/       # 設定機能（Issue #14で実装済み）
+│       ├── components/ # API認証情報管理UI
+│       │   ├── ApiServiceSelector.tsx         # サービス切り替えタブ
+│       │   ├── CredentialCard.tsx            # 認証情報カード表示
+│       │   ├── GitHubCredentialForm.tsx      # GitHub認証フォーム
+│       │   ├── GitHubCredentialSection.tsx   # GitHub認証セクション
+│       │   ├── NotionCredentialForm.tsx      # Notion認証フォーム
+│       │   ├── NotionCredentialSection.tsx   # Notion認証セクション
+│       │   ├── TogglCredentialForm.tsx       # Toggl認証フォーム
+│       │   ├── TogglCredentialSection.tsx    # Toggl認証セクション
+│       │   └── index.ts                      # エクスポート統合
+│       ├── hooks/                            # サービス別認証情報管理
+│       │   ├── useGitHubCredentials.ts       # GitHub認証情報CRUD
+│       │   ├── useNotionCredentials.ts       # Notion認証情報CRUD
+│       │   └── useTogglCredentials.ts        # Toggl認証情報CRUD
+│       ├── schemas/                          # Zodバリデーション
+│       │   ├── gitHubCredential.ts           # GitHub認証バリデーション
+│       │   ├── notionCredential.ts           # Notion認証バリデーション
+│       │   └── togglCredential.ts            # Toggl認証バリデーション
+│       ├── stores/     # (将来実装予定)
+│       └── types/      # (将来実装予定)
 ├── shared/
 │   ├── components/     # 共通コンポーネント
 │   ├── hooks/          # 共通hooks
 │   ├── utils/          # ユーティリティ
+│   │   ├── apiClient.ts                      # API通信クライアント
+│   │   └── axiosInstance.ts                  # Axios設定
 │   └── types/          # 共通型定義
 └── app/               # Expo Router pages
+    ├── settings/       # 設定画面
+    │   ├── api-credentials.tsx               # API認証情報管理画面
+    │   ├── index.tsx                         # 設定メイン画面
+    │   └── _layout.tsx                       # 設定レイアウト
+    └── _layout.tsx     # メインナビゲーション（設定タブ追加）
 ```
 
 ## 決定技術スタック
@@ -147,19 +171,25 @@ src/
 - **GPT-5 mini** (OpenAI)
   - 理由: コスパ良好、日本語対応、十分な性能
 
-### 2. フロントエンド状態管理
+### 2. フロントエンドフォーム管理
+
+- **React Hook Form** (TanStack Formから移行)
+  - 理由: より軽量で高パフォーマンス、React Nativeでの安定性、広く採用されている
+  - Zodとの統合: @hookform/resolversで型安全バリデーション
+
+### 3. フロントエンド状態管理
 
 - **Zustand**
   - 理由: 軽量、シンプル、TypeScript 対応良好
 
-### 3. 認証・セキュリティ
+### 4. 認証・セキュリティ
 
 - **JWT + Spring Security**
   - パスワードハッシュ: **BCrypt** (Spring 標準)
   - API キー暗号化: **AES-256-GCM**
   - **注意**: ログイン認証は優先度低め（MVP 後）
 
-### 4. 外部 API 連携
+### 5. 外部 API 連携
 
 - **GitHub REST API** 直接統合
   - WebClient を使用したHTTP通信
@@ -169,12 +199,12 @@ src/
 - **将来予定**: Toggl Track、Notion
   - 実装方針: REST API直接統合（MCPからの移行完了）
 
-### 5. HTTP クライアント
+### 6. HTTP クライアント
 
 - **WebClient** (Spring WebFlux)
   - 理由: 非同期処理、モダン、パフォーマンス
 
-### 6. テスト方針
+### 7. テスト方針
 
 - **最小限のテスト**
   - 主要サービスクラスの単体テスト
@@ -197,18 +227,22 @@ src/
 - **Language**: TypeScript (strict mode)
 - **Styling**: TailwindCSS (NativeWind)
 - **Routing**: Expo Router (file-based)
-- **HTTP**: Axios
+- **HTTP**: Axios (axiosInstance設定済み)
+- **Form Management**: React Hook Form + @hookform/resolvers (Issue #14で導入・移行)
+- **Validation**: Zod (Issue #14で導入)
+- **State Management**: React hooks + service-specific custom hooks (Zustand将来導入予定)
 
 ## 開発方針
 
 ### MVP 実装優先順位
 
-1. データベース設計・マイグレーション
-2. 外部 API 連携（MCP）
-3. AI 日報生成機能
-4. 基本的な CRUD API
-5. フロントエンド基本画面
-6. 認証機能（最後）
+1. データベース設計・マイグレーション ✅
+2. 外部 API 連携（REST API直接実装） ✅
+3. **API認証情報管理UI** ✅ (Issue #14完了)
+4. AI 日報生成機能
+5. 基本的な CRUD API
+6. フロントエンド基本画面
+7. 認証機能（最後）
 
 ### コーディング規約
 

@@ -53,27 +53,6 @@ export default function ReportsIndexScreen() {
           <Ionicons name="chevron-forward" size={24} color="#9CA3AF" />
         </TouchableOpacity>
 
-        {/* Settings - Placeholder for Issue #14 */}
-        <TouchableOpacity 
-          className="bg-white border border-gray-200 p-6 rounded-lg flex-row items-center"
-          onPress={() => {
-            // Placeholder - will be implemented in Issue #14
-            alert("API設定機能は準備中です");
-          }}
-        >
-          <View className="bg-gray-100 p-3 rounded-lg mr-4">
-            <Ionicons name="settings" size={32} color="#267D00" />
-          </View>
-          <View className="flex-1">
-            <Text className="text-gray-800 text-xl font-semibold mb-1">
-              API設定
-            </Text>
-            <Text className="text-gray-600 text-sm">
-              GitHub、Toggl Track、Notion連携設定
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={24} color="#9CA3AF" />
-        </TouchableOpacity>
       </View>
 
       {/* Help Section */}
