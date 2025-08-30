@@ -223,50 +223,63 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
       {showDatePicker && (
         <>
           {Platform.OS === 'web' ? (
-            // Web: HTML input type="date"
+            // Web: HTML input type="date" with calendar
             <Modal
               visible={true}
               transparent={true}
               animationType="fade"
               onRequestClose={cancelDateSelection}
             >
-              <View className="flex-1 justify-center items-center bg-black/50">
-                <View className="bg-white rounded-lg p-6 m-4 min-w-[300px]">
-                  <Text className="text-lg font-semibold text-gray-800 mb-4">
+              <TouchableOpacity 
+                className="flex-1 justify-center items-center bg-black/50"
+                activeOpacity={1}
+                onPress={cancelDateSelection}
+              >
+                <TouchableOpacity 
+                  className="bg-white rounded-lg p-6 m-4 min-w-[320px] max-w-[400px]"
+                  activeOpacity={1}
+                  onPress={(e) => e.stopPropagation()}
+                >
+                  <Text className="text-lg font-semibold text-gray-800 mb-4 text-center">
                     {showDatePicker === "start" ? "開始日を選択" : "終了日を選択"}
                   </Text>
                   
-                  <TextInput
-                    className="border border-gray-300 rounded-lg p-3 mb-4"
-                    // @ts-ignore - Web-only props
-                    type="date"
-                    value={tempDate.toISOString().split('T')[0]}
-                    onChange={(e: any) => {
-                      const date = new Date(e.target.value);
-                      setTempDate(date);
-                    }}
-                    style={{ 
-                      // @ts-ignore - Web-only styles
-                      outlineStyle: 'none',
-                    }}
-                  />
+                  <View className="mb-6">
+                    <input
+                      type="date"
+                      value={tempDate.toISOString().split('T')[0]}
+                      onChange={(e: any) => {
+                        const date = new Date(e.target.value);
+                        setTempDate(date);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        outline: 'none',
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                  </View>
                   
                   <View className="flex-row justify-end space-x-3">
                     <TouchableOpacity 
                       onPress={cancelDateSelection}
                       className="px-4 py-2 bg-gray-200 rounded-lg"
                     >
-                      <Text className="text-gray-700">キャンセル</Text>
+                      <Text className="text-gray-700 font-medium">キャンセル</Text>
                     </TouchableOpacity>
                     <TouchableOpacity 
                       onPress={confirmDateSelection}
                       className="px-4 py-2 bg-blue-500 rounded-lg"
                     >
-                      <Text className="text-white">完了</Text>
+                      <Text className="text-white font-medium">完了</Text>
                     </TouchableOpacity>
                   </View>
-                </View>
-              </View>
+                </TouchableOpacity>
+              </TouchableOpacity>
             </Modal>
           ) : Platform.OS === 'ios' ? (
             <Modal
@@ -275,8 +288,16 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
               animationType="slide"
               onRequestClose={cancelDateSelection}
             >
-              <View className="flex-1 justify-end bg-black/50">
-                <View className="bg-white">
+              <TouchableOpacity 
+                className="flex-1 justify-end bg-black/50"
+                activeOpacity={1}
+                onPress={cancelDateSelection}
+              >
+                <TouchableOpacity 
+                  className="bg-white"
+                  activeOpacity={1}
+                  onPress={(e) => e.stopPropagation()}
+                >
                   {/* iOS Date Picker Header */}
                   <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
                     <TouchableOpacity onPress={cancelDateSelection}>
@@ -291,17 +312,22 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                   </View>
                   
                   {/* iOS Date Picker */}
-                  {DateTimePicker && (
-                    <DateTimePicker
-                      value={tempDate}
-                      mode="date"
-                      display="spinner"
-                      onChange={handleDateChange}
-                      style={{ backgroundColor: 'white' }}
-                    />
-                  )}
-                </View>
-              </View>
+                  <View style={{ height: 200, backgroundColor: 'white' }}>
+                    {DateTimePicker && (
+                      <DateTimePicker
+                        value={tempDate}
+                        mode="date"
+                        display="spinner"
+                        onChange={handleDateChange}
+                        style={{ 
+                          backgroundColor: 'white',
+                          height: 200,
+                        }}
+                      />
+                    )}
+                  </View>
+                </TouchableOpacity>
+              </TouchableOpacity>
             </Modal>
           ) : (
             // Android Date Picker
