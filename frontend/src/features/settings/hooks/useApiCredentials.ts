@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Alert } from 'react-native'
-import { credentialsApi } from '@/src/utils/apiClient'
+import { credentialsApi } from '../../../utils/apiClient'
 import type { components } from '@/types/api'
 
 type GitHubCredential = components['schemas']['GitHubCredentialResponseDto']
