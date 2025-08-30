@@ -4,11 +4,13 @@
 package com.example.backend.jooq;
 
 
-import com.example.backend.jooq.tables.JApiCredentials;
 import com.example.backend.jooq.tables.JDailyReports;
 import com.example.backend.jooq.tables.JFlywaySchemaHistory;
 import com.example.backend.jooq.tables.JGenerationLogs;
+import com.example.backend.jooq.tables.JGithubCredentials;
+import com.example.backend.jooq.tables.JNotionCredentials;
 import com.example.backend.jooq.tables.JReportTemplates;
+import com.example.backend.jooq.tables.JTogglCredentials;
 import com.example.backend.jooq.tables.JUsers;
 
 import java.util.Arrays;
@@ -33,11 +35,6 @@ public class JPublic extends SchemaImpl {
     public static final JPublic PUBLIC = new JPublic();
 
     /**
-     * The table <code>public.api_credentials</code>.
-     */
-    public final JApiCredentials API_CREDENTIALS = JApiCredentials.API_CREDENTIALS;
-
-    /**
      * The table <code>public.daily_reports</code>.
      */
     public final JDailyReports DAILY_REPORTS = JDailyReports.DAILY_REPORTS;
@@ -53,9 +50,24 @@ public class JPublic extends SchemaImpl {
     public final JGenerationLogs GENERATION_LOGS = JGenerationLogs.GENERATION_LOGS;
 
     /**
+     * The table <code>public.github_credentials</code>.
+     */
+    public final JGithubCredentials GITHUB_CREDENTIALS = JGithubCredentials.GITHUB_CREDENTIALS;
+
+    /**
+     * The table <code>public.notion_credentials</code>.
+     */
+    public final JNotionCredentials NOTION_CREDENTIALS = JNotionCredentials.NOTION_CREDENTIALS;
+
+    /**
      * The table <code>public.report_templates</code>.
      */
     public final JReportTemplates REPORT_TEMPLATES = JReportTemplates.REPORT_TEMPLATES;
+
+    /**
+     * The table <code>public.toggl_credentials</code>.
+     */
+    public final JTogglCredentials TOGGL_CREDENTIALS = JTogglCredentials.TOGGL_CREDENTIALS;
 
     /**
      * The table <code>public.users</code>.
@@ -78,11 +90,13 @@ public class JPublic extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            JApiCredentials.API_CREDENTIALS,
             JDailyReports.DAILY_REPORTS,
             JFlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             JGenerationLogs.GENERATION_LOGS,
+            JGithubCredentials.GITHUB_CREDENTIALS,
+            JNotionCredentials.NOTION_CREDENTIALS,
             JReportTemplates.REPORT_TEMPLATES,
+            JTogglCredentials.TOGGL_CREDENTIALS,
             JUsers.USERS
         );
     }

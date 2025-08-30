@@ -34,6 +34,10 @@ repositories {
 
 ext {
 	springAiVersion = "1.0.0-M6"
+	// データベース接続設定
+	dbUrl = 'jdbc:postgresql://localhost:5434/nippogen'
+	dbUser = 'postgres'
+	dbPassword = 'postgres'
 }
 
 dependencyManagement {
@@ -41,6 +45,10 @@ dependencyManagement {
         mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
     }
 }
+
+// 分離した設定ファイルを読み込み
+apply from: 'gradle/flyway.gradle'
+apply from: 'gradle/jooq.gradle'
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jooq'
@@ -65,46 +73,3 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-flyway {
-    url = 'jdbc:postgresql://localhost:5434/nippogen'
-    user = 'postgres'
-    password = 'postgres'
-}
-
-jooq {
-	version = dependencyManagement.importedProperties['jooq.version']
-    configurations {
-        main {
-            generateSchemaSourceOnCompilation = false
-
-            generationTool {
-                logging = org.jooq.meta.jaxb.Logging.WARN
-                jdbc {
-                    driver = 'org.postgresql.Driver'
-                    url = 'jdbc:postgresql://localhost:5434/nippogen'
-                    user = 'postgres'
-                    password = 'postgres'
-                }
-                generator {
-                    name = 'org.jooq.codegen.DefaultGenerator'
-                    database {
-                        name = 'org.jooq.meta.postgres.PostgresDatabase'
-                        inputSchema = 'public'
-                    }
-                    target {
-                        packageName = 'com.example.backend.jooq'
-                        directory = 'src/jooq'
-                    }
-                    strategy {
-                        name = 'com.example.backend.common.jooq.CustomGeneratorStrategy'
-                    }
-                }
-            }
-        }
-    }
-}
-
-// generateJooqをする前にflywayのマイグレーションを実行する
-tasks.named("generateJooq") {
-    dependsOn("flywayMigrate")
-}

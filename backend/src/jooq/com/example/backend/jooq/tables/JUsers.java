@@ -7,9 +7,11 @@ package com.example.backend.jooq.tables;
 import com.example.backend.jooq.Indexes;
 import com.example.backend.jooq.JPublic;
 import com.example.backend.jooq.Keys;
-import com.example.backend.jooq.tables.JApiCredentials.JApiCredentialsPath;
 import com.example.backend.jooq.tables.JDailyReports.JDailyReportsPath;
+import com.example.backend.jooq.tables.JGithubCredentials.JGithubCredentialsPath;
+import com.example.backend.jooq.tables.JNotionCredentials.JNotionCredentialsPath;
 import com.example.backend.jooq.tables.JReportTemplates.JReportTemplatesPath;
+import com.example.backend.jooq.tables.JTogglCredentials.JTogglCredentialsPath;
 import com.example.backend.jooq.tables.records.JUsersRecord;
 
 import java.time.LocalDateTime;
@@ -179,19 +181,6 @@ public class JUsers extends TableImpl<JUsersRecord> {
         return Arrays.asList(Keys.USERS_EMAIL_KEY);
     }
 
-    private transient JApiCredentialsPath _apiCredentials;
-
-    /**
-     * Get the implicit to-many join path to the
-     * <code>public.api_credentials</code> table
-     */
-    public JApiCredentialsPath apiCredentials() {
-        if (_apiCredentials == null)
-            _apiCredentials = new JApiCredentialsPath(this, null, Keys.API_CREDENTIALS__API_CREDENTIALS_USER_ID_FKEY.getInverseKey());
-
-        return _apiCredentials;
-    }
-
     private transient JDailyReportsPath _dailyReports;
 
     /**
@@ -205,6 +194,32 @@ public class JUsers extends TableImpl<JUsersRecord> {
         return _dailyReports;
     }
 
+    private transient JGithubCredentialsPath _githubCredentials;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.github_credentials</code> table
+     */
+    public JGithubCredentialsPath githubCredentials() {
+        if (_githubCredentials == null)
+            _githubCredentials = new JGithubCredentialsPath(this, null, Keys.GITHUB_CREDENTIALS__GITHUB_CREDENTIALS_USER_ID_FKEY.getInverseKey());
+
+        return _githubCredentials;
+    }
+
+    private transient JNotionCredentialsPath _notionCredentials;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.notion_credentials</code> table
+     */
+    public JNotionCredentialsPath notionCredentials() {
+        if (_notionCredentials == null)
+            _notionCredentials = new JNotionCredentialsPath(this, null, Keys.NOTION_CREDENTIALS__NOTION_CREDENTIALS_USER_ID_FKEY.getInverseKey());
+
+        return _notionCredentials;
+    }
+
     private transient JReportTemplatesPath _reportTemplates;
 
     /**
@@ -216,6 +231,19 @@ public class JUsers extends TableImpl<JUsersRecord> {
             _reportTemplates = new JReportTemplatesPath(this, null, Keys.REPORT_TEMPLATES__REPORT_TEMPLATES_USER_ID_FKEY.getInverseKey());
 
         return _reportTemplates;
+    }
+
+    private transient JTogglCredentialsPath _togglCredentials;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.toggl_credentials</code> table
+     */
+    public JTogglCredentialsPath togglCredentials() {
+        if (_togglCredentials == null)
+            _togglCredentials = new JTogglCredentialsPath(this, null, Keys.TOGGL_CREDENTIALS__TOGGL_CREDENTIALS_USER_ID_FKEY.getInverseKey());
+
+        return _togglCredentials;
     }
 
     @Override
