@@ -34,6 +34,10 @@ repositories {
 
 ext {
 	springAiVersion = "1.0.0-M6"
+	// データベース接続設定
+	dbUrl = 'jdbc:postgresql://localhost:5434/nippogen'
+	dbUser = 'postgres'
+	dbPassword = 'postgres'
 }
 
 dependencyManagement {
@@ -41,6 +45,10 @@ dependencyManagement {
         mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
     }
 }
+
+// 分離した設定ファイルを読み込み
+apply from: 'gradle/flyway.gradle'
+apply from: 'gradle/jooq.gradle'
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jooq'
@@ -65,13 +73,3 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// データベース接続設定
-ext {
-    dbUrl = 'jdbc:postgresql://localhost:5434/nippogen'
-    dbUser = 'postgres'
-    dbPassword = 'postgres'
-}
-
-// 分離した設定ファイルを読み込み
-apply from: 'gradle/flyway.gradle'
-apply from: 'gradle/jooq.gradle'
