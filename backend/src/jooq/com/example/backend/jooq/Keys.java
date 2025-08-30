@@ -4,22 +4,22 @@
 package com.example.backend.jooq;
 
 
-import com.example.backend.jooq.tables.DailyReports;
-import com.example.backend.jooq.tables.FlywaySchemaHistory;
-import com.example.backend.jooq.tables.GenerationLogs;
-import com.example.backend.jooq.tables.GithubCredentials;
-import com.example.backend.jooq.tables.NotionCredentials;
-import com.example.backend.jooq.tables.ReportTemplates;
-import com.example.backend.jooq.tables.TogglCredentials;
-import com.example.backend.jooq.tables.Users;
-import com.example.backend.jooq.tables.records.DailyReportsRecord;
-import com.example.backend.jooq.tables.records.FlywaySchemaHistoryRecord;
-import com.example.backend.jooq.tables.records.GenerationLogsRecord;
-import com.example.backend.jooq.tables.records.GithubCredentialsRecord;
-import com.example.backend.jooq.tables.records.NotionCredentialsRecord;
-import com.example.backend.jooq.tables.records.ReportTemplatesRecord;
-import com.example.backend.jooq.tables.records.TogglCredentialsRecord;
-import com.example.backend.jooq.tables.records.UsersRecord;
+import com.example.backend.jooq.tables.JDailyReports;
+import com.example.backend.jooq.tables.JFlywaySchemaHistory;
+import com.example.backend.jooq.tables.JGenerationLogs;
+import com.example.backend.jooq.tables.JGithubCredentials;
+import com.example.backend.jooq.tables.JNotionCredentials;
+import com.example.backend.jooq.tables.JReportTemplates;
+import com.example.backend.jooq.tables.JTogglCredentials;
+import com.example.backend.jooq.tables.JUsers;
+import com.example.backend.jooq.tables.records.JDailyReportsRecord;
+import com.example.backend.jooq.tables.records.JFlywaySchemaHistoryRecord;
+import com.example.backend.jooq.tables.records.JGenerationLogsRecord;
+import com.example.backend.jooq.tables.records.JGithubCredentialsRecord;
+import com.example.backend.jooq.tables.records.JNotionCredentialsRecord;
+import com.example.backend.jooq.tables.records.JReportTemplatesRecord;
+import com.example.backend.jooq.tables.records.JTogglCredentialsRecord;
+import com.example.backend.jooq.tables.records.JUsersRecord;
 
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
@@ -39,24 +39,24 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<DailyReportsRecord> DAILY_REPORTS_PKEY = Internal.createUniqueKey(DailyReports.DAILY_REPORTS, DSL.name("daily_reports_pkey"), new TableField[] { DailyReports.DAILY_REPORTS.ID }, true);
-    public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
-    public static final UniqueKey<GenerationLogsRecord> GENERATION_LOGS_PKEY = Internal.createUniqueKey(GenerationLogs.GENERATION_LOGS, DSL.name("generation_logs_pkey"), new TableField[] { GenerationLogs.GENERATION_LOGS.ID }, true);
-    public static final UniqueKey<GithubCredentialsRecord> GITHUB_CREDENTIALS_PKEY = Internal.createUniqueKey(GithubCredentials.GITHUB_CREDENTIALS, DSL.name("github_credentials_pkey"), new TableField[] { GithubCredentials.GITHUB_CREDENTIALS.ID }, true);
-    public static final UniqueKey<NotionCredentialsRecord> NOTION_CREDENTIALS_PKEY = Internal.createUniqueKey(NotionCredentials.NOTION_CREDENTIALS, DSL.name("notion_credentials_pkey"), new TableField[] { NotionCredentials.NOTION_CREDENTIALS.ID }, true);
-    public static final UniqueKey<ReportTemplatesRecord> REPORT_TEMPLATES_PKEY = Internal.createUniqueKey(ReportTemplates.REPORT_TEMPLATES, DSL.name("report_templates_pkey"), new TableField[] { ReportTemplates.REPORT_TEMPLATES.ID }, true);
-    public static final UniqueKey<TogglCredentialsRecord> TOGGL_CREDENTIALS_PKEY = Internal.createUniqueKey(TogglCredentials.TOGGL_CREDENTIALS, DSL.name("toggl_credentials_pkey"), new TableField[] { TogglCredentials.TOGGL_CREDENTIALS.ID }, true);
-    public static final UniqueKey<UsersRecord> USERS_EMAIL_KEY = Internal.createUniqueKey(Users.USERS, DSL.name("users_email_key"), new TableField[] { Users.USERS.EMAIL }, true);
-    public static final UniqueKey<UsersRecord> USERS_PKEY = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), new TableField[] { Users.USERS.ID }, true);
+    public static final UniqueKey<JDailyReportsRecord> DAILY_REPORTS_PKEY = Internal.createUniqueKey(JDailyReports.DAILY_REPORTS, DSL.name("daily_reports_pkey"), new TableField[] { JDailyReports.DAILY_REPORTS.ID }, true);
+    public static final UniqueKey<JFlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(JFlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { JFlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
+    public static final UniqueKey<JGenerationLogsRecord> GENERATION_LOGS_PKEY = Internal.createUniqueKey(JGenerationLogs.GENERATION_LOGS, DSL.name("generation_logs_pkey"), new TableField[] { JGenerationLogs.GENERATION_LOGS.ID }, true);
+    public static final UniqueKey<JGithubCredentialsRecord> GITHUB_CREDENTIALS_PKEY = Internal.createUniqueKey(JGithubCredentials.GITHUB_CREDENTIALS, DSL.name("github_credentials_pkey"), new TableField[] { JGithubCredentials.GITHUB_CREDENTIALS.ID }, true);
+    public static final UniqueKey<JNotionCredentialsRecord> NOTION_CREDENTIALS_PKEY = Internal.createUniqueKey(JNotionCredentials.NOTION_CREDENTIALS, DSL.name("notion_credentials_pkey"), new TableField[] { JNotionCredentials.NOTION_CREDENTIALS.ID }, true);
+    public static final UniqueKey<JReportTemplatesRecord> REPORT_TEMPLATES_PKEY = Internal.createUniqueKey(JReportTemplates.REPORT_TEMPLATES, DSL.name("report_templates_pkey"), new TableField[] { JReportTemplates.REPORT_TEMPLATES.ID }, true);
+    public static final UniqueKey<JTogglCredentialsRecord> TOGGL_CREDENTIALS_PKEY = Internal.createUniqueKey(JTogglCredentials.TOGGL_CREDENTIALS, DSL.name("toggl_credentials_pkey"), new TableField[] { JTogglCredentials.TOGGL_CREDENTIALS.ID }, true);
+    public static final UniqueKey<JUsersRecord> USERS_EMAIL_KEY = Internal.createUniqueKey(JUsers.USERS, DSL.name("users_email_key"), new TableField[] { JUsers.USERS.EMAIL }, true);
+    public static final UniqueKey<JUsersRecord> USERS_PKEY = Internal.createUniqueKey(JUsers.USERS, DSL.name("users_pkey"), new TableField[] { JUsers.USERS.ID }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<DailyReportsRecord, UsersRecord> DAILY_REPORTS__DAILY_REPORTS_USER_ID_FKEY = Internal.createForeignKey(DailyReports.DAILY_REPORTS, DSL.name("daily_reports_user_id_fkey"), new TableField[] { DailyReports.DAILY_REPORTS.USER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
-    public static final ForeignKey<GenerationLogsRecord, DailyReportsRecord> GENERATION_LOGS__GENERATION_LOGS_REPORT_ID_FKEY = Internal.createForeignKey(GenerationLogs.GENERATION_LOGS, DSL.name("generation_logs_report_id_fkey"), new TableField[] { GenerationLogs.GENERATION_LOGS.REPORT_ID }, Keys.DAILY_REPORTS_PKEY, new TableField[] { DailyReports.DAILY_REPORTS.ID }, true);
-    public static final ForeignKey<GithubCredentialsRecord, UsersRecord> GITHUB_CREDENTIALS__GITHUB_CREDENTIALS_USER_ID_FKEY = Internal.createForeignKey(GithubCredentials.GITHUB_CREDENTIALS, DSL.name("github_credentials_user_id_fkey"), new TableField[] { GithubCredentials.GITHUB_CREDENTIALS.USER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
-    public static final ForeignKey<NotionCredentialsRecord, UsersRecord> NOTION_CREDENTIALS__NOTION_CREDENTIALS_USER_ID_FKEY = Internal.createForeignKey(NotionCredentials.NOTION_CREDENTIALS, DSL.name("notion_credentials_user_id_fkey"), new TableField[] { NotionCredentials.NOTION_CREDENTIALS.USER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
-    public static final ForeignKey<ReportTemplatesRecord, UsersRecord> REPORT_TEMPLATES__REPORT_TEMPLATES_USER_ID_FKEY = Internal.createForeignKey(ReportTemplates.REPORT_TEMPLATES, DSL.name("report_templates_user_id_fkey"), new TableField[] { ReportTemplates.REPORT_TEMPLATES.USER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
-    public static final ForeignKey<TogglCredentialsRecord, UsersRecord> TOGGL_CREDENTIALS__TOGGL_CREDENTIALS_USER_ID_FKEY = Internal.createForeignKey(TogglCredentials.TOGGL_CREDENTIALS, DSL.name("toggl_credentials_user_id_fkey"), new TableField[] { TogglCredentials.TOGGL_CREDENTIALS.USER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.ID }, true);
+    public static final ForeignKey<JDailyReportsRecord, JUsersRecord> DAILY_REPORTS__DAILY_REPORTS_USER_ID_FKEY = Internal.createForeignKey(JDailyReports.DAILY_REPORTS, DSL.name("daily_reports_user_id_fkey"), new TableField[] { JDailyReports.DAILY_REPORTS.USER_ID }, Keys.USERS_PKEY, new TableField[] { JUsers.USERS.ID }, true);
+    public static final ForeignKey<JGenerationLogsRecord, JDailyReportsRecord> GENERATION_LOGS__GENERATION_LOGS_REPORT_ID_FKEY = Internal.createForeignKey(JGenerationLogs.GENERATION_LOGS, DSL.name("generation_logs_report_id_fkey"), new TableField[] { JGenerationLogs.GENERATION_LOGS.REPORT_ID }, Keys.DAILY_REPORTS_PKEY, new TableField[] { JDailyReports.DAILY_REPORTS.ID }, true);
+    public static final ForeignKey<JGithubCredentialsRecord, JUsersRecord> GITHUB_CREDENTIALS__GITHUB_CREDENTIALS_USER_ID_FKEY = Internal.createForeignKey(JGithubCredentials.GITHUB_CREDENTIALS, DSL.name("github_credentials_user_id_fkey"), new TableField[] { JGithubCredentials.GITHUB_CREDENTIALS.USER_ID }, Keys.USERS_PKEY, new TableField[] { JUsers.USERS.ID }, true);
+    public static final ForeignKey<JNotionCredentialsRecord, JUsersRecord> NOTION_CREDENTIALS__NOTION_CREDENTIALS_USER_ID_FKEY = Internal.createForeignKey(JNotionCredentials.NOTION_CREDENTIALS, DSL.name("notion_credentials_user_id_fkey"), new TableField[] { JNotionCredentials.NOTION_CREDENTIALS.USER_ID }, Keys.USERS_PKEY, new TableField[] { JUsers.USERS.ID }, true);
+    public static final ForeignKey<JReportTemplatesRecord, JUsersRecord> REPORT_TEMPLATES__REPORT_TEMPLATES_USER_ID_FKEY = Internal.createForeignKey(JReportTemplates.REPORT_TEMPLATES, DSL.name("report_templates_user_id_fkey"), new TableField[] { JReportTemplates.REPORT_TEMPLATES.USER_ID }, Keys.USERS_PKEY, new TableField[] { JUsers.USERS.ID }, true);
+    public static final ForeignKey<JTogglCredentialsRecord, JUsersRecord> TOGGL_CREDENTIALS__TOGGL_CREDENTIALS_USER_ID_FKEY = Internal.createForeignKey(JTogglCredentials.TOGGL_CREDENTIALS, DSL.name("toggl_credentials_user_id_fkey"), new TableField[] { JTogglCredentials.TOGGL_CREDENTIALS.USER_ID }, Keys.USERS_PKEY, new TableField[] { JUsers.USERS.ID }, true);
 }
