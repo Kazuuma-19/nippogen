@@ -177,6 +177,12 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                         startDate: dateString || undefined,
                       });
                     }}
+                    onClick={(e: any) => {
+                      e.target.showPicker?.();
+                    }}
+                    onFocus={(e: any) => {
+                      e.target.showPicker?.();
+                    }}
                     style={{
                       width: '100%',
                       border: 'none',
@@ -185,6 +191,9 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       color: '#1f2937',
                       backgroundColor: 'transparent',
                       cursor: 'pointer',
+                      appearance: 'none',
+                      WebkitAppearance: 'none',
+                      MozAppearance: 'none',
                     }}
                     placeholder="選択してください"
                   />
@@ -217,6 +226,12 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                         endDate: dateString || undefined,
                       });
                     }}
+                    onClick={(e: any) => {
+                      e.target.showPicker?.();
+                    }}
+                    onFocus={(e: any) => {
+                      e.target.showPicker?.();
+                    }}
                     style={{
                       width: '100%',
                       border: 'none',
@@ -225,6 +240,9 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       color: '#1f2937',
                       backgroundColor: 'transparent',
                       cursor: 'pointer',
+                      appearance: 'none',
+                      WebkitAppearance: 'none',
+                      MozAppearance: 'none',
                     }}
                     placeholder="選択してください"
                   />
