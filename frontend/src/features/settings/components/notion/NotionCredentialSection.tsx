@@ -9,7 +9,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { CredentialCard } from "../CredentialCard";
 import { NotionCredentialForm } from "./NotionCredentialForm";
-import { useApiCredentials } from "../../hooks/useApiCredentials";
+import { useNotionCredentials } from "../../hooks/useNotionCredentials";
 import type { components } from "@/types/api";
 import type { NotionCredentialFormData } from "../../schemas/notionCredential";
 
@@ -19,16 +19,16 @@ export function NotionCredentialSection() {
   const {
     credentials,
     loading,
-    saveNotionCredential,
-    deleteNotionCredential,
-    testNotionConnection,
-  } = useApiCredentials();
+    saveCredential,
+    deleteCredential,
+    testConnection,
+  } = useNotionCredentials();
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingCredential, setEditingCredential] =
     useState<NotionCredential | null>(null);
 
-  const notionCredentials = credentials.notion;
+  const notionCredentials = credentials;
 
   const handleEdit = (credential: NotionCredential) => {
     setEditingCredential(credential);
@@ -37,23 +37,17 @@ export function NotionCredentialSection() {
 
   const handleDelete = async (credential: NotionCredential) => {
     if (credential.id) {
-      await deleteNotionCredential(credential.id);
+      await deleteCredential(credential.id);
     }
   };
 
   const handleTest = async (credential: NotionCredential) => {
-    await testNotionConnection();
+    await testConnection();
   };
 
   const handleSave = async (data: NotionCredentialFormData) => {
-    if (editingCredential) {
-      // Note: Update functionality would need to be added to the hook
-      // For now, we'll just create a new one
-      await saveNotionCredential(data);
-    } else {
-      // Create new credential
-      await saveNotionCredential(data);
-    }
+    // For now, only support creating new credentials
+    await saveCredential(data);
 
     setIsFormVisible(false);
     setEditingCredential(null);

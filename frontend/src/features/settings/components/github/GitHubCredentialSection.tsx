@@ -9,7 +9,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { CredentialCard } from "../CredentialCard";
 import { GitHubCredentialForm } from "./GitHubCredentialForm";
-import { useApiCredentials } from "../../hooks/useApiCredentials";
+import { useGitHubCredentials } from "../../hooks/useGitHubCredentials";
 import type { components } from "@/types/api";
 import type { GitHubCredentialFormData } from "../../schemas/gitHubCredential";
 
@@ -19,17 +19,16 @@ export function GitHubCredentialSection() {
   const {
     credentials,
     loading,
-    saveGitHubCredential,
-    updateGitHubCredential,
-    deleteGitHubCredential,
-    testGitHubConnection,
-  } = useApiCredentials();
+    saveCredential,
+    deleteCredential,
+    testConnection,
+  } = useGitHubCredentials();
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingCredential, setEditingCredential] =
     useState<GitHubCredential | null>(null);
 
-  const gitHubCredentials = credentials.github;
+  const gitHubCredentials = credentials;
 
   const handleEdit = (credential: GitHubCredential) => {
     setEditingCredential(credential);
@@ -38,34 +37,22 @@ export function GitHubCredentialSection() {
 
   const handleDelete = async (credential: GitHubCredential) => {
     if (credential.id) {
-      await deleteGitHubCredential(credential.id);
+      await deleteCredential(credential.id);
     }
   };
 
   const handleTest = async (credential: GitHubCredential) => {
     if (credential.owner && credential.repo) {
-      await testGitHubConnection(credential.owner, credential.repo);
+      await testConnection(credential.owner, credential.repo);
     } else {
       throw new Error("リポジトリ情報が不完全です");
     }
   };
 
   const handleSave = async (data: GitHubCredentialFormData) => {
-    if (editingCredential) {
-      // Update existing credential
-      if (editingCredential.id) {
-        await updateGitHubCredential(editingCredential.id, {
-          apiKey: data.apiKey,
-          baseUrl: data.baseUrl,
-          owner: data.owner,
-          repo: data.repo,
-          isActive: true,
-        });
-      }
-    } else {
-      // Create new credential
-      await saveGitHubCredential(data);
-    }
+    // For now, only support creating new credentials
+    // TODO: Add update functionality if needed
+    await saveCredential(data);
 
     setIsFormVisible(false);
     setEditingCredential(null);

@@ -9,7 +9,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { CredentialCard } from "../CredentialCard";
 import { TogglCredentialForm } from "./TogglCredentialForm";
-import { useApiCredentials } from "../../hooks/useApiCredentials";
+import { useTogglCredentials } from "../../hooks/useTogglCredentials";
 import type { components } from "@/types/api";
 import type { TogglCredentialFormData } from "../../schemas/togglCredential";
 
@@ -19,16 +19,16 @@ export function TogglCredentialSection() {
   const {
     credentials,
     loading,
-    saveTogglCredential,
-    deleteTogglCredential,
-    testTogglConnection,
-  } = useApiCredentials();
+    saveCredential,
+    deleteCredential,
+    testConnection,
+  } = useTogglCredentials();
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingCredential, setEditingCredential] =
     useState<TogglCredential | null>(null);
 
-  const togglCredentials = credentials.toggl;
+  const togglCredentials = credentials;
 
   const handleEdit = (credential: TogglCredential) => {
     setEditingCredential(credential);
@@ -37,23 +37,17 @@ export function TogglCredentialSection() {
 
   const handleDelete = async (credential: TogglCredential) => {
     if (credential.id) {
-      await deleteTogglCredential(credential.id);
+      await deleteCredential(credential.id);
     }
   };
 
   const handleTest = async (credential: TogglCredential) => {
-    await testTogglConnection();
+    await testConnection();
   };
 
   const handleSave = async (data: TogglCredentialFormData) => {
-    if (editingCredential) {
-      // Note: Update functionality would need to be added to the hook
-      // For now, we'll just create a new one
-      await saveTogglCredential(data);
-    } else {
-      // Create new credential
-      await saveTogglCredential(data);
-    }
+    // For now, only support creating new credentials
+    await saveCredential(data);
 
     setIsFormVisible(false);
     setEditingCredential(null);
