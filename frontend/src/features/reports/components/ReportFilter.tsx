@@ -49,39 +49,6 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
     }
   };
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    if (Platform.OS === 'android') {
-      setShowDatePicker(null);
-    }
-    
-    if (selectedDate) {
-      setTempDate(selectedDate);
-      
-      // Android: immediately apply the date
-      if (Platform.OS === 'android' && showDatePicker) {
-        const dateString = selectedDate.toISOString().split('T')[0];
-        onFiltersChange({
-          ...filters,
-          [showDatePicker === "start" ? "startDate" : "endDate"]: dateString,
-        });
-      }
-    }
-  };
-
-  const confirmDateSelection = () => {
-    if (showDatePicker) {
-      const dateString = tempDate.toISOString().split('T')[0];
-      onFiltersChange({
-        ...filters,
-        [showDatePicker === "start" ? "startDate" : "endDate"]: dateString,
-      });
-    }
-    setShowDatePicker(null);
-  };
-
-  const cancelDateSelection = () => {
-    setShowDatePicker(null);
-  };
 
   const handleStatusSelect = (status: FilterOptions["status"]) => {
     onFiltersChange({
@@ -203,18 +170,39 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                     placeholder="選択してください"
                   />
                 ) : (
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (filters.startDate) {
-                        setTempDate(new Date(filters.startDate));
-                      }
-                      setShowDatePicker("start");
-                    }}
-                  >
-                    <Text className="text-gray-800">
-                      {formatDateForDisplay(filters.startDate)}
-                    </Text>
-                  </TouchableOpacity>
+                  <>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (filters.startDate) {
+                          setTempDate(new Date(filters.startDate));
+                        }
+                        setShowDatePicker("start");
+                      }}
+                    >
+                      <Text className="text-gray-800">
+                        {formatDateForDisplay(filters.startDate)}
+                      </Text>
+                    </TouchableOpacity>
+                    
+                    {/* Hidden DateTimePicker for immediate display */}
+                    {showDatePicker === "start" && DateTimePicker && (
+                      <DateTimePicker
+                        value={tempDate}
+                        mode="date"
+                        display="default"
+                        onChange={(event, selectedDate) => {
+                          setShowDatePicker(null);
+                          if (selectedDate) {
+                            const dateString = selectedDate.toISOString().split('T')[0];
+                            onFiltersChange({
+                              ...filters,
+                              startDate: dateString,
+                            });
+                          }
+                        }}
+                      />
+                    )}
+                  </>
                 )}
               </View>
               
@@ -257,18 +245,39 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                     placeholder="選択してください"
                   />
                 ) : (
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (filters.endDate) {
-                        setTempDate(new Date(filters.endDate));
-                      }
-                      setShowDatePicker("end");
-                    }}
-                  >
-                    <Text className="text-gray-800">
-                      {formatDateForDisplay(filters.endDate)}
-                    </Text>
-                  </TouchableOpacity>
+                  <>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (filters.endDate) {
+                          setTempDate(new Date(filters.endDate));
+                        }
+                        setShowDatePicker("end");
+                      }}
+                    >
+                      <Text className="text-gray-800">
+                        {formatDateForDisplay(filters.endDate)}
+                      </Text>
+                    </TouchableOpacity>
+                    
+                    {/* Hidden DateTimePicker for immediate display */}
+                    {showDatePicker === "end" && DateTimePicker && (
+                      <DateTimePicker
+                        value={tempDate}
+                        mode="date"
+                        display="default"
+                        onChange={(event, selectedDate) => {
+                          setShowDatePicker(null);
+                          if (selectedDate) {
+                            const dateString = selectedDate.toISOString().split('T')[0];
+                            onFiltersChange({
+                              ...filters,
+                              endDate: dateString,
+                            });
+                          }
+                        }}
+                      />
+                    )}
+                  </>
                 )}
               </View>
             </View>
@@ -297,72 +306,6 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
         </View>
       )}
 
-      {/* Date Picker Modal - Mobile only */}
-      {showDatePicker && Platform.OS !== 'web' && (
-        <>
-          {Platform.OS === 'ios' ? (
-            <Modal
-              visible={true}
-              transparent={true}
-              animationType="slide"
-              onRequestClose={cancelDateSelection}
-            >
-              <TouchableOpacity 
-                className="flex-1 justify-end bg-black/50"
-                activeOpacity={1}
-                onPress={cancelDateSelection}
-              >
-                <TouchableOpacity 
-                  className="bg-white"
-                  activeOpacity={1}
-                  onPress={(e) => e.stopPropagation()}
-                >
-                  {/* iOS Date Picker Header */}
-                  <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-                    <TouchableOpacity onPress={cancelDateSelection}>
-                      <Text className="text-blue-500 text-lg">キャンセル</Text>
-                    </TouchableOpacity>
-                    <Text className="text-lg font-semibold text-gray-800">
-                      {showDatePicker === "start" ? "開始日を選択" : "終了日を選択"}
-                    </Text>
-                    <TouchableOpacity onPress={confirmDateSelection}>
-                      <Text className="text-blue-500 text-lg font-semibold">完了</Text>
-                    </TouchableOpacity>
-                  </View>
-                  
-                  {/* iOS Date Picker */}
-                  <View style={{ minHeight: 280, backgroundColor: 'white', padding: 20 }}>
-                    {DateTimePicker && (
-                      <DateTimePicker
-                        value={tempDate}
-                        mode="date"
-                        display="compact"
-                        onChange={handleDateChange}
-                        textColor="#000000"
-                        accentColor="#2563EB"
-                        style={{ 
-                          backgroundColor: 'white',
-                          alignSelf: 'center',
-                        }}
-                      />
-                    )}
-                  </View>
-                </TouchableOpacity>
-              </TouchableOpacity>
-            </Modal>
-          ) : (
-            // Android Date Picker
-            DateTimePicker && (
-              <DateTimePicker
-                value={tempDate}
-                mode="date"
-                display="default"
-                onChange={handleDateChange}
-              />
-            )
-          )}
-        </>
-      )}
 
       {/* Status Selection Modal */}
       <Modal
