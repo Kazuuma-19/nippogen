@@ -95,9 +95,6 @@ jooq {
                         packageName = 'com.example.backend.jooq'
                         directory = 'src/jooq'
                     }
-                    strategy {
-                        name = 'com.example.backend.common.jooq.CustomGeneratorStrategy'
-                    }
                 }
             }
         }

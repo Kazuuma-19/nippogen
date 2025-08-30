@@ -4,12 +4,14 @@
 package com.example.backend.jooq;
 
 
-import com.example.backend.jooq.tables.JApiCredentials;
-import com.example.backend.jooq.tables.JDailyReports;
-import com.example.backend.jooq.tables.JFlywaySchemaHistory;
-import com.example.backend.jooq.tables.JGenerationLogs;
-import com.example.backend.jooq.tables.JReportTemplates;
-import com.example.backend.jooq.tables.JUsers;
+import com.example.backend.jooq.tables.DailyReports;
+import com.example.backend.jooq.tables.FlywaySchemaHistory;
+import com.example.backend.jooq.tables.GenerationLogs;
+import com.example.backend.jooq.tables.GithubCredentials;
+import com.example.backend.jooq.tables.NotionCredentials;
+import com.example.backend.jooq.tables.ReportTemplates;
+import com.example.backend.jooq.tables.TogglCredentials;
+import com.example.backend.jooq.tables.Users;
 
 
 /**
@@ -19,32 +21,42 @@ import com.example.backend.jooq.tables.JUsers;
 public class Tables {
 
     /**
-     * The table <code>public.api_credentials</code>.
-     */
-    public static final JApiCredentials API_CREDENTIALS = JApiCredentials.API_CREDENTIALS;
-
-    /**
      * The table <code>public.daily_reports</code>.
      */
-    public static final JDailyReports DAILY_REPORTS = JDailyReports.DAILY_REPORTS;
+    public static final DailyReports DAILY_REPORTS = DailyReports.DAILY_REPORTS;
 
     /**
      * The table <code>public.flyway_schema_history</code>.
      */
-    public static final JFlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = JFlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
+    public static final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
      * The table <code>public.generation_logs</code>.
      */
-    public static final JGenerationLogs GENERATION_LOGS = JGenerationLogs.GENERATION_LOGS;
+    public static final GenerationLogs GENERATION_LOGS = GenerationLogs.GENERATION_LOGS;
+
+    /**
+     * The table <code>public.github_credentials</code>.
+     */
+    public static final GithubCredentials GITHUB_CREDENTIALS = GithubCredentials.GITHUB_CREDENTIALS;
+
+    /**
+     * The table <code>public.notion_credentials</code>.
+     */
+    public static final NotionCredentials NOTION_CREDENTIALS = NotionCredentials.NOTION_CREDENTIALS;
 
     /**
      * The table <code>public.report_templates</code>.
      */
-    public static final JReportTemplates REPORT_TEMPLATES = JReportTemplates.REPORT_TEMPLATES;
+    public static final ReportTemplates REPORT_TEMPLATES = ReportTemplates.REPORT_TEMPLATES;
+
+    /**
+     * The table <code>public.toggl_credentials</code>.
+     */
+    public static final TogglCredentials TOGGL_CREDENTIALS = TogglCredentials.TOGGL_CREDENTIALS;
 
     /**
      * The table <code>public.users</code>.
      */
-    public static final JUsers USERS = JUsers.USERS;
+    public static final Users USERS = Users.USERS;
 }
