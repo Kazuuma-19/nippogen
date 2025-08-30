@@ -1,7 +1,13 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, Modal } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateInput from "./DateInput";
 
 export interface FilterOptions {
   startDate?: string;
@@ -23,14 +29,17 @@ const statusOptions = [
   { value: "APPROVED" as const, label: "承認済み" },
 ];
 
-export default function ReportFilter({ filters, onFiltersChange, onClearFilters }: ReportFilterProps) {
-  const [showDatePicker, setShowDatePicker] = useState<"start" | "end" | null>(null);
+export default function ReportFilter({
+  filters,
+  onFiltersChange,
+  onClearFilters,
+}: ReportFilterProps) {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatDateForDisplay = (dateString?: string) => {
     if (!dateString) return "選択してください";
-    
+
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString("ja-JP", {
@@ -40,18 +49,6 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
       });
     } catch {
       return "選択してください";
-    }
-  };
-
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(null);
-    
-    if (selectedDate && showDatePicker) {
-      const dateString = selectedDate.toISOString().split('T')[0];
-      onFiltersChange({
-        ...filters,
-        [showDatePicker === "start" ? "startDate" : "endDate"]: dateString,
-      });
     }
   };
 
@@ -81,7 +78,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
   const hasActiveFilters = getActiveFiltersCount() > 0;
 
   const getStatusLabel = (status?: string) => {
-    const option = statusOptions.find(opt => opt.value === status);
+    const option = statusOptions.find((opt) => opt.value === status);
     return option?.label || "すべて";
   };
 
@@ -118,14 +115,16 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
           <Text className="text-gray-700 ml-2 font-medium">フィルター</Text>
           {hasActiveFilters && (
             <View className="bg-blue-500 rounded-full w-5 h-5 items-center justify-center ml-2">
-              <Text className="text-white text-xs font-bold">{getActiveFiltersCount()}</Text>
+              <Text className="text-white text-xs font-bold">
+                {getActiveFiltersCount()}
+              </Text>
             </View>
           )}
         </View>
-        <Ionicons 
-          name={isExpanded ? "chevron-up" : "chevron-down"} 
-          size={20} 
-          color="#6B7280" 
+        <Ionicons
+          name={isExpanded ? "chevron-up" : "chevron-down"}
+          size={20}
+          color="#6B7280"
         />
       </TouchableOpacity>
 
@@ -134,38 +133,50 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
         <View className="px-4 pb-4 bg-gray-50">
           {/* Date Range */}
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">日付範囲</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">
+              日付範囲
+            </Text>
             <View className="flex-row space-x-3">
-              <TouchableOpacity
-                className="flex-1 bg-white border border-gray-200 rounded-lg p-3"
-                onPress={() => setShowDatePicker("start")}
-              >
+              <View className="flex-1 bg-white border border-gray-200 rounded-lg p-3">
                 <Text className="text-xs text-gray-500 mb-1">開始日</Text>
-                <Text className="text-gray-800">
-                  {formatDateForDisplay(filters.startDate)}
-                </Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                className="flex-1 bg-white border border-gray-200 rounded-lg p-3"
-                onPress={() => setShowDatePicker("end")}
-              >
+                <DateInput
+                  value={filters.startDate}
+                  onChange={(dateString) =>
+                    onFiltersChange({
+                      ...filters,
+                      startDate: dateString,
+                    })
+                  }
+                />
+              </View>
+
+              <View className="flex-1 bg-white border border-gray-200 rounded-lg p-3">
                 <Text className="text-xs text-gray-500 mb-1">終了日</Text>
-                <Text className="text-gray-800">
-                  {formatDateForDisplay(filters.endDate)}
-                </Text>
-              </TouchableOpacity>
+                <DateInput
+                  value={filters.endDate}
+                  onChange={(dateString) =>
+                    onFiltersChange({
+                      ...filters,
+                      endDate: dateString,
+                    })
+                  }
+                />
+              </View>
             </View>
           </View>
 
           {/* Status Filter */}
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">ステータス</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">
+              ステータス
+            </Text>
             <TouchableOpacity
               className="bg-white border border-gray-200 rounded-lg p-3"
               onPress={() => setShowStatusModal(true)}
             >
-              <Text className="text-gray-800">{getStatusLabel(filters.status)}</Text>
+              <Text className="text-gray-800">
+                {getStatusLabel(filters.status)}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -175,20 +186,12 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
               className="bg-gray-200 rounded-lg p-3 items-center"
               onPress={onClearFilters}
             >
-              <Text className="text-gray-700 font-medium">フィルターをクリア</Text>
+              <Text className="text-gray-700 font-medium">
+                フィルターをクリア
+              </Text>
             </TouchableOpacity>
           )}
         </View>
-      )}
-
-      {/* Date Picker Modal */}
-      {showDatePicker && (
-        <DateTimePicker
-          value={new Date()}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
       )}
 
       {/* Status Selection Modal */}
@@ -204,8 +207,10 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
           onPress={() => setShowStatusModal(false)}
         >
           <View className="bg-white rounded-lg m-4 p-4 min-w-[280px]">
-            <Text className="text-lg font-bold text-gray-800 mb-4">ステータスを選択</Text>
-            
+            <Text className="text-lg font-bold text-gray-800 mb-4">
+              ステータスを選択
+            </Text>
+
             {statusOptions.map((option, index) => (
               <TouchableOpacity
                 key={index}
