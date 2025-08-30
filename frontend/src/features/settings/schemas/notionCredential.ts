@@ -37,24 +37,3 @@ export const notionCredentialSchema = z.object({
 })
 
 export type NotionCredentialFormData = z.infer<typeof notionCredentialSchema>
-
-// バリデーションエラーメッセージの日本語化
-export const notionCredentialErrorMessages = {
-  apiKey: {
-    required: 'APIキーは必須です',
-    invalid: 'Notion APIキーはsecret_で始まる必要があります',
-    tooShort: 'Notion APIキーは57文字以上である必要があります'
-  },
-  databaseId: {
-    invalid: 'データベースIDの形式が正しくありません（UUID形式）'
-  },
-  titleProperty: {
-    empty: 'タイトルプロパティ名は空にできません'
-  },
-  statusProperty: {
-    empty: 'ステータスプロパティ名は空にできません'
-  },
-  dateProperty: {
-    empty: '日付プロパティ名は空にできません'
-  }
-}

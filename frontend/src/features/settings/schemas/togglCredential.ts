@@ -34,23 +34,3 @@ export const togglCredentialSchema = z.object({
 })
 
 export type TogglCredentialFormData = z.infer<typeof togglCredentialSchema>
-
-// バリデーションエラーメッセージの日本語化
-export const togglCredentialErrorMessages = {
-  apiKey: {
-    required: 'APIキーは必須です',
-    tooShort: 'Toggl APIキーは32文字以上である必要があります'
-  },
-  workspaceId: {
-    invalid: 'ワークスペースIDは正の整数である必要があります'
-  },
-  projectIds: {
-    invalid: 'プロジェクトIDは正の整数である必要があります'
-  },
-  defaultTags: {
-    empty: 'タグは空にできません'
-  },
-  timeZone: {
-    invalid: '有効なタイムゾーンを入力してください'
-  }
-}

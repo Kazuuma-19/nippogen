@@ -26,24 +26,3 @@ export const gitHubCredentialSchema = z.object({
 })
 
 export type GitHubCredentialFormData = z.infer<typeof gitHubCredentialSchema>
-
-// バリデーションエラーメッセージの日本語化
-export const gitHubCredentialErrorMessages = {
-  apiKey: {
-    required: 'APIキーは必須です',
-    invalid: 'GitHub APIキーの形式が正しくありません（ghp_またはghs_で始まる40文字）'
-  },
-  baseUrl: {
-    invalid: '有効なURLを入力してください'
-  },
-  owner: {
-    required: 'オーナー名は必須です',
-    invalid: 'オーナー名は英数字とハイフンのみ使用できます',
-    tooLong: 'オーナー名は39文字以内で入力してください'
-  },
-  repo: {
-    required: 'リポジトリ名は必須です',
-    invalid: 'リポジトリ名は英数字、ハイフン、アンダースコア、ドットのみ使用できます',
-    tooLong: 'リポジトリ名は100文字以内で入力してください'
-  }
-}
