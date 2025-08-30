@@ -167,7 +167,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                     <DateTimePicker
                       value={filters.startDate ? new Date(filters.startDate) : new Date()}
                       mode="date"
-                      display="compact"
+                      display="default"
                       onChange={(event, selectedDate) => {
                         if (event.type === 'set' && selectedDate) {
                           const dateString = selectedDate.toISOString().split('T')[0];
@@ -176,6 +176,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                             startDate: dateString,
                           });
                         }
+                        // Calendar automatically closes after selection with 'default' display
                       }}
                       style={{ alignSelf: 'flex-start' }}
                     />
@@ -221,7 +222,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                     <DateTimePicker
                       value={filters.endDate ? new Date(filters.endDate) : new Date()}
                       mode="date"
-                      display="compact"
+                      display="default"
                       onChange={(event, selectedDate) => {
                         if (event.type === 'set' && selectedDate) {
                           const dateString = selectedDate.toISOString().split('T')[0];
@@ -230,6 +231,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                             endDate: dateString,
                           });
                         }
+                        // Calendar automatically closes after selection with 'default' display
                       }}
                       style={{ alignSelf: 'flex-start' }}
                     />
