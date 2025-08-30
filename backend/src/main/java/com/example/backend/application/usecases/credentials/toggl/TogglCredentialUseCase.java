@@ -1,4 +1,4 @@
-package com.example.backend.application.services.credentials.toggl;
+package com.example.backend.application.usecases.credentials.toggl;
 
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialResponseDto;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class TogglCredentialService {
+public class TogglCredentialUseCase {
     
     private final ITogglCredentialRepository togglCredentialRepository;
     

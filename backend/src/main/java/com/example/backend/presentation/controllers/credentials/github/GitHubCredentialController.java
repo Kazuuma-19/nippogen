@@ -3,7 +3,7 @@ package com.example.backend.presentation.controllers.credentials.github;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialUpdateRequestDto;
-import com.example.backend.application.services.credentials.github.GitHubCredentialService;
+import com.example.backend.application.usecases.credentials.github.GitHubCredentialUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Tag(name = "GitHub認証情報", description = "GitHub API認証情報の管理")
 public class GitHubCredentialController {
     
-    private final GitHubCredentialService gitHubCredentialService;
+    private final GitHubCredentialUseCase gitHubCredentialUseCase;
     
     @PostMapping
     @Operation(summary = "GitHub認証情報作成", description = "新しいGitHub認証情報を作成します")
@@ -38,7 +38,7 @@ public class GitHubCredentialController {
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId,
             @Valid @RequestBody GitHubCredentialCreateRequestDto request) {
         
-        GitHubCredentialResponseDto response = gitHubCredentialService.create(userId, request);
+        GitHubCredentialResponseDto response = gitHubCredentialUseCase.create(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
@@ -52,7 +52,7 @@ public class GitHubCredentialController {
     public ResponseEntity<GitHubCredentialResponseDto> findById(
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
-        return gitHubCredentialService.findById(id)
+        return gitHubCredentialUseCase.findById(id)
                 .map(credential -> ResponseEntity.ok(credential))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -67,7 +67,7 @@ public class GitHubCredentialController {
     public ResponseEntity<GitHubCredentialResponseDto> findByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        return gitHubCredentialService.findByUserId(userId)
+        return gitHubCredentialUseCase.findByUserId(userId)
                 .map(credential -> ResponseEntity.ok(credential))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -81,7 +81,7 @@ public class GitHubCredentialController {
     public ResponseEntity<List<GitHubCredentialResponseDto>> findAllByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        List<GitHubCredentialResponseDto> credentials = gitHubCredentialService.findAllByUserId(userId);
+        List<GitHubCredentialResponseDto> credentials = gitHubCredentialUseCase.findAllByUserId(userId);
         return ResponseEntity.ok(credentials);
     }
     
@@ -98,7 +98,7 @@ public class GitHubCredentialController {
             @RequestBody GitHubCredentialUpdateRequestDto request) {
         
         try {
-            GitHubCredentialResponseDto response = gitHubCredentialService.update(id, request);
+            GitHubCredentialResponseDto response = gitHubCredentialUseCase.update(id, request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -116,7 +116,7 @@ public class GitHubCredentialController {
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
         try {
-            gitHubCredentialService.deleteById(id);
+            gitHubCredentialUseCase.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -132,7 +132,7 @@ public class GitHubCredentialController {
     public ResponseEntity<Boolean> exists(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        boolean exists = gitHubCredentialService.existsByUserId(userId);
+        boolean exists = gitHubCredentialUseCase.existsByUserId(userId);
         return ResponseEntity.ok(exists);
     }
 }

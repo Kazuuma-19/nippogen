@@ -1,4 +1,4 @@
-package com.example.backend.application.services.credentials.notion;
+package com.example.backend.application.usecases.credentials.notion;
 
 import com.example.backend.application.dto.credentials.notion.NotionCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.notion.NotionCredentialResponseDto;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class NotionCredentialService {
+public class NotionCredentialUseCase {
     
     private final INotionCredentialRepository notionCredentialRepository;
     

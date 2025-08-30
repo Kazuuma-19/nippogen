@@ -3,7 +3,7 @@ package com.example.backend.presentation.controllers.credentials.toggl;
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialResponseDto;
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialUpdateRequestDto;
-import com.example.backend.application.services.credentials.toggl.TogglCredentialService;
+import com.example.backend.application.usecases.credentials.toggl.TogglCredentialUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Tag(name = "Toggl認証情報", description = "Toggl Track API認証情報の管理")
 public class TogglCredentialController {
     
-    private final TogglCredentialService togglCredentialService;
+    private final TogglCredentialUseCase togglCredentialUseCase;
     
     @PostMapping
     @Operation(summary = "Toggl認証情報作成", description = "新しいToggl認証情報を作成します")
@@ -38,7 +38,7 @@ public class TogglCredentialController {
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId,
             @Valid @RequestBody TogglCredentialCreateRequestDto request) {
         
-        TogglCredentialResponseDto response = togglCredentialService.create(userId, request);
+        TogglCredentialResponseDto response = togglCredentialUseCase.create(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
@@ -52,7 +52,7 @@ public class TogglCredentialController {
     public ResponseEntity<TogglCredentialResponseDto> findById(
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
-        return togglCredentialService.findById(id)
+        return togglCredentialUseCase.findById(id)
                 .map(credential -> ResponseEntity.ok(credential))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -67,7 +67,7 @@ public class TogglCredentialController {
     public ResponseEntity<TogglCredentialResponseDto> findByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        return togglCredentialService.findByUserId(userId)
+        return togglCredentialUseCase.findByUserId(userId)
                 .map(credential -> ResponseEntity.ok(credential))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -81,7 +81,7 @@ public class TogglCredentialController {
     public ResponseEntity<List<TogglCredentialResponseDto>> findAllByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        List<TogglCredentialResponseDto> credentials = togglCredentialService.findAllByUserId(userId);
+        List<TogglCredentialResponseDto> credentials = togglCredentialUseCase.findAllByUserId(userId);
         return ResponseEntity.ok(credentials);
     }
     
@@ -98,7 +98,7 @@ public class TogglCredentialController {
             @RequestBody TogglCredentialUpdateRequestDto request) {
         
         try {
-            TogglCredentialResponseDto response = togglCredentialService.update(id, request);
+            TogglCredentialResponseDto response = togglCredentialUseCase.update(id, request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -116,7 +116,7 @@ public class TogglCredentialController {
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
         try {
-            togglCredentialService.deleteById(id);
+            togglCredentialUseCase.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -132,7 +132,7 @@ public class TogglCredentialController {
     public ResponseEntity<Boolean> exists(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        boolean exists = togglCredentialService.existsByUserId(userId);
+        boolean exists = togglCredentialUseCase.existsByUserId(userId);
         return ResponseEntity.ok(exists);
     }
 }

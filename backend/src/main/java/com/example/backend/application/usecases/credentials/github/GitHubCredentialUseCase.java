@@ -1,4 +1,4 @@
-package com.example.backend.application.services.credentials.github;
+package com.example.backend.application.usecases.credentials.github;
 
 import com.example.backend.application.dto.credentials.github.GitHubCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class GitHubCredentialService {
+public class GitHubCredentialUseCase {
     
     private final IGitHubCredentialRepository gitHubCredentialRepository;
     

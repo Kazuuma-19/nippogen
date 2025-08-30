@@ -3,7 +3,7 @@ package com.example.backend.presentation.controllers.credentials.notion;
 import com.example.backend.application.dto.credentials.notion.NotionCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.notion.NotionCredentialResponseDto;
 import com.example.backend.application.dto.credentials.notion.NotionCredentialUpdateRequestDto;
-import com.example.backend.application.services.credentials.notion.NotionCredentialService;
+import com.example.backend.application.usecases.credentials.notion.NotionCredentialUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Tag(name = "Notion認証情報", description = "Notion API認証情報の管理")
 public class NotionCredentialController {
     
-    private final NotionCredentialService notionCredentialService;
+    private final NotionCredentialUseCase notionCredentialUseCase;
     
     @PostMapping
     @Operation(summary = "Notion認証情報作成", description = "新しいNotion認証情報を作成します")
@@ -38,7 +38,7 @@ public class NotionCredentialController {
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId,
             @Valid @RequestBody NotionCredentialCreateRequestDto request) {
         
-        NotionCredentialResponseDto response = notionCredentialService.create(userId, request);
+        NotionCredentialResponseDto response = notionCredentialUseCase.create(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
@@ -52,7 +52,7 @@ public class NotionCredentialController {
     public ResponseEntity<NotionCredentialResponseDto> findById(
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
-        return notionCredentialService.findById(id)
+        return notionCredentialUseCase.findById(id)
                 .map(credential -> ResponseEntity.ok(credential))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -67,7 +67,7 @@ public class NotionCredentialController {
     public ResponseEntity<NotionCredentialResponseDto> findByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        return notionCredentialService.findByUserId(userId)
+        return notionCredentialUseCase.findByUserId(userId)
                 .map(credential -> ResponseEntity.ok(credential))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -81,7 +81,7 @@ public class NotionCredentialController {
     public ResponseEntity<List<NotionCredentialResponseDto>> findAllByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        List<NotionCredentialResponseDto> credentials = notionCredentialService.findAllByUserId(userId);
+        List<NotionCredentialResponseDto> credentials = notionCredentialUseCase.findAllByUserId(userId);
         return ResponseEntity.ok(credentials);
     }
     
@@ -98,7 +98,7 @@ public class NotionCredentialController {
             @RequestBody NotionCredentialUpdateRequestDto request) {
         
         try {
-            NotionCredentialResponseDto response = notionCredentialService.update(id, request);
+            NotionCredentialResponseDto response = notionCredentialUseCase.update(id, request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -116,7 +116,7 @@ public class NotionCredentialController {
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
         try {
-            notionCredentialService.deleteById(id);
+            notionCredentialUseCase.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -132,7 +132,7 @@ public class NotionCredentialController {
     public ResponseEntity<Boolean> exists(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        boolean exists = notionCredentialService.existsByUserId(userId);
+        boolean exists = notionCredentialUseCase.existsByUserId(userId);
         return ResponseEntity.ok(exists);
     }
 }
