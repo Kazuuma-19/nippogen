@@ -1,0 +1,40 @@
+// JOOQ設定ファイル
+// コード生成関連の設定
+
+jooq {
+	version = dependencyManagement.importedProperties['jooq.version']
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = false
+
+            generationTool {
+                logging = 'WARN'
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = project.dbUrl
+                    user = project.dbUser
+                    password = project.dbPassword
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                    }
+                    target {
+                        packageName = 'com.example.backend.jooq'
+                        directory = 'src/jooq'
+                    }
+                    strategy {
+                        name = 'com.example.backend.common.config.jooq.CustomGeneratorStrategy'
+                    }
+                }
+            }
+        }
+    }
+}
+
+// generateJooqをする前にflywayのマイグレーションを実行する
+tasks.named("generateJooq") {
+    dependsOn("flywayMigrate")
+}

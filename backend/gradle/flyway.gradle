@@ -1,0 +1,8 @@
+// Flyway設定ファイル
+// データベースマイグレーション関連の設定
+
+flyway {
+    url = project.dbUrl
+    user = project.dbUser
+    password = project.dbPassword
+}
