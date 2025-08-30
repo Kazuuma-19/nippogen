@@ -31,14 +31,11 @@ export default function ReportsIndexScreen() {
           </TouchableOpacity>
         </Link>
 
-        {/* View History - Placeholder for Issue #16 */}
-        <TouchableOpacity 
-          className="bg-white border border-gray-200 p-6 rounded-lg flex-row items-center"
-          onPress={() => {
-            // Placeholder - will be implemented in Issue #16
-            alert("日報履歴機能は準備中です");
-          }}
-        >
+        {/* View History */}
+        <Link href="/reports/history" asChild>
+          <TouchableOpacity 
+            className="bg-white border border-gray-200 p-6 rounded-lg flex-row items-center"
+          >
           <View className="bg-gray-100 p-3 rounded-lg mr-4">
             <Ionicons name="document-text" size={32} color="#267D00" />
           </View>
@@ -51,7 +48,8 @@ export default function ReportsIndexScreen() {
             </Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#9CA3AF" />
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </Link>
 
       </View>
 

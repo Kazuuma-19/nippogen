@@ -17,6 +17,12 @@ export default function ReportsLayout() {
         }}
       />
       <Stack.Screen
+        name="history"
+        options={{
+          title: "日報履歴",
+        }}
+      />
+      <Stack.Screen
         name="[date]"
         options={{
           title: "日報詳細",
