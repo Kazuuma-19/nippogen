@@ -31,6 +31,7 @@ const statusOptions = [
 export default function ReportFilter({ filters, onFiltersChange, onClearFilters }: ReportFilterProps) {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState<"start" | "end" | null>(null);
 
   const formatDateForDisplay = (dateString?: string) => {
     if (!dateString) return "選択してください";
@@ -163,24 +164,15 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                     placeholder="選択してください"
                   />
                 ) : (
-                  DateTimePicker && (
-                    <DateTimePicker
-                      value={filters.startDate ? new Date(filters.startDate) : new Date()}
-                      mode="date"
-                      display="default"
-                      onChange={(event, selectedDate) => {
-                        if (event.type === 'set' && selectedDate) {
-                          const dateString = selectedDate.toISOString().split('T')[0];
-                          onFiltersChange({
-                            ...filters,
-                            startDate: dateString,
-                          });
-                        }
-                        // Calendar automatically closes after selection with 'default' display
-                      }}
-                      style={{ alignSelf: 'flex-start' }}
-                    />
-                  )
+                  <TouchableOpacity
+                    onPress={() => setShowDatePicker("start")}
+                    className="flex-row items-center"
+                  >
+                    <Text className="text-gray-800 flex-1">
+                      {formatDateForDisplay(filters.startDate)}
+                    </Text>
+                    <Ionicons name="calendar-outline" size={16} color="#6B7280" />
+                  </TouchableOpacity>
                 )}
               </View>
               
@@ -218,24 +210,15 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                     placeholder="選択してください"
                   />
                 ) : (
-                  DateTimePicker && (
-                    <DateTimePicker
-                      value={filters.endDate ? new Date(filters.endDate) : new Date()}
-                      mode="date"
-                      display="default"
-                      onChange={(event, selectedDate) => {
-                        if (event.type === 'set' && selectedDate) {
-                          const dateString = selectedDate.toISOString().split('T')[0];
-                          onFiltersChange({
-                            ...filters,
-                            endDate: dateString,
-                          });
-                        }
-                        // Calendar automatically closes after selection with 'default' display
-                      }}
-                      style={{ alignSelf: 'flex-start' }}
-                    />
-                  )
+                  <TouchableOpacity
+                    onPress={() => setShowDatePicker("end")}
+                    className="flex-row items-center"
+                  >
+                    <Text className="text-gray-800 flex-1">
+                      {formatDateForDisplay(filters.endDate)}
+                    </Text>
+                    <Ionicons name="calendar-outline" size={16} color="#6B7280" />
+                  </TouchableOpacity>
                 )}
               </View>
             </View>
@@ -297,6 +280,34 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
           </View>
         </TouchableOpacity>
       </Modal>
+
+      {/* DateTimePicker for iOS/Android */}
+      {showDatePicker && Platform.OS !== 'web' && DateTimePicker && (
+        <DateTimePicker
+          value={filters[showDatePicker === "start" ? "startDate" : "endDate"] 
+                ? new Date(filters[showDatePicker === "start" ? "startDate" : "endDate"]!) 
+                : new Date()}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            setShowDatePicker(null);
+            if (event.type === 'set' && selectedDate) {
+              const dateString = selectedDate.toISOString().split('T')[0];
+              if (showDatePicker === "start") {
+                onFiltersChange({
+                  ...filters,
+                  startDate: dateString,
+                });
+              } else if (showDatePicker === "end") {
+                onFiltersChange({
+                  ...filters,
+                  endDate: dateString,
+                });
+              }
+            }
+          }}
+        />
+      )}
     </View>
   );
 }
