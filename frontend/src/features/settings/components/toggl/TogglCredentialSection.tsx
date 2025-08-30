@@ -1,13 +1,19 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Modal, ActivityIndicator } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
-import { CredentialCard } from './CredentialCard'
-import { TogglCredentialForm } from './TogglCredentialForm'
-import { useApiCredentials } from '../hooks/useApiCredentials'
-import type { components } from '@/types/api'
-import type { TogglCredentialFormData } from '../schemas/togglCredential'
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  ActivityIndicator,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { CredentialCard } from "../CredentialCard";
+import { TogglCredentialForm } from "./TogglCredentialForm";
+import { useApiCredentials } from "../../hooks/useApiCredentials";
+import type { components } from "@/types/api";
+import type { TogglCredentialFormData } from "../../schemas/togglCredential";
 
-type TogglCredential = components['schemas']['TogglCredentialResponseDto']
+type TogglCredential = components["schemas"]["TogglCredentialResponseDto"];
 
 export function TogglCredentialSection() {
   const {
@@ -15,47 +21,48 @@ export function TogglCredentialSection() {
     loading,
     saveTogglCredential,
     deleteTogglCredential,
-    testTogglConnection
-  } = useApiCredentials()
-  
-  const [isFormVisible, setIsFormVisible] = useState(false)
-  const [editingCredential, setEditingCredential] = useState<TogglCredential | null>(null)
+    testTogglConnection,
+  } = useApiCredentials();
 
-  const togglCredentials = credentials.toggl
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [editingCredential, setEditingCredential] =
+    useState<TogglCredential | null>(null);
+
+  const togglCredentials = credentials.toggl;
 
   const handleEdit = (credential: TogglCredential) => {
-    setEditingCredential(credential)
-    setIsFormVisible(true)
-  }
+    setEditingCredential(credential);
+    setIsFormVisible(true);
+  };
 
   const handleDelete = async (credential: TogglCredential) => {
     if (credential.id) {
-      await deleteTogglCredential(credential.id)
+      await deleteTogglCredential(credential.id);
     }
-  }
+  };
 
   const handleTest = async (credential: TogglCredential) => {
-    await testTogglConnection()
-  }
+    await testTogglConnection();
+  };
 
   const handleSave = async (data: TogglCredentialFormData) => {
     if (editingCredential) {
       // Note: Update functionality would need to be added to the hook
       // For now, we'll just create a new one
-      await saveTogglCredential(data)
+      await saveTogglCredential(data);
     } else {
       // Create new credential
-      await saveTogglCredential(data)
+      await saveTogglCredential(data);
     }
-    
-    setIsFormVisible(false)
-    setEditingCredential(null)
-  }
+
+    setIsFormVisible(false);
+    setEditingCredential(null);
+  };
 
   const handleCancel = () => {
-    setIsFormVisible(false)
-    setEditingCredential(null)
-  }
+    setIsFormVisible(false);
+    setEditingCredential(null);
+  };
 
   return (
     <View className="p-6">
@@ -67,7 +74,7 @@ export function TogglCredentialSection() {
             Toggl Track認証情報
           </Text>
         </View>
-        
+
         <TouchableOpacity
           onPress={() => setIsFormVisible(true)}
           className="bg-primary px-4 py-2 rounded-lg flex-row items-center space-x-2"
@@ -108,15 +115,17 @@ export function TogglCredentialSection() {
                 Toggl Track認証情報が設定されていません
               </Text>
               <Text className="text-gray-400 mt-2 text-center text-sm">
-                作業時間の記録を取得するために{'\n'}
+                作業時間の記録を取得するために{"\n"}
                 Toggl Track APIの認証情報を追加してください
               </Text>
-              
+
               <TouchableOpacity
                 onPress={() => setIsFormVisible(true)}
                 className="mt-4 bg-primary px-6 py-2 rounded-lg"
               >
-                <Text className="text-white font-medium">最初の認証情報を追加</Text>
+                <Text className="text-white font-medium">
+                  最初の認証情報を追加
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -132,19 +141,19 @@ export function TogglCredentialSection() {
               Toggl Track認証情報について
             </Text>
             <Text className="text-red-700 text-xs leading-4">
-              • 複数のワークスペースやプロジェクトを管理できます{'\n'}
-              • API Tokenを使用して安全に作業時間データを取得します{'\n'}
-              • 日報生成時に指定した期間の作業時間を自動集計します{'\n'}
-              • プロジェクト別、タグ別の時間配分も表示されます
+              • 複数のワークスペースやプロジェクトを管理できます{"\n"}• API
+              Tokenを使用して安全に作業時間データを取得します{"\n"}•
+              日報生成時に指定した期間の作業時間を自動集計します{"\n"}•
+              プロジェクト別、タグ別の時間配分も表示されます
             </Text>
           </View>
         </View>
       </View>
 
       {/* Form Modal */}
-      <Modal 
-        visible={isFormVisible} 
-        animationType="slide" 
+      <Modal
+        visible={isFormVisible}
+        animationType="slide"
         presentationStyle="pageSheet"
       >
         <TogglCredentialForm
@@ -154,5 +163,5 @@ export function TogglCredentialSection() {
         />
       </Modal>
     </View>
-  )
+  );
 }

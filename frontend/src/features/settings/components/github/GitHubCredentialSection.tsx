@@ -1,13 +1,19 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Modal, ActivityIndicator } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
-import { CredentialCard } from './CredentialCard'
-import { GitHubCredentialForm } from './GitHubCredentialForm'
-import { useApiCredentials } from '../hooks/useApiCredentials'
-import type { components } from '@/types/api'
-import type { GitHubCredentialFormData } from '../schemas/gitHubCredential'
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  ActivityIndicator,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { CredentialCard } from "../CredentialCard";
+import { GitHubCredentialForm } from "./GitHubCredentialForm";
+import { useApiCredentials } from "../../hooks/useApiCredentials";
+import type { components } from "@/types/api";
+import type { GitHubCredentialFormData } from "../../schemas/gitHubCredential";
 
-type GitHubCredential = components['schemas']['GitHubCredentialResponseDto']
+type GitHubCredential = components["schemas"]["GitHubCredentialResponseDto"];
 
 export function GitHubCredentialSection() {
   const {
@@ -16,32 +22,33 @@ export function GitHubCredentialSection() {
     saveGitHubCredential,
     updateGitHubCredential,
     deleteGitHubCredential,
-    testGitHubConnection
-  } = useApiCredentials()
-  
-  const [isFormVisible, setIsFormVisible] = useState(false)
-  const [editingCredential, setEditingCredential] = useState<GitHubCredential | null>(null)
+    testGitHubConnection,
+  } = useApiCredentials();
 
-  const gitHubCredentials = credentials.github
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [editingCredential, setEditingCredential] =
+    useState<GitHubCredential | null>(null);
+
+  const gitHubCredentials = credentials.github;
 
   const handleEdit = (credential: GitHubCredential) => {
-    setEditingCredential(credential)
-    setIsFormVisible(true)
-  }
+    setEditingCredential(credential);
+    setIsFormVisible(true);
+  };
 
   const handleDelete = async (credential: GitHubCredential) => {
     if (credential.id) {
-      await deleteGitHubCredential(credential.id)
+      await deleteGitHubCredential(credential.id);
     }
-  }
+  };
 
   const handleTest = async (credential: GitHubCredential) => {
     if (credential.owner && credential.repo) {
-      await testGitHubConnection(credential.owner, credential.repo)
+      await testGitHubConnection(credential.owner, credential.repo);
     } else {
-      throw new Error('リポジトリ情報が不完全です')
+      throw new Error("リポジトリ情報が不完全です");
     }
-  }
+  };
 
   const handleSave = async (data: GitHubCredentialFormData) => {
     if (editingCredential) {
@@ -52,22 +59,22 @@ export function GitHubCredentialSection() {
           baseUrl: data.baseUrl,
           owner: data.owner,
           repo: data.repo,
-          isActive: true
-        })
+          isActive: true,
+        });
       }
     } else {
       // Create new credential
-      await saveGitHubCredential(data)
+      await saveGitHubCredential(data);
     }
-    
-    setIsFormVisible(false)
-    setEditingCredential(null)
-  }
+
+    setIsFormVisible(false);
+    setEditingCredential(null);
+  };
 
   const handleCancel = () => {
-    setIsFormVisible(false)
-    setEditingCredential(null)
-  }
+    setIsFormVisible(false);
+    setEditingCredential(null);
+  };
 
   return (
     <View className="p-6">
@@ -79,7 +86,7 @@ export function GitHubCredentialSection() {
             GitHub認証情報
           </Text>
         </View>
-        
+
         <TouchableOpacity
           onPress={() => setIsFormVisible(true)}
           className="bg-primary px-4 py-2 rounded-lg flex-row items-center space-x-2"
@@ -120,15 +127,17 @@ export function GitHubCredentialSection() {
                 GitHub認証情報が設定されていません
               </Text>
               <Text className="text-gray-400 mt-2 text-center text-sm">
-                コミットやPull Requestの情報を取得するために{'\n'}
+                コミットやPull Requestの情報を取得するために{"\n"}
                 GitHub APIの認証情報を追加してください
               </Text>
-              
+
               <TouchableOpacity
                 onPress={() => setIsFormVisible(true)}
                 className="mt-4 bg-primary px-6 py-2 rounded-lg"
               >
-                <Text className="text-white font-medium">最初の認証情報を追加</Text>
+                <Text className="text-white font-medium">
+                  最初の認証情報を追加
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -144,18 +153,18 @@ export function GitHubCredentialSection() {
               GitHub認証情報について
             </Text>
             <Text className="text-blue-700 text-xs leading-4">
-              • 複数のリポジトリやアカウントの認証情報を管理できます{'\n'}
-              • Personal Access Tokenを使用して安全に認証します{'\n'}
-              • 日報生成時にコミットやPRの情報を自動取得します
+              • 複数のリポジトリやアカウントの認証情報を管理できます{"\n"}•
+              Personal Access Tokenを使用して安全に認証します{"\n"}•
+              日報生成時にコミットやPRの情報を自動取得します
             </Text>
           </View>
         </View>
       </View>
 
       {/* Form Modal */}
-      <Modal 
-        visible={isFormVisible} 
-        animationType="slide" 
+      <Modal
+        visible={isFormVisible}
+        animationType="slide"
         presentationStyle="pageSheet"
       >
         <GitHubCredentialForm
@@ -165,5 +174,5 @@ export function GitHubCredentialSection() {
         />
       </Modal>
     </View>
-  )
+  );
 }

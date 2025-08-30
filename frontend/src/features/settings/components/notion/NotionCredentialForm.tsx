@@ -1,55 +1,66 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
-import { useForm } from '@tanstack/react-form'
-import { notionCredentialSchema, type NotionCredentialFormData } from '../schemas/notionCredential'
-import type { components } from '@/types/api'
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useForm } from "@tanstack/react-form";
+import {
+  notionCredentialSchema,
+  type NotionCredentialFormData,
+} from "../../schemas/notionCredential";
+import type { components } from "@/types/api";
 
-type NotionCredential = components['schemas']['NotionCredentialResponseDto']
+type NotionCredential = components["schemas"]["NotionCredentialResponseDto"];
 
 interface NotionCredentialFormProps {
-  initialData?: NotionCredential | null
-  onSave: (data: NotionCredentialFormData) => Promise<void>
-  onCancel: () => void
+  initialData?: NotionCredential | null;
+  onSave: (data: NotionCredentialFormData) => Promise<void>;
+  onCancel: () => void;
 }
 
-export function NotionCredentialForm({ 
-  initialData, 
-  onSave, 
-  onCancel 
+export function NotionCredentialForm({
+  initialData,
+  onSave,
+  onCancel,
 }: NotionCredentialFormProps) {
-  const [showApiKey, setShowApiKey] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm({
     defaultValues: {
-      apiKey: initialData?.maskedApiKey?.includes('****') ? '' : (initialData?.maskedApiKey || ''),
-      databaseId: initialData?.databaseId || '',
-      titleProperty: initialData?.titleProperty || 'Name',
-      statusProperty: initialData?.statusProperty || 'Status',
-      dateProperty: initialData?.dateProperty || 'Date',
-      filterConditions: initialData?.filterConditions || {}
+      apiKey: initialData?.maskedApiKey?.includes("****")
+        ? ""
+        : initialData?.maskedApiKey || "",
+      databaseId: initialData?.databaseId || "",
+      titleProperty: initialData?.titleProperty || "Name",
+      statusProperty: initialData?.statusProperty || "Status",
+      dateProperty: initialData?.dateProperty || "Date",
+      filterConditions: initialData?.filterConditions || {},
     } as NotionCredentialFormData,
-    
+
     onSubmit: async ({ value }) => {
-      setIsSaving(true)
+      setIsSaving(true);
       try {
-        const result = notionCredentialSchema.safeParse(value)
+        const result = notionCredentialSchema.safeParse(value);
         if (!result.success) {
-          const firstError = result.error.issues[0]
-          Alert.alert('バリデーションエラー', firstError.message)
-          return
+          const firstError = result.error.issues[0];
+          Alert.alert("バリデーションエラー", firstError.message);
+          return;
         }
-        
-        await onSave(result.data)
+
+        await onSave(result.data);
       } catch (error) {
         // Error handling is done in the hook
       } finally {
-        setIsSaving(false)
+        setIsSaving(false);
       }
     },
-    
-  })
+  });
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -57,7 +68,7 @@ export function NotionCredentialForm({
         {/* Header */}
         <View className="flex-row items-center justify-between mb-6">
           <Text className="text-xl font-bold text-gray-800">
-            Notion認証情報{initialData ? '編集' : '追加'}
+            Notion認証情報{initialData ? "編集" : "追加"}
           </Text>
           <TouchableOpacity onPress={onCancel}>
             <Ionicons name="close" size={24} color="gray" />
@@ -70,7 +81,8 @@ export function NotionCredentialForm({
             {(field) => (
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-2">
-                  Notion Integration Token <Text className="text-red-500">*</Text>
+                  Notion Integration Token{" "}
+                  <Text className="text-red-500">*</Text>
                 </Text>
                 <View className="relative">
                   <TextInput
@@ -82,22 +94,23 @@ export function NotionCredentialForm({
                     className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
                     multiline={false}
                   />
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     onPress={() => setShowApiKey(!showApiKey)}
                     className="absolute right-3 top-3"
                   >
-                    <Ionicons 
-                      name={showApiKey ? "eye-off" : "eye"} 
-                      size={20} 
-                      color="gray" 
+                    <Ionicons
+                      name={showApiKey ? "eye-off" : "eye"}
+                      size={20}
+                      color="gray"
                     />
                   </TouchableOpacity>
                 </View>
-                {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                  <Text className="text-red-500 text-xs mt-1">
-                    {String(field.state.meta.errors[0])}
-                  </Text>
-                )}
+                {field.state.meta.errors &&
+                  field.state.meta.errors.length > 0 && (
+                    <Text className="text-red-500 text-xs mt-1">
+                      {String(field.state.meta.errors[0])}
+                    </Text>
+                  )}
                 <Text className="text-gray-500 text-xs mt-1">
                   Notion → Settings → Integrations → New integrationで作成
                 </Text>
@@ -119,11 +132,12 @@ export function NotionCredentialForm({
                   placeholder="123e4567-e89b-12d3-a456-426614174000"
                   className="border border-gray-300 rounded-lg p-3 text-sm"
                 />
-                {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                  <Text className="text-red-500 text-xs mt-1">
-                    {String(field.state.meta.errors[0])}
-                  </Text>
-                )}
+                {field.state.meta.errors &&
+                  field.state.meta.errors.length > 0 && (
+                    <Text className="text-red-500 text-xs mt-1">
+                      {String(field.state.meta.errors[0])}
+                    </Text>
+                  )}
                 <Text className="text-gray-500 text-xs mt-1">
                   データベースURLから32文字のUUIDを取得してください
                 </Text>
@@ -136,12 +150,14 @@ export function NotionCredentialForm({
             <Text className="text-sm font-medium text-gray-700 mb-3">
               データベースプロパティ設定
             </Text>
-            
+
             {/* Title Property */}
             <form.Field name="titleProperty">
               {(field) => (
                 <View className="mb-3">
-                  <Text className="text-xs text-gray-600 mb-1">タイトルプロパティ名</Text>
+                  <Text className="text-xs text-gray-600 mb-1">
+                    タイトルプロパティ名
+                  </Text>
                   <TextInput
                     value={field.state.value}
                     onChangeText={field.handleChange}
@@ -149,11 +165,12 @@ export function NotionCredentialForm({
                     placeholder="Name"
                     className="border border-gray-300 rounded-lg p-3 text-sm"
                   />
-                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {String(field.state.meta.errors[0])}
-                    </Text>
-                  )}
+                  {field.state.meta.errors &&
+                    field.state.meta.errors.length > 0 && (
+                      <Text className="text-red-500 text-xs mt-1">
+                        {String(field.state.meta.errors[0])}
+                      </Text>
+                    )}
                 </View>
               )}
             </form.Field>
@@ -162,7 +179,9 @@ export function NotionCredentialForm({
             <form.Field name="statusProperty">
               {(field) => (
                 <View className="mb-3">
-                  <Text className="text-xs text-gray-600 mb-1">ステータスプロパティ名</Text>
+                  <Text className="text-xs text-gray-600 mb-1">
+                    ステータスプロパティ名
+                  </Text>
                   <TextInput
                     value={field.state.value}
                     onChangeText={field.handleChange}
@@ -170,11 +189,12 @@ export function NotionCredentialForm({
                     placeholder="Status"
                     className="border border-gray-300 rounded-lg p-3 text-sm"
                   />
-                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {String(field.state.meta.errors[0])}
-                    </Text>
-                  )}
+                  {field.state.meta.errors &&
+                    field.state.meta.errors.length > 0 && (
+                      <Text className="text-red-500 text-xs mt-1">
+                        {String(field.state.meta.errors[0])}
+                      </Text>
+                    )}
                 </View>
               )}
             </form.Field>
@@ -183,7 +203,9 @@ export function NotionCredentialForm({
             <form.Field name="dateProperty">
               {(field) => (
                 <View className="mb-3">
-                  <Text className="text-xs text-gray-600 mb-1">日付プロパティ名</Text>
+                  <Text className="text-xs text-gray-600 mb-1">
+                    日付プロパティ名
+                  </Text>
                   <TextInput
                     value={field.state.value}
                     onChangeText={field.handleChange}
@@ -191,11 +213,12 @@ export function NotionCredentialForm({
                     placeholder="Date"
                     className="border border-gray-300 rounded-lg p-3 text-sm"
                   />
-                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {String(field.state.meta.errors[0])}
-                    </Text>
-                  )}
+                  {field.state.meta.errors &&
+                    field.state.meta.errors.length > 0 && (
+                      <Text className="text-red-500 text-xs mt-1">
+                        {String(field.state.meta.errors[0])}
+                      </Text>
+                    )}
                 </View>
               )}
             </form.Field>
@@ -210,9 +233,9 @@ export function NotionCredentialForm({
                   Integration作成手順
                 </Text>
                 <Text className="text-gray-700 text-xs leading-4">
-                  1. notion.so/my-integrations にアクセス{'\n'}
-                  2. 「+ New integration」をクリック{'\n'}
-                  3. 名前を設定（例：Nippogen）{'\n'}
+                  1. notion.so/my-integrations にアクセス{"\n"}
+                  2. 「+ New integration」をクリック{"\n"}
+                  3. 名前を設定（例：Nippogen）{"\n"}
                   4. 「Submit」をクリックしてトークンをコピー
                 </Text>
               </View>
@@ -227,8 +250,8 @@ export function NotionCredentialForm({
                   データベース接続設定
                 </Text>
                 <Text className="text-yellow-700 text-xs leading-4">
-                  Integrationを作成後、使用するNotionデータベースの{'\n'}
-                  「...」→「Connect to」→作成したIntegrationを選択{'\n'}
+                  Integrationを作成後、使用するNotionデータベースの{"\n"}
+                  「...」→「Connect to」→作成したIntegrationを選択{"\n"}
                   してください。これによりAPIからアクセス可能になります。
                 </Text>
               </View>
@@ -245,9 +268,12 @@ export function NotionCredentialForm({
                 キャンセル
               </Text>
             </TouchableOpacity>
-            
+
             <form.Subscribe
-              selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
+              selector={(state) => ({
+                canSubmit: state.canSubmit,
+                isSubmitting: state.isSubmitting,
+              })}
             >
               {({ canSubmit, isSubmitting }) => (
                 <TouchableOpacity
@@ -255,12 +281,12 @@ export function NotionCredentialForm({
                   disabled={!canSubmit || isSubmitting || isSaving}
                   className={`flex-1 py-3 rounded-lg ${
                     canSubmit && !isSubmitting && !isSaving
-                      ? 'bg-primary' 
-                      : 'bg-gray-400'
+                      ? "bg-primary"
+                      : "bg-gray-400"
                   }`}
                 >
                   <Text className="text-white text-center font-medium">
-                    {isSaving ? '保存中...' : initialData ? '更新' : '保存'}
+                    {isSaving ? "保存中..." : initialData ? "更新" : "保存"}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -269,5 +295,5 @@ export function NotionCredentialForm({
         </View>
       </View>
     </ScrollView>
-  )
+  );
 }

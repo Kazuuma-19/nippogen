@@ -1,55 +1,67 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, Switch } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
-import { useForm } from '@tanstack/react-form'
-import { togglCredentialSchema, type TogglCredentialFormData } from '../schemas/togglCredential'
-import type { components } from '@/types/api'
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  Switch,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useForm } from "@tanstack/react-form";
+import {
+  togglCredentialSchema,
+  type TogglCredentialFormData,
+} from "../../schemas/togglCredential";
+import type { components } from "@/types/api";
 
-type TogglCredential = components['schemas']['TogglCredentialResponseDto']
+type TogglCredential = components["schemas"]["TogglCredentialResponseDto"];
 
 interface TogglCredentialFormProps {
-  initialData?: TogglCredential | null
-  onSave: (data: TogglCredentialFormData) => Promise<void>
-  onCancel: () => void
+  initialData?: TogglCredential | null;
+  onSave: (data: TogglCredentialFormData) => Promise<void>;
+  onCancel: () => void;
 }
 
-export function TogglCredentialForm({ 
-  initialData, 
-  onSave, 
-  onCancel 
+export function TogglCredentialForm({
+  initialData,
+  onSave,
+  onCancel,
 }: TogglCredentialFormProps) {
-  const [showApiKey, setShowApiKey] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm({
     defaultValues: {
-      apiKey: initialData?.maskedApiKey?.includes('****') ? '' : (initialData?.maskedApiKey || ''),
+      apiKey: initialData?.maskedApiKey?.includes("****")
+        ? ""
+        : initialData?.maskedApiKey || "",
       workspaceId: initialData?.workspaceId || undefined,
       projectIds: initialData?.projectIds || [],
       defaultTags: initialData?.defaultTags || [],
-      timeZone: initialData?.timeZone || 'UTC',
-      includeWeekends: initialData?.includeWeekends || false
+      timeZone: initialData?.timeZone || "UTC",
+      includeWeekends: initialData?.includeWeekends || false,
     } as TogglCredentialFormData,
-    
+
     onSubmit: async ({ value }) => {
-      setIsSaving(true)
+      setIsSaving(true);
       try {
-        const result = togglCredentialSchema.safeParse(value)
+        const result = togglCredentialSchema.safeParse(value);
         if (!result.success) {
-          const firstError = result.error.issues[0]
-          Alert.alert('バリデーションエラー', firstError.message)
-          return
+          const firstError = result.error.issues[0];
+          Alert.alert("バリデーションエラー", firstError.message);
+          return;
         }
-        
-        await onSave(result.data)
+
+        await onSave(result.data);
       } catch (error) {
         // Error handling is done in the hook
       } finally {
-        setIsSaving(false)
+        setIsSaving(false);
       }
     },
-    
-  })
+  });
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -57,7 +69,7 @@ export function TogglCredentialForm({
         {/* Header */}
         <View className="flex-row items-center justify-between mb-6">
           <Text className="text-xl font-bold text-gray-800">
-            Toggl認証情報{initialData ? '編集' : '追加'}
+            Toggl認証情報{initialData ? "編集" : "追加"}
           </Text>
           <TouchableOpacity onPress={onCancel}>
             <Ionicons name="close" size={24} color="gray" />
@@ -82,22 +94,23 @@ export function TogglCredentialForm({
                     className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
                     multiline={false}
                   />
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     onPress={() => setShowApiKey(!showApiKey)}
                     className="absolute right-3 top-3"
                   >
-                    <Ionicons 
-                      name={showApiKey ? "eye-off" : "eye"} 
-                      size={20} 
-                      color="gray" 
+                    <Ionicons
+                      name={showApiKey ? "eye-off" : "eye"}
+                      size={20}
+                      color="gray"
                     />
                   </TouchableOpacity>
                 </View>
-                {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                  <Text className="text-red-500 text-xs mt-1">
-                    {String(field.state.meta.errors[0])}
-                  </Text>
-                )}
+                {field.state.meta.errors &&
+                  field.state.meta.errors.length > 0 && (
+                    <Text className="text-red-500 text-xs mt-1">
+                      {String(field.state.meta.errors[0])}
+                    </Text>
+                  )}
                 <Text className="text-gray-500 text-xs mt-1">
                   Toggl Track → Profile Settings → API Tokenで取得
                 </Text>
@@ -113,21 +126,22 @@ export function TogglCredentialForm({
                   ワークスペースID
                 </Text>
                 <TextInput
-                  value={field.state.value?.toString() || ''}
+                  value={field.state.value?.toString() || ""}
                   onChangeText={(text) => {
-                    const num = parseInt(text, 10)
-                    field.handleChange(isNaN(num) ? undefined : num)
+                    const num = parseInt(text, 10);
+                    field.handleChange(isNaN(num) ? undefined : num);
                   }}
                   onBlur={field.handleBlur}
                   placeholder="12345"
                   className="border border-gray-300 rounded-lg p-3 text-sm"
                   keyboardType="numeric"
                 />
-                {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                  <Text className="text-red-500 text-xs mt-1">
-                    {String(field.state.meta.errors[0])}
-                  </Text>
-                )}
+                {field.state.meta.errors &&
+                  field.state.meta.errors.length > 0 && (
+                    <Text className="text-red-500 text-xs mt-1">
+                      {String(field.state.meta.errors[0])}
+                    </Text>
+                  )}
                 <Text className="text-gray-500 text-xs mt-1">
                   APIテスト後に自動取得されます（任意）
                 </Text>
@@ -143,21 +157,25 @@ export function TogglCredentialForm({
                   デフォルトタグ
                 </Text>
                 <TextInput
-                  value={field.state.value.join(', ')}
+                  value={field.state.value.join(", ")}
                   onChangeText={(text) => {
-                    const tags = text.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
-                    field.handleChange(tags)
+                    const tags = text
+                      .split(",")
+                      .map((tag) => tag.trim())
+                      .filter((tag) => tag.length > 0);
+                    field.handleChange(tags);
                   }}
                   onBlur={field.handleBlur}
                   placeholder="development, backend, project-name"
                   className="border border-gray-300 rounded-lg p-3 text-sm"
                   multiline
                 />
-                {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                  <Text className="text-red-500 text-xs mt-1">
-                    {String(field.state.meta.errors[0])}
-                  </Text>
-                )}
+                {field.state.meta.errors &&
+                  field.state.meta.errors.length > 0 && (
+                    <Text className="text-red-500 text-xs mt-1">
+                      {String(field.state.meta.errors[0])}
+                    </Text>
+                  )}
                 <Text className="text-gray-500 text-xs mt-1">
                   カンマ区切りで複数のタグを入力できます
                 </Text>
@@ -179,11 +197,12 @@ export function TogglCredentialForm({
                   placeholder="Asia/Tokyo"
                   className="border border-gray-300 rounded-lg p-3 text-sm"
                 />
-                {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-                  <Text className="text-red-500 text-xs mt-1">
-                    {String(field.state.meta.errors[0])}
-                  </Text>
-                )}
+                {field.state.meta.errors &&
+                  field.state.meta.errors.length > 0 && (
+                    <Text className="text-red-500 text-xs mt-1">
+                      {String(field.state.meta.errors[0])}
+                    </Text>
+                  )}
                 <Text className="text-gray-500 text-xs mt-1">
                   例: Asia/Tokyo, America/New_York, Europe/London
                 </Text>
@@ -207,8 +226,8 @@ export function TogglCredentialForm({
                   <Switch
                     value={field.state.value}
                     onValueChange={field.handleChange}
-                    trackColor={{ false: '#f3f4f6', true: '#267D00' }}
-                    thumbColor={field.state.value ? '#ffffff' : '#ffffff'}
+                    trackColor={{ false: "#f3f4f6", true: "#267D00" }}
+                    thumbColor={field.state.value ? "#ffffff" : "#ffffff"}
                   />
                 </View>
               </View>
@@ -224,9 +243,9 @@ export function TogglCredentialForm({
                   API Token取得方法
                 </Text>
                 <Text className="text-red-700 text-xs leading-4">
-                  1. Toggl Trackにログイン{'\n'}
-                  2. Profile Settings → API Token{'\n'}
-                  3. 「Generate New Token」または既存のTokenをコピー{'\n'}
+                  1. Toggl Trackにログイン{"\n"}
+                  2. Profile Settings → API Token{"\n"}
+                  3. 「Generate New Token」または既存のTokenをコピー{"\n"}
                   4. 必要な権限: Time Entry の読み取り
                 </Text>
               </View>
@@ -243,9 +262,12 @@ export function TogglCredentialForm({
                 キャンセル
               </Text>
             </TouchableOpacity>
-            
+
             <form.Subscribe
-              selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
+              selector={(state) => ({
+                canSubmit: state.canSubmit,
+                isSubmitting: state.isSubmitting,
+              })}
             >
               {({ canSubmit, isSubmitting }) => (
                 <TouchableOpacity
@@ -253,12 +275,12 @@ export function TogglCredentialForm({
                   disabled={!canSubmit || isSubmitting || isSaving}
                   className={`flex-1 py-3 rounded-lg ${
                     canSubmit && !isSubmitting && !isSaving
-                      ? 'bg-primary' 
-                      : 'bg-gray-400'
+                      ? "bg-primary"
+                      : "bg-gray-400"
                   }`}
                 >
                   <Text className="text-white text-center font-medium">
-                    {isSaving ? '保存中...' : initialData ? '更新' : '保存'}
+                    {isSaving ? "保存中..." : initialData ? "更新" : "保存"}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -267,5 +289,5 @@ export function TogglCredentialForm({
         </View>
       </View>
     </ScrollView>
-  )
+  );
 }
