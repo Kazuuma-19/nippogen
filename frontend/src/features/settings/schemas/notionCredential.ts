@@ -12,7 +12,7 @@ export const notionCredentialSchema = z.object({
     .optional()
     .refine(
       (val) => !val || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(val.replace(/-/g, '')),
-      'データベースIDの形式が正しくありません'
+      { message: 'データベースIDの形式が正しくありません' }
     ),
   
   titleProperty: z
@@ -31,7 +31,7 @@ export const notionCredentialSchema = z.object({
     .default('Date'),
   
   filterConditions: z
-    .record(z.unknown())
+    .record(z.string(), z.unknown())
     .optional()
     .default({})
 })

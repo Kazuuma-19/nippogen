@@ -47,9 +47,6 @@ export function GitHubCredentialForm({
       }
     },
     
-    validators: {
-      onChange: gitHubCredentialSchema
-    }
   })
 
   return (
@@ -65,7 +62,7 @@ export function GitHubCredentialForm({
           </TouchableOpacity>
         </View>
 
-        <form.Provider>
+        <View>
           {/* API Key Field */}
           <form.Field name="apiKey">
             {(field) => (
@@ -96,7 +93,7 @@ export function GitHubCredentialForm({
                 </View>
                 {field.state.meta.errors && field.state.meta.errors.length > 0 && (
                   <Text className="text-red-500 text-xs mt-1">
-                    {field.state.meta.errors[0]?.toString()}
+                    {String(field.state.meta.errors[0])}
                   </Text>
                 )}
                 <Text className="text-gray-500 text-xs mt-1">
@@ -123,7 +120,7 @@ export function GitHubCredentialForm({
                 />
                 {field.state.meta.errors && field.state.meta.errors.length > 0 && (
                   <Text className="text-red-500 text-xs mt-1">
-                    {field.state.meta.errors[0]?.toString()}
+                    {String(field.state.meta.errors[0])}
                   </Text>
                 )}
                 <Text className="text-gray-500 text-xs mt-1">
@@ -154,7 +151,7 @@ export function GitHubCredentialForm({
                     />
                     {field.state.meta.errors && field.state.meta.errors.length > 0 && (
                       <Text className="text-red-500 text-xs mt-1">
-                        {field.state.meta.errors[0]?.toString()}
+                        {String(field.state.meta.errors[0])}
                       </Text>
                     )}
                   </View>
@@ -175,7 +172,7 @@ export function GitHubCredentialForm({
                     />
                     {field.state.meta.errors && field.state.meta.errors.length > 0 && (
                       <Text className="text-red-500 text-xs mt-1">
-                        {field.state.meta.errors[0]?.toString()}
+                        {String(field.state.meta.errors[0])}
                       </Text>
                     )}
                   </View>
@@ -212,8 +209,10 @@ export function GitHubCredentialForm({
               </Text>
             </TouchableOpacity>
             
-            <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-              {([canSubmit, isSubmitting]) => (
+            <form.Subscribe
+              selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
+            >
+              {({ canSubmit, isSubmitting }) => (
                 <TouchableOpacity
                   onPress={form.handleSubmit}
                   disabled={!canSubmit || isSubmitting || isSaving}
@@ -230,7 +229,7 @@ export function GitHubCredentialForm({
               )}
             </form.Subscribe>
           </View>
-        </form.Provider>
+        </View>
       </View>
     </ScrollView>
   )
