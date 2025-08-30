@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, Modal, Platform } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-// Conditional import for DateTimePicker (not available on web)
-let DateTimePicker: any = null;
-if (Platform.OS !== 'web') {
-  DateTimePicker = require('@react-native-community/datetimepicker').default;
-}
+import DateInput from "./DateInput";
 
 export interface FilterOptions {
   startDate?: string;
@@ -28,13 +29,17 @@ const statusOptions = [
   { value: "APPROVED" as const, label: "承認済み" },
 ];
 
-export default function ReportFilter({ filters, onFiltersChange, onClearFilters }: ReportFilterProps) {
+export default function ReportFilter({
+  filters,
+  onFiltersChange,
+  onClearFilters,
+}: ReportFilterProps) {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatDateForDisplay = (dateString?: string) => {
     if (!dateString) return "選択してください";
-    
+
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString("ja-JP", {
@@ -46,7 +51,6 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
       return "選択してください";
     }
   };
-
 
   const handleStatusSelect = (status: FilterOptions["status"]) => {
     onFiltersChange({
@@ -74,7 +78,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
   const hasActiveFilters = getActiveFiltersCount() > 0;
 
   const getStatusLabel = (status?: string) => {
-    const option = statusOptions.find(opt => opt.value === status);
+    const option = statusOptions.find((opt) => opt.value === status);
     return option?.label || "すべて";
   };
 
@@ -111,14 +115,16 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
           <Text className="text-gray-700 ml-2 font-medium">フィルター</Text>
           {hasActiveFilters && (
             <View className="bg-blue-500 rounded-full w-5 h-5 items-center justify-center ml-2">
-              <Text className="text-white text-xs font-bold">{getActiveFiltersCount()}</Text>
+              <Text className="text-white text-xs font-bold">
+                {getActiveFiltersCount()}
+              </Text>
             </View>
           )}
         </View>
-        <Ionicons 
-          name={isExpanded ? "chevron-up" : "chevron-down"} 
-          size={20} 
-          color="#6B7280" 
+        <Ionicons
+          name={isExpanded ? "chevron-up" : "chevron-down"}
+          size={20}
+          color="#6B7280"
         />
       </TouchableOpacity>
 
@@ -127,124 +133,50 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
         <View className="px-4 pb-4 bg-gray-50">
           {/* Date Range */}
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">日付範囲</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">
+              日付範囲
+            </Text>
             <View className="flex-row space-x-3">
               <View className="flex-1 bg-white border border-gray-200 rounded-lg p-3">
                 <Text className="text-xs text-gray-500 mb-1">開始日</Text>
-                {Platform.OS === 'web' ? (
-                  <input
-                    type="date"
-                    value={filters.startDate || ''}
-                    onChange={(e: any) => {
-                      const dateString = e.target.value;
-                      onFiltersChange({
-                        ...filters,
-                        startDate: dateString || undefined,
-                      });
-                    }}
-                    onClick={(e: any) => {
-                      try {
-                        if (e.isTrusted) {
-                          e.target.showPicker?.();
-                        }
-                      } catch (error) {
-                        console.log('showPicker not available, using browser default');
-                      }
-                    }}
-                    style={{
-                      width: '100%',
-                      border: 'none',
-                      outline: 'none',
-                      fontSize: '16px',
-                      color: '#1f2937',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer',
-                    }}
-                    placeholder="選択してください"
-                  />
-                ) : (
-                  DateTimePicker && (
-                    <DateTimePicker
-                      value={filters.startDate ? new Date(filters.startDate) : new Date()}
-                      mode="date"
-                      display="compact"
-                      onChange={(event, selectedDate) => {
-                        if (event.type === 'set' && selectedDate) {
-                          const dateString = selectedDate.toISOString().split('T')[0];
-                          onFiltersChange({
-                            ...filters,
-                            startDate: dateString,
-                          });
-                        }
-                      }}
-                    />
-                  )
-                )}
+                <DateInput
+                  value={filters.startDate}
+                  onChange={(dateString) =>
+                    onFiltersChange({
+                      ...filters,
+                      startDate: dateString,
+                    })
+                  }
+                />
               </View>
-              
+
               <View className="flex-1 bg-white border border-gray-200 rounded-lg p-3">
                 <Text className="text-xs text-gray-500 mb-1">終了日</Text>
-                {Platform.OS === 'web' ? (
-                  <input
-                    type="date"
-                    value={filters.endDate || ''}
-                    onChange={(e: any) => {
-                      const dateString = e.target.value;
-                      onFiltersChange({
-                        ...filters,
-                        endDate: dateString || undefined,
-                      });
-                    }}
-                    onClick={(e: any) => {
-                      try {
-                        if (e.isTrusted) {
-                          e.target.showPicker?.();
-                        }
-                      } catch (error) {
-                        console.log('showPicker not available, using browser default');
-                      }
-                    }}
-                    style={{
-                      width: '100%',
-                      border: 'none',
-                      outline: 'none',
-                      fontSize: '16px',
-                      color: '#1f2937',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer',
-                    }}
-                    placeholder="選択してください"
-                  />
-                ) : (
-                  DateTimePicker && (
-                    <DateTimePicker
-                      value={filters.endDate ? new Date(filters.endDate) : new Date()}
-                      mode="date"
-                      display="compact"
-                      onChange={(event, selectedDate) => {
-                        if (event.type === 'set' && selectedDate) {
-                          const dateString = selectedDate.toISOString().split('T')[0];
-                          onFiltersChange({
-                            ...filters,
-                            endDate: dateString,
-                          });
-                        }
-                      }}
-                    />
-                  )
-                )}
+                <DateInput
+                  value={filters.endDate}
+                  onChange={(dateString) =>
+                    onFiltersChange({
+                      ...filters,
+                      endDate: dateString,
+                    })
+                  }
+                />
               </View>
             </View>
           </View>
 
           {/* Status Filter */}
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">ステータス</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">
+              ステータス
+            </Text>
             <TouchableOpacity
               className="bg-white border border-gray-200 rounded-lg p-3"
               onPress={() => setShowStatusModal(true)}
             >
-              <Text className="text-gray-800">{getStatusLabel(filters.status)}</Text>
+              <Text className="text-gray-800">
+                {getStatusLabel(filters.status)}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -254,12 +186,13 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
               className="bg-gray-200 rounded-lg p-3 items-center"
               onPress={onClearFilters}
             >
-              <Text className="text-gray-700 font-medium">フィルターをクリア</Text>
+              <Text className="text-gray-700 font-medium">
+                フィルターをクリア
+              </Text>
             </TouchableOpacity>
           )}
         </View>
       )}
-
 
       {/* Status Selection Modal */}
       <Modal
@@ -274,8 +207,10 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
           onPress={() => setShowStatusModal(false)}
         >
           <View className="bg-white rounded-lg m-4 p-4 min-w-[280px]">
-            <Text className="text-lg font-bold text-gray-800 mb-4">ステータスを選択</Text>
-            
+            <Text className="text-lg font-bold text-gray-800 mb-4">
+              ステータスを選択
+            </Text>
+
             {statusOptions.map((option, index) => (
               <TouchableOpacity
                 key={index}
@@ -293,7 +228,6 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
           </View>
         </TouchableOpacity>
       </Modal>
-
     </View>
   );
 }
