@@ -29,10 +29,8 @@ const statusOptions = [
 ];
 
 export default function ReportFilter({ filters, onFiltersChange, onClearFilters }: ReportFilterProps) {
-  const [showDatePicker, setShowDatePicker] = useState<"start" | "end" | null>(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [tempDate, setTempDate] = useState(new Date());
 
   const formatDateForDisplay = (dateString?: string) => {
     if (!dateString) return "選択してください";
@@ -145,13 +143,11 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       });
                     }}
                     onClick={(e: any) => {
-                      // Only call showPicker on direct user click
                       try {
                         if (e.isTrusted) {
                           e.target.showPicker?.();
                         }
                       } catch (error) {
-                        // Fallback: let the browser handle the click naturally
                         console.log('showPicker not available, using browser default');
                       }
                     }}
@@ -163,24 +159,27 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       color: '#1f2937',
                       backgroundColor: 'transparent',
                       cursor: 'pointer',
-                      appearance: 'none',
-                      WebkitAppearance: 'none',
-                      MozAppearance: 'none',
                     }}
                     placeholder="選択してください"
                   />
                 ) : (
-                  <TouchableOpacity
-                    onPress={() => {
-                      const currentDate = filters.startDate ? new Date(filters.startDate) : new Date();
-                      setTempDate(currentDate);
-                      setShowDatePicker("start");
-                    }}
-                  >
-                    <Text className="text-gray-800">
-                      {formatDateForDisplay(filters.startDate)}
-                    </Text>
-                  </TouchableOpacity>
+                  DateTimePicker && (
+                    <DateTimePicker
+                      value={filters.startDate ? new Date(filters.startDate) : new Date()}
+                      mode="date"
+                      display="compact"
+                      onChange={(event, selectedDate) => {
+                        if (event.type === 'set' && selectedDate) {
+                          const dateString = selectedDate.toISOString().split('T')[0];
+                          onFiltersChange({
+                            ...filters,
+                            startDate: dateString,
+                          });
+                        }
+                      }}
+                      style={{ alignSelf: 'flex-start' }}
+                    />
+                  )
                 )}
               </View>
               
@@ -198,13 +197,11 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       });
                     }}
                     onClick={(e: any) => {
-                      // Only call showPicker on direct user click
                       try {
                         if (e.isTrusted) {
                           e.target.showPicker?.();
                         }
                       } catch (error) {
-                        // Fallback: let the browser handle the click naturally
                         console.log('showPicker not available, using browser default');
                       }
                     }}
@@ -216,24 +213,27 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       color: '#1f2937',
                       backgroundColor: 'transparent',
                       cursor: 'pointer',
-                      appearance: 'none',
-                      WebkitAppearance: 'none',
-                      MozAppearance: 'none',
                     }}
                     placeholder="選択してください"
                   />
                 ) : (
-                  <TouchableOpacity
-                    onPress={() => {
-                      const currentDate = filters.endDate ? new Date(filters.endDate) : new Date();
-                      setTempDate(currentDate);
-                      setShowDatePicker("end");
-                    }}
-                  >
-                    <Text className="text-gray-800">
-                      {formatDateForDisplay(filters.endDate)}
-                    </Text>
-                  </TouchableOpacity>
+                  DateTimePicker && (
+                    <DateTimePicker
+                      value={filters.endDate ? new Date(filters.endDate) : new Date()}
+                      mode="date"
+                      display="compact"
+                      onChange={(event, selectedDate) => {
+                        if (event.type === 'set' && selectedDate) {
+                          const dateString = selectedDate.toISOString().split('T')[0];
+                          onFiltersChange({
+                            ...filters,
+                            endDate: dateString,
+                          });
+                        }
+                      }}
+                      style={{ alignSelf: 'flex-start' }}
+                    />
+                  )
                 )}
               </View>
             </View>
@@ -295,33 +295,6 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
           </View>
         </TouchableOpacity>
       </Modal>
-
-      {/* DateTimePicker - Show when needed (iOS/Android) */}
-      {showDatePicker && Platform.OS !== 'web' && DateTimePicker && (
-        <DateTimePicker
-          value={tempDate}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(null);
-            if (event.type === 'set' && selectedDate) {
-              const dateString = selectedDate.toISOString().split('T')[0];
-              if (showDatePicker === "start") {
-                onFiltersChange({
-                  ...filters,
-                  startDate: dateString,
-                });
-              } else if (showDatePicker === "end") {
-                onFiltersChange({
-                  ...filters,
-                  endDate: dateString,
-                });
-              }
-            }
-            // If user cancels (event.type === 'dismissed'), do nothing
-          }}
-        />
-      )}
     </View>
   );
 }
