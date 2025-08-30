@@ -33,6 +33,9 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [tempDate, setTempDate] = useState(new Date());
+  
+  // Force re-render when showDatePicker changes
+  const [pickerKey, setPickerKey] = useState(0);
 
   const formatDateForDisplay = (dateString?: string) => {
     if (!dateString) return "選択してください";
@@ -175,7 +178,11 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       onPress={() => {
                         const currentDate = filters.startDate ? new Date(filters.startDate) : new Date();
                         setTempDate(currentDate);
-                        setShowDatePicker("start");
+                        setPickerKey(prev => prev + 1);
+                        // Use setTimeout to ensure state is updated before showing picker
+                        setTimeout(() => {
+                          setShowDatePicker("start");
+                        }, 0);
                       }}
                     >
                       <Text className="text-gray-800">
@@ -186,6 +193,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                     {/* DateTimePicker for immediate display */}
                     {showDatePicker === "start" && DateTimePicker && (
                       <DateTimePicker
+                        key={`start-${pickerKey}`}
                         value={tempDate}
                         mode="date"
                         display="default"
@@ -250,7 +258,11 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       onPress={() => {
                         const currentDate = filters.endDate ? new Date(filters.endDate) : new Date();
                         setTempDate(currentDate);
-                        setShowDatePicker("end");
+                        setPickerKey(prev => prev + 1);
+                        // Use setTimeout to ensure state is updated before showing picker
+                        setTimeout(() => {
+                          setShowDatePicker("end");
+                        }, 0);
                       }}
                     >
                       <Text className="text-gray-800">
@@ -261,6 +273,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                     {/* DateTimePicker for immediate display */}
                     {showDatePicker === "end" && DateTimePicker && (
                       <DateTimePicker
+                        key={`end-${pickerKey}`}
                         value={tempDate}
                         mode="date"
                         display="default"
