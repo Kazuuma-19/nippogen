@@ -5,10 +5,10 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useForm } from "@tanstack/react-form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   gitHubCredentialSchema,
   type GitHubCredentialFormData,
@@ -31,7 +31,8 @@ export function GitHubCredentialForm({
   const [showApiKey, setShowApiKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const form = useForm({
+  const form = useForm<GitHubCredentialFormData>({
+    resolver: zodResolver(gitHubCredentialSchema),
     defaultValues: {
       apiKey: initialData?.maskedApiKey?.includes("****")
         ? ""
@@ -39,26 +40,19 @@ export function GitHubCredentialForm({
       baseUrl: initialData?.baseUrl || "https://api.github.com",
       owner: initialData?.owner || "",
       repo: initialData?.repo || "",
-    } as GitHubCredentialFormData,
-
-    onSubmit: async ({ value }) => {
-      setIsSaving(true);
-      try {
-        const result = gitHubCredentialSchema.safeParse(value);
-        if (!result.success) {
-          const firstError = result.error.issues[0];
-          Alert.alert("バリデーションエラー", firstError.message);
-          return;
-        }
-
-        await onSave(result.data);
-      } catch (error) {
-        // Error handling is done in the hook
-      } finally {
-        setIsSaving(false);
-      }
     },
   });
+
+  const onSubmit = async (data: GitHubCredentialFormData) => {
+    setIsSaving(true);
+    try {
+      await onSave(data);
+    } catch (error) {
+      // Error handling is done in the hook
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -75,74 +69,60 @@ export function GitHubCredentialForm({
 
         <View>
           {/* API Key Field */}
-          <form.Field name="apiKey">
-            {(field) => (
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-2">
-                  GitHub API Token <Text className="text-red-500">*</Text>
-                </Text>
-                <View className="relative">
-                  <TextInput
-                    value={field.state.value}
-                    onChangeText={field.handleChange}
-                    onBlur={field.handleBlur}
-                    secureTextEntry={!showApiKey}
-                    placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                    className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
-                    multiline={false}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowApiKey(!showApiKey)}
-                    className="absolute right-3 top-3"
-                  >
-                    <Ionicons
-                      name={showApiKey ? "eye-off" : "eye"}
-                      size={20}
-                      color="gray"
-                    />
-                  </TouchableOpacity>
-                </View>
-                {field.state.meta.errors &&
-                  field.state.meta.errors.length > 0 && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {String(field.state.meta.errors[0])}
-                    </Text>
-                  )}
-                <Text className="text-gray-500 text-xs mt-1">
-                  GitHub Settings → Developer settings → Personal access
-                  tokensで取得
-                </Text>
-              </View>
+          <View className="mb-4">
+            <Text className="text-sm font-medium text-gray-700 mb-2">
+              GitHub API Token <Text className="text-red-500">*</Text>
+            </Text>
+            <View className="relative">
+              <TextInput
+                {...form.register("apiKey")}
+                secureTextEntry={!showApiKey}
+                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
+                multiline={false}
+              />
+              <TouchableOpacity
+                onPress={() => setShowApiKey(!showApiKey)}
+                className="absolute right-3 top-3"
+              >
+                <Ionicons
+                  name={showApiKey ? "eye-off" : "eye"}
+                  size={20}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+            {form.formState.errors.apiKey && (
+              <Text className="text-red-500 text-xs mt-1">
+                {form.formState.errors.apiKey.message}
+              </Text>
             )}
-          </form.Field>
+            <Text className="text-gray-500 text-xs mt-1">
+              GitHub Settings → Developer settings → Personal access
+              tokensで取得
+            </Text>
+          </View>
 
           {/* Base URL Field */}
-          <form.Field name="baseUrl">
-            {(field) => (
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-2">
-                  API Base URL
-                </Text>
-                <TextInput
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  onBlur={field.handleBlur}
-                  placeholder="https://api.github.com"
-                  className="border border-gray-300 rounded-lg p-3 text-sm"
-                  keyboardType="url"
-                />
-                {field.state.meta.errors &&
-                  field.state.meta.errors.length > 0 && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {String(field.state.meta.errors[0])}
-                    </Text>
-                  )}
-                <Text className="text-gray-500 text-xs mt-1">
-                  GitHub Enterpriseの場合のみ変更してください
-                </Text>
-              </View>
+          <View className="mb-4">
+            <Text className="text-sm font-medium text-gray-700 mb-2">
+              API Base URL
+            </Text>
+            <TextInput
+              {...form.register("baseUrl")}
+              placeholder="https://api.github.com"
+              className="border border-gray-300 rounded-lg p-3 text-sm"
+              keyboardType="url"
+            />
+            {form.formState.errors.baseUrl && (
+              <Text className="text-red-500 text-xs mt-1">
+                {form.formState.errors.baseUrl.message}
+              </Text>
             )}
-          </form.Field>
+            <Text className="text-gray-500 text-xs mt-1">
+              GitHub Enterpriseの場合のみ変更してください
+            </Text>
+          </View>
 
           {/* Repository Info */}
           <View className="mb-6">
@@ -152,50 +132,36 @@ export function GitHubCredentialForm({
 
             <View className="flex-row space-x-3">
               {/* Owner Field */}
-              <form.Field name="owner">
-                {(field) => (
-                  <View className="flex-1">
-                    <Text className="text-xs text-gray-600 mb-1">Owner</Text>
-                    <TextInput
-                      value={field.state.value}
-                      onChangeText={field.handleChange}
-                      onBlur={field.handleBlur}
-                      placeholder="octocat"
-                      className="border border-gray-300 rounded-lg p-3 text-sm"
-                    />
-                    {field.state.meta.errors &&
-                      field.state.meta.errors.length > 0 && (
-                        <Text className="text-red-500 text-xs mt-1">
-                          {String(field.state.meta.errors[0])}
-                        </Text>
-                      )}
-                  </View>
+              <View className="flex-1">
+                <Text className="text-xs text-gray-600 mb-1">Owner</Text>
+                <TextInput
+                  {...form.register("owner")}
+                  placeholder="octocat"
+                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                />
+                {form.formState.errors.owner && (
+                  <Text className="text-red-500 text-xs mt-1">
+                    {form.formState.errors.owner.message}
+                  </Text>
                 )}
-              </form.Field>
+              </View>
 
               {/* Repo Field */}
-              <form.Field name="repo">
-                {(field) => (
-                  <View className="flex-1">
-                    <Text className="text-xs text-gray-600 mb-1">
-                      Repository
-                    </Text>
-                    <TextInput
-                      value={field.state.value}
-                      onChangeText={field.handleChange}
-                      onBlur={field.handleBlur}
-                      placeholder="Hello-World"
-                      className="border border-gray-300 rounded-lg p-3 text-sm"
-                    />
-                    {field.state.meta.errors &&
-                      field.state.meta.errors.length > 0 && (
-                        <Text className="text-red-500 text-xs mt-1">
-                          {String(field.state.meta.errors[0])}
-                        </Text>
-                      )}
-                  </View>
+              <View className="flex-1">
+                <Text className="text-xs text-gray-600 mb-1">
+                  Repository
+                </Text>
+                <TextInput
+                  {...form.register("repo")}
+                  placeholder="Hello-World"
+                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                />
+                {form.formState.errors.repo && (
+                  <Text className="text-red-500 text-xs mt-1">
+                    {form.formState.errors.repo.message}
+                  </Text>
                 )}
-              </form.Field>
+              </View>
             </View>
           </View>
 
@@ -227,28 +193,19 @@ export function GitHubCredentialForm({
               </Text>
             </TouchableOpacity>
 
-            <form.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting,
-              })}
+            <TouchableOpacity
+              onPress={form.handleSubmit(onSubmit)}
+              disabled={form.formState.isSubmitting || isSaving}
+              className={`flex-1 py-3 rounded-lg ${
+                !form.formState.isSubmitting && !isSaving
+                  ? "bg-primary"
+                  : "bg-gray-400"
+              }`}
             >
-              {({ canSubmit, isSubmitting }) => (
-                <TouchableOpacity
-                  onPress={form.handleSubmit}
-                  disabled={!canSubmit || isSubmitting || isSaving}
-                  className={`flex-1 py-3 rounded-lg ${
-                    canSubmit && !isSubmitting && !isSaving
-                      ? "bg-primary"
-                      : "bg-gray-400"
-                  }`}
-                >
-                  <Text className="text-white text-center font-medium">
-                    {isSaving ? "保存中..." : initialData ? "更新" : "保存"}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </form.Subscribe>
+              <Text className="text-white text-center font-medium">
+                {isSaving ? "保存中..." : initialData ? "更新" : "保存"}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

@@ -5,10 +5,10 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useForm } from "@tanstack/react-form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   notionCredentialSchema,
   type NotionCredentialFormData,
@@ -31,7 +31,8 @@ export function NotionCredentialForm({
   const [showApiKey, setShowApiKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const form = useForm({
+  const form = useForm<NotionCredentialFormData>({
+    resolver: zodResolver(notionCredentialSchema),
     defaultValues: {
       apiKey: initialData?.maskedApiKey?.includes("****")
         ? ""
@@ -41,26 +42,19 @@ export function NotionCredentialForm({
       statusProperty: initialData?.statusProperty || "Status",
       dateProperty: initialData?.dateProperty || "Date",
       filterConditions: initialData?.filterConditions || {},
-    } as NotionCredentialFormData,
-
-    onSubmit: async ({ value }) => {
-      setIsSaving(true);
-      try {
-        const result = notionCredentialSchema.safeParse(value);
-        if (!result.success) {
-          const firstError = result.error.issues[0];
-          Alert.alert("バリデーションエラー", firstError.message);
-          return;
-        }
-
-        await onSave(result.data);
-      } catch (error) {
-        // Error handling is done in the hook
-      } finally {
-        setIsSaving(false);
-      }
     },
   });
+
+  const onSubmit = async (data: NotionCredentialFormData) => {
+    setIsSaving(true);
+    try {
+      await onSave(data);
+    } catch (error) {
+      // Error handling is done in the hook
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -77,73 +71,59 @@ export function NotionCredentialForm({
 
         <View>
           {/* API Key Field */}
-          <form.Field name="apiKey">
-            {(field) => (
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-2">
-                  Notion Integration Token{" "}
-                  <Text className="text-red-500">*</Text>
-                </Text>
-                <View className="relative">
-                  <TextInput
-                    value={field.state.value}
-                    onChangeText={field.handleChange}
-                    onBlur={field.handleBlur}
-                    secureTextEntry={!showApiKey}
-                    placeholder="secret_xxxxxxxxxxxxxxxxxxxx"
-                    className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
-                    multiline={false}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowApiKey(!showApiKey)}
-                    className="absolute right-3 top-3"
-                  >
-                    <Ionicons
-                      name={showApiKey ? "eye-off" : "eye"}
-                      size={20}
-                      color="gray"
-                    />
-                  </TouchableOpacity>
-                </View>
-                {field.state.meta.errors &&
-                  field.state.meta.errors.length > 0 && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {String(field.state.meta.errors[0])}
-                    </Text>
-                  )}
-                <Text className="text-gray-500 text-xs mt-1">
-                  Notion → Settings → Integrations → New integrationで作成
-                </Text>
-              </View>
+          <View className="mb-4">
+            <Text className="text-sm font-medium text-gray-700 mb-2">
+              Notion Integration Token{" "}
+              <Text className="text-red-500">*</Text>
+            </Text>
+            <View className="relative">
+              <TextInput
+                {...form.register("apiKey")}
+                secureTextEntry={!showApiKey}
+                placeholder="secret_xxxxxxxxxxxxxxxxxxxx"
+                className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
+                multiline={false}
+              />
+              <TouchableOpacity
+                onPress={() => setShowApiKey(!showApiKey)}
+                className="absolute right-3 top-3"
+              >
+                <Ionicons
+                  name={showApiKey ? "eye-off" : "eye"}
+                  size={20}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+            {form.formState.errors.apiKey && (
+              <Text className="text-red-500 text-xs mt-1">
+                {form.formState.errors.apiKey.message}
+              </Text>
             )}
-          </form.Field>
+            <Text className="text-gray-500 text-xs mt-1">
+              Notion → Settings → Integrations → New integrationで作成
+            </Text>
+          </View>
 
           {/* Database ID Field */}
-          <form.Field name="databaseId">
-            {(field) => (
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-2">
-                  データベースID
-                </Text>
-                <TextInput
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  onBlur={field.handleBlur}
-                  placeholder="123e4567-e89b-12d3-a456-426614174000"
-                  className="border border-gray-300 rounded-lg p-3 text-sm"
-                />
-                {field.state.meta.errors &&
-                  field.state.meta.errors.length > 0 && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {String(field.state.meta.errors[0])}
-                    </Text>
-                  )}
-                <Text className="text-gray-500 text-xs mt-1">
-                  データベースURLから32文字のUUIDを取得してください
-                </Text>
-              </View>
+          <View className="mb-4">
+            <Text className="text-sm font-medium text-gray-700 mb-2">
+              データベースID
+            </Text>
+            <TextInput
+              {...form.register("databaseId")}
+              placeholder="123e4567-e89b-12d3-a456-426614174000"
+              className="border border-gray-300 rounded-lg p-3 text-sm"
+            />
+            {form.formState.errors.databaseId && (
+              <Text className="text-red-500 text-xs mt-1">
+                {form.formState.errors.databaseId.message}
+              </Text>
             )}
-          </form.Field>
+            <Text className="text-gray-500 text-xs mt-1">
+              データベースURLから32文字のUUIDを取得してください
+            </Text>
+          </View>
 
           {/* Database Properties */}
           <View className="mb-4">
@@ -152,76 +132,55 @@ export function NotionCredentialForm({
             </Text>
 
             {/* Title Property */}
-            <form.Field name="titleProperty">
-              {(field) => (
-                <View className="mb-3">
-                  <Text className="text-xs text-gray-600 mb-1">
-                    タイトルプロパティ名
-                  </Text>
-                  <TextInput
-                    value={field.state.value}
-                    onChangeText={field.handleChange}
-                    onBlur={field.handleBlur}
-                    placeholder="Name"
-                    className="border border-gray-300 rounded-lg p-3 text-sm"
-                  />
-                  {field.state.meta.errors &&
-                    field.state.meta.errors.length > 0 && (
-                      <Text className="text-red-500 text-xs mt-1">
-                        {String(field.state.meta.errors[0])}
-                      </Text>
-                    )}
-                </View>
+            <View className="mb-3">
+              <Text className="text-xs text-gray-600 mb-1">
+                タイトルプロパティ名
+              </Text>
+              <TextInput
+                {...form.register("titleProperty")}
+                placeholder="Name"
+                className="border border-gray-300 rounded-lg p-3 text-sm"
+              />
+              {form.formState.errors.titleProperty && (
+                <Text className="text-red-500 text-xs mt-1">
+                  {form.formState.errors.titleProperty.message}
+                </Text>
               )}
-            </form.Field>
+            </View>
 
             {/* Status Property */}
-            <form.Field name="statusProperty">
-              {(field) => (
-                <View className="mb-3">
-                  <Text className="text-xs text-gray-600 mb-1">
-                    ステータスプロパティ名
-                  </Text>
-                  <TextInput
-                    value={field.state.value}
-                    onChangeText={field.handleChange}
-                    onBlur={field.handleBlur}
-                    placeholder="Status"
-                    className="border border-gray-300 rounded-lg p-3 text-sm"
-                  />
-                  {field.state.meta.errors &&
-                    field.state.meta.errors.length > 0 && (
-                      <Text className="text-red-500 text-xs mt-1">
-                        {String(field.state.meta.errors[0])}
-                      </Text>
-                    )}
-                </View>
+            <View className="mb-3">
+              <Text className="text-xs text-gray-600 mb-1">
+                ステータスプロパティ名
+              </Text>
+              <TextInput
+                {...form.register("statusProperty")}
+                placeholder="Status"
+                className="border border-gray-300 rounded-lg p-3 text-sm"
+              />
+              {form.formState.errors.statusProperty && (
+                <Text className="text-red-500 text-xs mt-1">
+                  {form.formState.errors.statusProperty.message}
+                </Text>
               )}
-            </form.Field>
+            </View>
 
             {/* Date Property */}
-            <form.Field name="dateProperty">
-              {(field) => (
-                <View className="mb-3">
-                  <Text className="text-xs text-gray-600 mb-1">
-                    日付プロパティ名
-                  </Text>
-                  <TextInput
-                    value={field.state.value}
-                    onChangeText={field.handleChange}
-                    onBlur={field.handleBlur}
-                    placeholder="Date"
-                    className="border border-gray-300 rounded-lg p-3 text-sm"
-                  />
-                  {field.state.meta.errors &&
-                    field.state.meta.errors.length > 0 && (
-                      <Text className="text-red-500 text-xs mt-1">
-                        {String(field.state.meta.errors[0])}
-                      </Text>
-                    )}
-                </View>
+            <View className="mb-3">
+              <Text className="text-xs text-gray-600 mb-1">
+                日付プロパティ名
+              </Text>
+              <TextInput
+                {...form.register("dateProperty")}
+                placeholder="Date"
+                className="border border-gray-300 rounded-lg p-3 text-sm"
+              />
+              {form.formState.errors.dateProperty && (
+                <Text className="text-red-500 text-xs mt-1">
+                  {form.formState.errors.dateProperty.message}
+                </Text>
               )}
-            </form.Field>
+            </View>
           </View>
 
           {/* Info Boxes */}
@@ -269,28 +228,19 @@ export function NotionCredentialForm({
               </Text>
             </TouchableOpacity>
 
-            <form.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting,
-              })}
+            <TouchableOpacity
+              onPress={form.handleSubmit(onSubmit)}
+              disabled={form.formState.isSubmitting || isSaving}
+              className={`flex-1 py-3 rounded-lg ${
+                !form.formState.isSubmitting && !isSaving
+                  ? "bg-primary"
+                  : "bg-gray-400"
+              }`}
             >
-              {({ canSubmit, isSubmitting }) => (
-                <TouchableOpacity
-                  onPress={form.handleSubmit}
-                  disabled={!canSubmit || isSubmitting || isSaving}
-                  className={`flex-1 py-3 rounded-lg ${
-                    canSubmit && !isSubmitting && !isSaving
-                      ? "bg-primary"
-                      : "bg-gray-400"
-                  }`}
-                >
-                  <Text className="text-white text-center font-medium">
-                    {isSaving ? "保存中..." : initialData ? "更新" : "保存"}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </form.Subscribe>
+              <Text className="text-white text-center font-medium">
+                {isSaving ? "保存中..." : initialData ? "更新" : "保存"}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
