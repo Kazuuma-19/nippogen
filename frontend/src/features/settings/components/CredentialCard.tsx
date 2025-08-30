@@ -4,14 +4,14 @@ import { Ionicons } from '@expo/vector-icons'
 import type { components } from '@/types/api'
 
 type GitHubCredential = components['schemas']['GitHubCredentialResponseDto']
-type TogglCredential = components['schemas']['TogglCredentialResponseDto']  
+type ToggleCredential = components['schemas']['ToggleCredentialResponseDto']  
 type NotionCredential = components['schemas']['NotionCredentialResponseDto']
 
-type CredentialType = GitHubCredential | TogglCredential | NotionCredential
+type CredentialType = GitHubCredential | ToggleCredential | NotionCredential
 
 interface CredentialCardProps {
   credential: CredentialType
-  serviceType: 'github' | 'toggl' | 'notion'
+  serviceType: 'github' | 'toggle' | 'notion'
   onEdit: (credential: CredentialType) => void
   onDelete: (credential: CredentialType) => void
   onTest: (credential: CredentialType) => Promise<void>
@@ -59,7 +59,7 @@ export function CredentialCard({
       case 'github':
         const githubCred = credential as GitHubCredential
         return githubCred.fullRepoName || `${githubCred.owner}/${githubCred.repo}` || 'GitHub認証情報'
-      case 'toggl':
+      case 'toggle':
         const togglCred = credential as TogglCredential
         return `Workspace ID: ${togglCred.workspaceId || 'N/A'}`
       case 'notion':
@@ -75,7 +75,7 @@ export function CredentialCard({
       case 'github':
         const githubCred = credential as GitHubCredential
         return githubCred.baseUrl || 'https://api.github.com'
-      case 'toggl':
+      case 'toggle':
         const togglCred = credential as TogglCredential
         return `${togglCred.projectCount || 0}個のプロジェクト`
       case 'notion':
@@ -92,7 +92,7 @@ export function CredentialCard({
     switch (serviceType) {
       case 'github':
         return 'bg-gray-800'
-      case 'toggl':
+      case 'toggle':
         return 'bg-red-500'
       case 'notion':
         const notionCred = credential as NotionCredential

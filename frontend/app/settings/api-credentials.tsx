@@ -3,7 +3,7 @@ import { View, Text, ScrollView } from 'react-native'
 import { 
   ApiServiceSelector, 
   GitHubCredentialSection,
-  TogglCredentialSection,
+  ToggleCredentialSection,
   NotionCredentialSection,
   type ServiceType
 } from '../../src/features/settings/components'
@@ -15,8 +15,8 @@ export default function ApiCredentialsScreen() {
     switch (selectedService) {
       case 'github':
         return <GitHubCredentialSection />
-      case 'toggl':
-        return <TogglCredentialSection />
+      case 'toggle':
+        return <ToggleCredentialSection />
       case 'notion':
         return <NotionCredentialSection />
       default:

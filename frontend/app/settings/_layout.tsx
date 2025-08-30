@@ -1,21 +1,27 @@
-import { Stack } from 'expo-router'
+import { Stack } from "expo-router";
 
 export default function SettingsLayout() {
   return (
     <Stack>
-      <Stack.Screen 
-        name="api-credentials" 
+      <Stack.Screen
+        name="index"
         options={{
-          title: 'API認証情報',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="api-credentials"
+        options={{
+          title: "API認証情報",
           headerStyle: {
-            backgroundColor: '#267D00',
+            backgroundColor: "#267D00",
           },
-          headerTintColor: '#fff',
+          headerTintColor: "#fff",
           headerTitleStyle: {
-            fontWeight: 'bold',
+            fontWeight: "bold",
           },
         }}
       />
     </Stack>
-  )
+  );
 }

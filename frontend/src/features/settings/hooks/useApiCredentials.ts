@@ -4,35 +4,35 @@ import { credentialsApi } from '../../../utils/apiClient'
 import type { components } from '@/types/api'
 
 type GitHubCredential = components['schemas']['GitHubCredentialResponseDto']
-type TogglCredential = components['schemas']['TogglCredentialResponseDto']  
+type ToggleeCredential = components['schemas']['ToggleeCredentialResponseDto']  
 type NotionCredential = components['schemas']['NotionCredentialResponseDto']
 
 type GitHubCredentialCreate = components['schemas']['GitHubCredentialCreateRequestDto']
-type TogglCredentialCreate = components['schemas']['TogglCredentialCreateRequestDto']
+type ToggleeCredentialCreate = components['schemas']['ToggleeCredentialCreateRequestDto']
 type NotionCredentialCreate = components['schemas']['NotionCredentialCreateRequestDto']
 
 interface CredentialState {
   github: GitHubCredential[]
-  toggl: TogglCredential[]
+  togglee: ToggleeCredential[]
   notion: NotionCredential[]
 }
 
 interface LoadingState {
   github: boolean
-  toggl: boolean
+  togglee: boolean
   notion: boolean
 }
 
 export function useApiCredentials() {
   const [credentials, setCredentials] = useState<CredentialState>({
     github: [],
-    toggl: [],
+    togglee: [],
     notion: []
   })
   
   const [loading, setLoading] = useState<LoadingState>({
     github: false,
-    toggl: false,
+    togglee: false,
     notion: false
   })
   
@@ -111,57 +111,57 @@ export function useApiCredentials() {
     }
   }, [])
 
-  // Toggl credentials management
-  const loadTogglCredentials = useCallback(async () => {
-    setLoading(prev => ({ ...prev, toggl: true }))
+  // Toggle credentials management
+  const loadToggleCredentials = useCallback(async () => {
+    setLoading(prev => ({ ...prev, toggle: true }))
     try {
-      const response = await credentialsApi.toggl.findAllByUserId()
-      setCredentials(prev => ({ ...prev, toggl: response.data }))
+      const response = await credentialsApi.toggle.findAllByUserId()
+      setCredentials(prev => ({ ...prev, toggle: response.data }))
     } catch (error) {
-      console.error('Failed to load Toggl credentials:', error)
-      Alert.alert('エラー', 'Toggl認証情報の読み込みに失敗しました')
+      console.error('Failed to load Toggle credentials:', error)
+      Alert.alert('エラー', 'Toggle認証情報の読み込みに失敗しました')
     } finally {
-      setLoading(prev => ({ ...prev, toggl: false }))
+      setLoading(prev => ({ ...prev, toggle: false }))
     }
   }, [])
 
-  const saveTogglCredential = useCallback(async (data: TogglCredentialCreate) => {
+  const saveToggleCredential = useCallback(async (data: ToggleCredentialCreate) => {
     try {
-      const response = await credentialsApi.toggl.create(data)
+      const response = await credentialsApi.toggle.create(data)
       setCredentials(prev => ({ 
         ...prev, 
-        toggl: [...prev.toggl, response.data] 
+        toggle: [...prev.toggle, response.data] 
       }))
-      Alert.alert('成功', 'Toggl認証情報を保存しました')
+      Alert.alert('成功', 'Toggle認証情報を保存しました')
       return response.data
     } catch (error) {
-      console.error('Failed to save Toggl credential:', error)
-      Alert.alert('エラー', 'Toggl認証情報の保存に失敗しました')
+      console.error('Failed to save Toggle credential:', error)
+      Alert.alert('エラー', 'Toggle認証情報の保存に失敗しました')
       throw error
     }
   }, [])
 
-  const deleteTogglCredential = useCallback(async (id: string) => {
+  const deleteToggleCredential = useCallback(async (id: string) => {
     try {
-      await credentialsApi.toggl.delete(id)
+      await credentialsApi.toggle.delete(id)
       setCredentials(prev => ({
         ...prev,
-        toggl: prev.toggl.filter(cred => cred.id !== id)
+        toggle: prev.toggle.filter(cred => cred.id !== id)
       }))
-      Alert.alert('成功', 'Toggl認証情報を削除しました')
+      Alert.alert('成功', 'Toggle認証情報を削除しました')
     } catch (error) {
-      console.error('Failed to delete Toggl credential:', error)
-      Alert.alert('エラー', 'Toggl認証情報の削除に失敗しました')
+      console.error('Failed to delete Toggle credential:', error)
+      Alert.alert('エラー', 'Toggle認証情報の削除に失敗しました')
       throw error
     }
   }, [])
 
-  const testTogglConnection = useCallback(async () => {
+  const testToggleConnection = useCallback(async () => {
     try {
-      await credentialsApi.toggl.test()
+      await credentialsApi.toggle.test()
       return true
     } catch (error) {
-      console.error('Toggl connection test failed:', error)
+      console.error('Toggle connection test failed:', error)
       throw error
     }
   }, [])
@@ -225,11 +225,11 @@ export function useApiCredentials() {
   const loadAllCredentials = useCallback(async () => {
     await Promise.all([
       loadGitHubCredentials(),
-      loadTogglCredentials(),
+      loadToggleCredentials(),
       loadNotionCredentials()
     ])
     setInitialLoadComplete(true)
-  }, [loadGitHubCredentials, loadTogglCredentials, loadNotionCredentials])
+  }, [loadGitHubCredentials, loadToggleCredentials, loadNotionCredentials])
 
   useEffect(() => {
     loadAllCredentials()
@@ -248,11 +248,11 @@ export function useApiCredentials() {
     deleteGitHubCredential,
     testGitHubConnection,
     
-    // Toggl
-    loadTogglCredentials,
-    saveTogglCredential,
-    deleteTogglCredential,
-    testTogglConnection,
+    // Toggle
+    loadToggleCredentials,
+    saveToggleCredential,
+    deleteToggleCredential,
+    testToggleConnection,
     
     // Notion
     loadNotionCredentials,

@@ -1,13 +1,19 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Modal, ActivityIndicator } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
-import { CredentialCard } from './CredentialCard'
-import { NotionCredentialForm } from './NotionCredentialForm'
-import { useApiCredentials } from '../hooks/useApiCredentials'
-import type { components } from '@/types/api'
-import type { NotionCredentialFormData } from '../schemas/notionCredential'
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  ActivityIndicator,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { CredentialCard } from "../CredentialCard";
+import { NotionCredentialForm } from "./NotionCredentialForm";
+import { useApiCredentials } from "../../hooks/useApiCredentials";
+import type { components } from "@/types/api";
+import type { NotionCredentialFormData } from "../../schemas/notionCredential";
 
-type NotionCredential = components['schemas']['NotionCredentialResponseDto']
+type NotionCredential = components["schemas"]["NotionCredentialResponseDto"];
 
 export function NotionCredentialSection() {
   const {
@@ -15,47 +21,48 @@ export function NotionCredentialSection() {
     loading,
     saveNotionCredential,
     deleteNotionCredential,
-    testNotionConnection
-  } = useApiCredentials()
-  
-  const [isFormVisible, setIsFormVisible] = useState(false)
-  const [editingCredential, setEditingCredential] = useState<NotionCredential | null>(null)
+    testNotionConnection,
+  } = useApiCredentials();
 
-  const notionCredentials = credentials.notion
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [editingCredential, setEditingCredential] =
+    useState<NotionCredential | null>(null);
+
+  const notionCredentials = credentials.notion;
 
   const handleEdit = (credential: NotionCredential) => {
-    setEditingCredential(credential)
-    setIsFormVisible(true)
-  }
+    setEditingCredential(credential);
+    setIsFormVisible(true);
+  };
 
   const handleDelete = async (credential: NotionCredential) => {
     if (credential.id) {
-      await deleteNotionCredential(credential.id)
+      await deleteNotionCredential(credential.id);
     }
-  }
+  };
 
   const handleTest = async (credential: NotionCredential) => {
-    await testNotionConnection()
-  }
+    await testNotionConnection();
+  };
 
   const handleSave = async (data: NotionCredentialFormData) => {
     if (editingCredential) {
       // Note: Update functionality would need to be added to the hook
       // For now, we'll just create a new one
-      await saveNotionCredential(data)
+      await saveNotionCredential(data);
     } else {
       // Create new credential
-      await saveNotionCredential(data)
+      await saveNotionCredential(data);
     }
-    
-    setIsFormVisible(false)
-    setEditingCredential(null)
-  }
+
+    setIsFormVisible(false);
+    setEditingCredential(null);
+  };
 
   const handleCancel = () => {
-    setIsFormVisible(false)
-    setEditingCredential(null)
-  }
+    setIsFormVisible(false);
+    setEditingCredential(null);
+  };
 
   return (
     <View className="p-6">
@@ -67,7 +74,7 @@ export function NotionCredentialSection() {
             Notion認証情報
           </Text>
         </View>
-        
+
         <TouchableOpacity
           onPress={() => setIsFormVisible(true)}
           className="bg-primary px-4 py-2 rounded-lg flex-row items-center space-x-2"
@@ -108,15 +115,17 @@ export function NotionCredentialSection() {
                 Notion認証情報が設定されていません
               </Text>
               <Text className="text-gray-400 mt-2 text-center text-sm">
-                タスクやメモの情報を取得するために{'\n'}
+                タスクやメモの情報を取得するために{"\n"}
                 Notion APIの認証情報を追加してください
               </Text>
-              
+
               <TouchableOpacity
                 onPress={() => setIsFormVisible(true)}
                 className="mt-4 bg-primary px-6 py-2 rounded-lg"
               >
-                <Text className="text-white font-medium">最初の認証情報を追加</Text>
+                <Text className="text-white font-medium">
+                  最初の認証情報を追加
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -132,10 +141,10 @@ export function NotionCredentialSection() {
               Notion認証情報について
             </Text>
             <Text className="text-gray-700 text-xs leading-4">
-              • 複数のデータベースやワークスペースを管理できます{'\n'}
-              • Integration Tokenを使用して安全にデータを取得します{'\n'}
-              • 日報生成時にタスクの進捗状況やメモを自動取得します{'\n'}
-              • プロパティ名を設定することで柔軟にデータを抽出できます
+              • 複数のデータベースやワークスペースを管理できます{"\n"}•
+              Integration Tokenを使用して安全にデータを取得します{"\n"}•
+              日報生成時にタスクの進捗状況やメモを自動取得します{"\n"}•
+              プロパティ名を設定することで柔軟にデータを抽出できます
             </Text>
           </View>
         </View>
@@ -150,9 +159,9 @@ export function NotionCredentialSection() {
               セットアップガイド
             </Text>
             <Text className="text-blue-700 text-xs leading-4">
-              1. notion.so/my-integrations でIntegrationを作成{'\n'}
-              2. 使用するデータベースにIntegrationを接続{'\n'}
-              3. データベースURLからIDを取得{'\n'}
+              1. notion.so/my-integrations でIntegrationを作成{"\n"}
+              2. 使用するデータベースにIntegrationを接続{"\n"}
+              3. データベースURLからIDを取得{"\n"}
               4. プロパティ名を確認して正確に入力
             </Text>
           </View>
@@ -160,9 +169,9 @@ export function NotionCredentialSection() {
       </View>
 
       {/* Form Modal */}
-      <Modal 
-        visible={isFormVisible} 
-        animationType="slide" 
+      <Modal
+        visible={isFormVisible}
+        animationType="slide"
         presentationStyle="pageSheet"
       >
         <NotionCredentialForm
@@ -172,5 +181,5 @@ export function NotionCredentialSection() {
         />
       </Modal>
     </View>
-  )
+  );
 }

@@ -1,10 +1,10 @@
-export { ApiServiceSelector } from './ApiServiceSelector'
-export { CredentialCard } from './CredentialCard'
-export { GitHubCredentialForm } from './GitHubCredentialForm'
-export { GitHubCredentialSection } from './GitHubCredentialSection'
-export { TogglCredentialForm } from './TogglCredentialForm'
-export { TogglCredentialSection } from './TogglCredentialSection'
-export { NotionCredentialForm } from './NotionCredentialForm'
-export { NotionCredentialSection } from './NotionCredentialSection'
+export { ApiServiceSelector } from "./ApiServiceSelector";
+export { CredentialCard } from "./CredentialCard";
+export { GitHubCredentialForm } from "./github/GitHubCredentialForm";
+export { GitHubCredentialSection } from "./github/GitHubCredentialSection";
+export { ToggleCredentialForm } from "./toggle/ToggleCredentialForm";
+export { ToggleCredentialSection } from "./toggle/ToggleCredentialSection";
+export { NotionCredentialForm } from "./notion/NotionCredentialForm";
+export { NotionCredentialSection } from "./notion/NotionCredentialSection";
 
-export type { ServiceType } from './ApiServiceSelector'
+export type { ServiceType } from "./ApiServiceSelector";

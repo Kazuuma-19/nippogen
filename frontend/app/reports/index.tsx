@@ -24,7 +24,7 @@ export default function ReportsIndexScreen() {
                 新しい日報を生成
               </Text>
               <Text className="text-white/80 text-sm">
-                GitHub、Toggl Track、Notionから情報を収集
+                GitHub、Toggle Track、Notionから情報を収集
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={24} color="white" />

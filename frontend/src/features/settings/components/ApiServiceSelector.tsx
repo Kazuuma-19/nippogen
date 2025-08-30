@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 
-type ServiceType = 'github' | 'toggl' | 'notion'
+type ServiceType = 'github' | 'toggle' | 'notion'
 
 interface Service {
   key: ServiceType
@@ -26,8 +26,8 @@ const services: Service[] = [
     description: 'コミットやPRの情報'
   },
   {
-    key: 'toggl',
-    name: 'Toggl Track',
+    key: 'toggle',
+    name: 'Toggle Track',
     icon: 'time',
     color: 'bg-red-500',
     description: '作業時間の記録'

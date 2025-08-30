@@ -1,61 +1,68 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Modal, ActivityIndicator } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
-import { CredentialCard } from './CredentialCard'
-import { TogglCredentialForm } from './TogglCredentialForm'
-import { useApiCredentials } from '../hooks/useApiCredentials'
-import type { components } from '@/types/api'
-import type { TogglCredentialFormData } from '../schemas/togglCredential'
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  ActivityIndicator,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { CredentialCard } from "../CredentialCard";
+import { ToggleCredentialForm } from "./ToggleCredentialForm";
+import { useApiCredentials } from "../../hooks/useApiCredentials";
+import type { components } from "@/types/api";
+import type { ToggleCredentialFormData } from "../../schemas/toggleCredential";
 
-type TogglCredential = components['schemas']['TogglCredentialResponseDto']
+type ToggleCredential = components["schemas"]["ToggleCredentialResponseDto"];
 
-export function TogglCredentialSection() {
+export function ToggleCredentialSection() {
   const {
     credentials,
     loading,
     saveTogglCredential,
     deleteTogglCredential,
-    testTogglConnection
-  } = useApiCredentials()
-  
-  const [isFormVisible, setIsFormVisible] = useState(false)
-  const [editingCredential, setEditingCredential] = useState<TogglCredential | null>(null)
+    testTogglConnection,
+  } = useApiCredentials();
 
-  const togglCredentials = credentials.toggl
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [editingCredential, setEditingCredential] =
+    useState<ToggleCredential | null>(null);
 
-  const handleEdit = (credential: TogglCredential) => {
-    setEditingCredential(credential)
-    setIsFormVisible(true)
-  }
+  const togglCredentials = credentials.toggl;
 
-  const handleDelete = async (credential: TogglCredential) => {
+  const handleEdit = (credential: ToggleCredential) => {
+    setEditingCredential(credential);
+    setIsFormVisible(true);
+  };
+
+  const handleDelete = async (credential: ToggleCredential) => {
     if (credential.id) {
-      await deleteTogglCredential(credential.id)
+      await deleteTogglCredential(credential.id);
     }
-  }
+  };
 
-  const handleTest = async (credential: TogglCredential) => {
-    await testTogglConnection()
-  }
+  const handleTest = async (credential: ToggleCredential) => {
+    await testTogglConnection();
+  };
 
-  const handleSave = async (data: TogglCredentialFormData) => {
+  const handleSave = async (data: ToggleCredentialFormData) => {
     if (editingCredential) {
       // Note: Update functionality would need to be added to the hook
       // For now, we'll just create a new one
-      await saveTogglCredential(data)
+      await saveTogglCredential(data);
     } else {
       // Create new credential
-      await saveTogglCredential(data)
+      await saveTogglCredential(data);
     }
-    
-    setIsFormVisible(false)
-    setEditingCredential(null)
-  }
+
+    setIsFormVisible(false);
+    setEditingCredential(null);
+  };
 
   const handleCancel = () => {
-    setIsFormVisible(false)
-    setEditingCredential(null)
-  }
+    setIsFormVisible(false);
+    setEditingCredential(null);
+  };
 
   return (
     <View className="p-6">
@@ -64,10 +71,10 @@ export function TogglCredentialSection() {
         <View className="flex-row items-center">
           <Ionicons name="time" size={24} color="#ef4444" />
           <Text className="text-xl font-bold text-gray-800 ml-2">
-            Toggl Track認証情報
+            Toggle Track認証情報
           </Text>
         </View>
-        
+
         <TouchableOpacity
           onPress={() => setIsFormVisible(true)}
           className="bg-primary px-4 py-2 rounded-lg flex-row items-center space-x-2"
@@ -105,18 +112,20 @@ export function TogglCredentialSection() {
             <View className="bg-gray-50 p-8 rounded-xl items-center">
               <Ionicons name="time" size={48} color="gray" />
               <Text className="text-gray-500 mt-4 text-center font-medium">
-                Toggl Track認証情報が設定されていません
+                Toggle Track認証情報が設定されていません
               </Text>
               <Text className="text-gray-400 mt-2 text-center text-sm">
-                作業時間の記録を取得するために{'\n'}
+                作業時間の記録を取得するために{"\n"}
                 Toggl Track APIの認証情報を追加してください
               </Text>
-              
+
               <TouchableOpacity
                 onPress={() => setIsFormVisible(true)}
                 className="mt-4 bg-primary px-6 py-2 rounded-lg"
               >
-                <Text className="text-white font-medium">最初の認証情報を追加</Text>
+                <Text className="text-white font-medium">
+                  最初の認証情報を追加
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -129,30 +138,30 @@ export function TogglCredentialSection() {
           <Ionicons name="bulb" size={20} color="#ef4444" />
           <View className="ml-2 flex-1">
             <Text className="text-red-800 font-medium text-sm mb-1">
-              Toggl Track認証情報について
+              Toggle Track認証情報について
             </Text>
             <Text className="text-red-700 text-xs leading-4">
-              • 複数のワークスペースやプロジェクトを管理できます{'\n'}
-              • API Tokenを使用して安全に作業時間データを取得します{'\n'}
-              • 日報生成時に指定した期間の作業時間を自動集計します{'\n'}
-              • プロジェクト別、タグ別の時間配分も表示されます
+              • 複数のワークスペースやプロジェクトを管理できます{"\n"}• API
+              Tokenを使用して安全に作業時間データを取得します{"\n"}•
+              日報生成時に指定した期間の作業時間を自動集計します{"\n"}•
+              プロジェクト別、タグ別の時間配分も表示されます
             </Text>
           </View>
         </View>
       </View>
 
       {/* Form Modal */}
-      <Modal 
-        visible={isFormVisible} 
-        animationType="slide" 
+      <Modal
+        visible={isFormVisible}
+        animationType="slide"
         presentationStyle="pageSheet"
       >
-        <TogglCredentialForm
+        <ToggleCredentialForm
           initialData={editingCredential}
           onSave={handleSave}
           onCancel={handleCancel}
         />
       </Modal>
     </View>
-  )
+  );
 }

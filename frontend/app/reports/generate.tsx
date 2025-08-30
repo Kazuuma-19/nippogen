@@ -109,7 +109,7 @@ export default function GenerateReportScreen() {
         <View className="mt-8 bg-blue-50 p-4 rounded-lg">
           <Text className="text-blue-800 font-semibold mb-2">💡 日報生成について</Text>
           <Text className="text-blue-700 text-sm leading-5">
-            • GitHub、Toggl Track、Notionから自動的にデータを収集します{"\n"}
+            • GitHub、Toggle Track、Notionから自動的にデータを収集します{"\n"}
             • AIが作業内容や学びを整理して日報を生成します{"\n"}
             • 生成後は編集・修正が可能です
           </Text>
