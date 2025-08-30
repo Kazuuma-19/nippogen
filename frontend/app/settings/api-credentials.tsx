@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { View, Text, ScrollView } from 'react-native'
-import { ApiServiceSelector, type ServiceType } from '../../src/features/settings/components/ApiServiceSelector'
-import { GitHubCredentialSection } from '../../src/features/settings/components/GitHubCredentialSection'
-import { TogglCredentialSection } from '../../src/features/settings/components/TogglCredentialSection'
-import { NotionCredentialSection } from '../../src/features/settings/components/NotionCredentialSection'
+import { 
+  ApiServiceSelector, 
+  GitHubCredentialSection,
+  TogglCredentialSection,
+  NotionCredentialSection,
+  type ServiceType
+} from '../../src/features/settings/components'
 
 export default function ApiCredentialsScreen() {
   const [selectedService, setSelectedService] = useState<ServiceType>('github')
