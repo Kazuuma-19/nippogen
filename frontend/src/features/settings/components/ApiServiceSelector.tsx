@@ -2,15 +2,15 @@ import React from 'react'
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 
-type ServiceType = 'github' | 'toggl' | 'notion'
-
 interface Service {
-  key: ServiceType
+  key: 'github' | 'toggl' | 'notion'
   name: string
   icon: keyof typeof Ionicons.glyphMap
   color: string
   description: string
 }
+
+type ServiceType = Service['key']
 
 interface ApiServiceSelectorProps {
   selectedService: ServiceType
