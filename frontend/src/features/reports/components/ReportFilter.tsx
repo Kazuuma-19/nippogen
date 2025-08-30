@@ -173,9 +173,8 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                   <>
                     <TouchableOpacity
                       onPress={() => {
-                        if (filters.startDate) {
-                          setTempDate(new Date(filters.startDate));
-                        }
+                        const currentDate = filters.startDate ? new Date(filters.startDate) : new Date();
+                        setTempDate(currentDate);
                         setShowDatePicker("start");
                       }}
                     >
@@ -184,7 +183,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       </Text>
                     </TouchableOpacity>
                     
-                    {/* Hidden DateTimePicker for immediate display */}
+                    {/* DateTimePicker for immediate display */}
                     {showDatePicker === "start" && DateTimePicker && (
                       <DateTimePicker
                         value={tempDate}
@@ -192,13 +191,14 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                         display="default"
                         onChange={(event, selectedDate) => {
                           setShowDatePicker(null);
-                          if (selectedDate) {
+                          if (event.type === 'set' && selectedDate) {
                             const dateString = selectedDate.toISOString().split('T')[0];
                             onFiltersChange({
                               ...filters,
                               startDate: dateString,
                             });
                           }
+                          // If user cancels (event.type === 'dismissed'), do nothing
                         }}
                       />
                     )}
@@ -248,9 +248,8 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                   <>
                     <TouchableOpacity
                       onPress={() => {
-                        if (filters.endDate) {
-                          setTempDate(new Date(filters.endDate));
-                        }
+                        const currentDate = filters.endDate ? new Date(filters.endDate) : new Date();
+                        setTempDate(currentDate);
                         setShowDatePicker("end");
                       }}
                     >
@@ -259,7 +258,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       </Text>
                     </TouchableOpacity>
                     
-                    {/* Hidden DateTimePicker for immediate display */}
+                    {/* DateTimePicker for immediate display */}
                     {showDatePicker === "end" && DateTimePicker && (
                       <DateTimePicker
                         value={tempDate}
@@ -267,13 +266,14 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                         display="default"
                         onChange={(event, selectedDate) => {
                           setShowDatePicker(null);
-                          if (selectedDate) {
+                          if (event.type === 'set' && selectedDate) {
                             const dateString = selectedDate.toISOString().split('T')[0];
                             onFiltersChange({
                               ...filters,
                               endDate: dateString,
                             });
                           }
+                          // If user cancels (event.type === 'dismissed'), do nothing
                         }}
                       />
                     )}
