@@ -22,193 +22,71 @@ src/features/
 
 ## 実装パターン（Issue #14 で確立）
 
-### 1. TanStack Form + Zod バリデーション
+### 1. React Hook Form + Zod バリデーション
 
-#### フォーム管理
-```typescript
-import { useForm } from '@tanstack/react-form'
-import { zodValidator } from '@tanstack/zod-form-adapter'
+#### フォーム管理方針
+- `useForm`フックで型安全なフォーム管理
+- `zodResolver`を使用してZodスキーマとの統合
+- `register`関数で簡潔なフィールド登録
+- バリデーションエラーは自動的にフォーム状態に反映
 
-const form = useForm({
-  defaultValues: {
-    apiKey: '',
-    // ... その他フィールド
-  },
-  
-  onSubmit: async ({ value }) => {
-    const result = validationSchema.safeParse(value)
-    if (!result.success) {
-      Alert.alert('バリデーションエラー', result.error.issues[0].message)
-      return
-    }
-    await onSave(result.data)
-  },
-})
-```
+#### バリデーション戦略
+- Zodスキーマでサーバーサイドと同じバリデーションルール
+- リアルタイムバリデーション（フィールドレベル）
+- 型推論によるフォームデータの型安全性確保
+- 複雑なフィールド（配列、Switch）は`useWatch`と`setValue`で制御
 
-#### Zodスキーマ定義
-```typescript
-import { z } from 'zod'
+### 2. サービス別カスタムフックによる状態管理
 
-export const credentialSchema = z.object({
-  apiKey: z
-    .string()
-    .min(1, 'APIキーは必須です')
-    .startsWith('prefix_', '正しいプレフィックスが必要です'),
-  
-  // その他のフィールド
-})
+#### 設計方針
+- サービス（GitHub、Notion、Toggl）ごとに専用フック実装
+- 統合フックではなく個別フックで関心の分離
+- 各フックが独立してCRUD操作を管理
+- エラーハンドリングとローディング状態を内包
 
-export type CredentialFormData = z.infer<typeof credentialSchema>
-```
-
-#### フィールド実装
-```typescript
-<form.Field name="apiKey">
-  {(field) => (
-    <View>
-      <TextInput
-        value={field.state.value}
-        onChangeText={field.handleChange}
-        onBlur={field.handleBlur}
-        // ... その他のプロパティ
-      />
-      {field.state.meta.errors && field.state.meta.errors.length > 0 && (
-        <Text className="text-red-500 text-xs">
-          {String(field.state.meta.errors[0])}
-        </Text>
-      )}
-    </View>
-  )}
-</form.Field>
-```
-
-### 2. カスタムフックによる状態管理
-
-```typescript
-// hooks/useApiCredentials.ts
-export function useApiCredentials() {
-  const [credentials, setCredentials] = useState<Credential[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-
-  const fetchCredentials = async () => {
-    // API呼び出し実装
-  }
-
-  const saveCredential = async (data: CredentialFormData) => {
-    try {
-      setIsLoading(true)
-      // API呼び出し
-      await fetchCredentials() // リフレッシュ
-    } catch (error) {
-      // エラーハンドリング
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  return {
-    credentials,
-    isLoading,
-    fetchCredentials,
-    saveCredential,
-    // ... その他のメソッド
-  }
-}
-```
+#### フック責任範囲
+- API通信の実行と結果の状態管理
+- エラーハンドリングとユーザーフィードバック
+- 楽観的更新によるUX向上
+- 接続テスト機能の提供
 
 ### 3. API通信パターン
 
-#### Axios インスタンス設定
-```typescript
-// utils/axiosInstance.ts
-import axios from 'axios'
+#### HTTP通信設計
+- Axiosインスタンスで基本設定の一元化
+- インターセプターでユーザーID等の共通ヘッダー設定
+- タイムアウト設定とエラーハンドリング標準化
 
-export const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api',
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-
-// リクエストインターセプター
-axiosInstance.interceptors.request.use((config) => {
-  config.headers['X-User-Id'] = 'mock-user-id'
-  return config
-})
-```
-
-#### API クライアント
-```typescript
-// utils/apiClient.ts
-import type { components } from '@/types/api'
-
-type Credential = components['schemas']['CredentialResponseDto']
-type CredentialRequest = components['schemas']['CredentialRequestDto']
-
-export const credentialApi = {
-  getAll: (): Promise<Credential[]> =>
-    axiosInstance.get('/credentials').then(res => res.data),
-
-  create: (data: CredentialRequest): Promise<Credential> =>
-    axiosInstance.post('/credentials', data).then(res => res.data),
-
-  update: (id: number, data: CredentialRequest): Promise<Credential> =>
-    axiosInstance.put(`/credentials/${id}`, data).then(res => res.data),
-
-  delete: (id: number): Promise<void> =>
-    axiosInstance.delete(`/credentials/${id}`).then(() => {}),
-}
-```
+#### API クライアント構成
+- サービス別にAPIクライアントを分離
+- OpenAPI生成型を活用した型安全な通信
+- CRUD操作と接続テスト機能を統一インターフェース化
+- レスポンス型の明示による型安全性確保
 
 ### 4. コンポーネント設計原則
 
 #### 自己完結型コンポーネント
-```typescript
-interface CredentialFormProps {
-  initialData?: Credential | null
-  onSave: (data: CredentialFormData) => Promise<void>
-  onCancel: () => void
-}
+- 各コンポーネントが独立した責任範囲を持つ
+- composition patternを避け、シンプルな実装
+- プロップスで外部からの制御ポイントを明確化
+- 内部状態とロジックの完全カプセル化
 
-export function CredentialForm({ 
-  initialData, 
-  onSave, 
-  onCancel 
-}: CredentialFormProps) {
-  // フォームロジック、状態管理を内部で完結
-  // composition patternは使わずシンプルに実装
-}
-```
-
-#### エクスポート統合
-```typescript
-// components/index.ts
-export { ApiServiceSelector } from './ApiServiceSelector'
-export { CredentialCard } from './CredentialCard'
-export { GitHubCredentialForm } from './GitHubCredentialForm'
-// ... その他
-```
+#### コンポーネント構成
+- フィーチャー別のディレクトリ構造
+- エクスポート統合によるインポート簡略化
+- サービス固有コンポーネントと共通コンポーネントの分離
 
 ### 5. 型安全性の確保
 
-#### OpenAPI生成型の活用
-```typescript
-// types/api.ts (自動生成)
-import type { components } from '@/types/api'
+#### OpenAPI型統合
+- バックエンドOpenAPI仕様から自動生成される型定義を活用
+- サーバーサイドとクライアントサイドで同一の型安全性
+- API変更時の型エラーによる早期発見
 
-type GitHubCredential = components['schemas']['GitHubCredentialResponseDto']
-type TogglCredential = components['schemas']['TogglCredentialResponseDto']
-type NotionCredential = components['schemas']['NotionCredentialResponseDto']
-```
-
-#### 型ガード
-```typescript
-function isGitHubCredential(credential: any): credential is GitHubCredential {
-  return credential.type === 'GITHUB'
-}
-```
+#### 型安全戦略
+- Zodスキーマとの型整合性確保
+- フォームデータ型の推論活用
+- 必要に応じた型ガードの実装
 
 ## スタイリング
 
@@ -271,15 +149,16 @@ try {
 
 ## 実装時の考慮点
 
-### TanStack Form v2 互換性
-- `form.Provider` は使用しない（React Native非対応）
-- `form.Subscribe` のselectorはオブジェクト形式を使用
-- エラー表示は `String()` でラップ
+### React Hook Form最適化
+- `useWatch`で必要最小限の再レンダリング制御
+- 複雑なフィールド（配列、Switch）の適切な制御
+- フォーム送信時の型安全性確保
 
 ### パフォーマンス最適化
-- 必要時のみコンポーネントを再レンダリング
+- React Hook Formによる高パフォーマンスフォーム
 - axiosInstance で HTTP設定を一元化
 - 適切なローディング状態の表示
+- サービス別フックによる状態分離
 
 ### ユーザビリティ
 - リアルタイムバリデーション
@@ -290,10 +169,10 @@ try {
 ## ベストプラクティス
 
 1. **型安全性**: OpenAPI生成型を活用し、完全な型安全性を確保
-2. **バリデーション**: Zodスキーマで一元的なバリデーション実装
-3. **エラーハンドリング**: 全てのAPI呼び出しで適切なエラー処理
-4. **コンポーネント設計**: 自己完結型で再利用可能なコンポーネント
-5. **状態管理**: カスタムフックで状態ロジックの分離
+2. **フォーム管理**: React Hook Form + Zodで高パフォーマンスバリデーション
+3. **状態管理**: サービス別フックで関心の分離
+4. **エラーハンドリング**: 全てのAPI呼び出しで適切なエラー処理
+5. **コンポーネント設計**: 自己完結型で再利用可能なコンポーネント
 6. **スタイル一貫性**: TailwindCSS classで統一されたデザインシステム
 
 ## 参考実装
