@@ -164,35 +164,85 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
           <View className="mb-4">
             <Text className="text-sm font-medium text-gray-700 mb-2">日付範囲</Text>
             <View className="flex-row space-x-3">
-              <TouchableOpacity
-                className="flex-1 bg-white border border-gray-200 rounded-lg p-3"
-                onPress={() => {
-                  if (filters.startDate) {
-                    setTempDate(new Date(filters.startDate));
-                  }
-                  setShowDatePicker("start");
-                }}
-              >
+              <View className="flex-1 bg-white border border-gray-200 rounded-lg p-3">
                 <Text className="text-xs text-gray-500 mb-1">開始日</Text>
-                <Text className="text-gray-800">
-                  {formatDateForDisplay(filters.startDate)}
-                </Text>
-              </TouchableOpacity>
+                {Platform.OS === 'web' ? (
+                  <input
+                    type="date"
+                    value={filters.startDate || ''}
+                    onChange={(e: any) => {
+                      const dateString = e.target.value;
+                      onFiltersChange({
+                        ...filters,
+                        startDate: dateString || undefined,
+                      });
+                    }}
+                    style={{
+                      width: '100%',
+                      border: 'none',
+                      outline: 'none',
+                      fontSize: '16px',
+                      color: '#1f2937',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer',
+                    }}
+                    placeholder="選択してください"
+                  />
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (filters.startDate) {
+                        setTempDate(new Date(filters.startDate));
+                      }
+                      setShowDatePicker("start");
+                    }}
+                  >
+                    <Text className="text-gray-800">
+                      {formatDateForDisplay(filters.startDate)}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
               
-              <TouchableOpacity
-                className="flex-1 bg-white border border-gray-200 rounded-lg p-3"
-                onPress={() => {
-                  if (filters.endDate) {
-                    setTempDate(new Date(filters.endDate));
-                  }
-                  setShowDatePicker("end");
-                }}
-              >
+              <View className="flex-1 bg-white border border-gray-200 rounded-lg p-3">
                 <Text className="text-xs text-gray-500 mb-1">終了日</Text>
-                <Text className="text-gray-800">
-                  {formatDateForDisplay(filters.endDate)}
-                </Text>
-              </TouchableOpacity>
+                {Platform.OS === 'web' ? (
+                  <input
+                    type="date"
+                    value={filters.endDate || ''}
+                    onChange={(e: any) => {
+                      const dateString = e.target.value;
+                      onFiltersChange({
+                        ...filters,
+                        endDate: dateString || undefined,
+                      });
+                    }}
+                    style={{
+                      width: '100%',
+                      border: 'none',
+                      outline: 'none',
+                      fontSize: '16px',
+                      color: '#1f2937',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer',
+                    }}
+                    placeholder="選択してください"
+                  />
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (filters.endDate) {
+                        setTempDate(new Date(filters.endDate));
+                      }
+                      setShowDatePicker("end");
+                    }}
+                  >
+                    <Text className="text-gray-800">
+                      {formatDateForDisplay(filters.endDate)}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
 
@@ -219,82 +269,10 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
         </View>
       )}
 
-      {/* Date Picker Modal */}
-      {showDatePicker && (
+      {/* Date Picker Modal - Mobile only */}
+      {showDatePicker && Platform.OS !== 'web' && (
         <>
-          {Platform.OS === 'web' ? (
-            // Web: HTML input type="date" with calendar
-            <Modal
-              visible={true}
-              transparent={true}
-              animationType="fade"
-              onRequestClose={cancelDateSelection}
-            >
-              <TouchableOpacity 
-                className="flex-1 justify-center items-center bg-black/50"
-                activeOpacity={1}
-                onPress={cancelDateSelection}
-              >
-                <TouchableOpacity 
-                  className="bg-white rounded-lg p-6 m-4 min-w-[320px] max-w-[400px]"
-                  activeOpacity={1}
-                  onPress={(e) => e.stopPropagation()}
-                >
-                  <Text className="text-lg font-semibold text-gray-800 mb-4 text-center">
-                    {showDatePicker === "start" ? "開始日を選択" : "終了日を選択"}
-                  </Text>
-                  
-                  <View className="mb-6">
-                    <input
-                      type="date"
-                      value={tempDate.toISOString().split('T')[0]}
-                      onChange={(e: any) => {
-                        const date = new Date(e.target.value);
-                        setTempDate(date);
-                      }}
-                      style={{
-                        width: '100%',
-                        padding: '12px 16px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '8px',
-                        fontSize: '16px',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                        cursor: 'pointer',
-                        backgroundColor: '#ffffff',
-                        appearance: 'none',
-                        WebkitAppearance: 'none',
-                        MozAppearance: 'none',
-                      }}
-                      onFocus={(e: any) => {
-                        // Ensure the calendar opens when clicking anywhere on the input
-                        e.target.showPicker?.();
-                      }}
-                      onClick={(e: any) => {
-                        // Show picker on click for better UX
-                        e.target.showPicker?.();
-                      }}
-                    />
-                  </View>
-                  
-                  <View className="flex-row justify-end space-x-3">
-                    <TouchableOpacity 
-                      onPress={cancelDateSelection}
-                      className="px-4 py-2 bg-gray-200 rounded-lg"
-                    >
-                      <Text className="text-gray-700 font-medium">キャンセル</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                      onPress={confirmDateSelection}
-                      className="px-4 py-2 bg-blue-500 rounded-lg"
-                    >
-                      <Text className="text-white font-medium">完了</Text>
-                    </TouchableOpacity>
-                  </View>
-                </TouchableOpacity>
-              </TouchableOpacity>
-            </Modal>
-          ) : Platform.OS === 'ios' ? (
+          {Platform.OS === 'ios' ? (
             <Modal
               visible={true}
               transparent={true}
