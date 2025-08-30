@@ -29,12 +29,26 @@ export interface paths {
      */
     post: operations["createReport"];
   };
+  "/api/reports/{id}/regenerate": {
+    /**
+     * Regenerate daily report
+     * @description Regenerate an existing daily report with user feedback and additional information
+     */
+    post: operations["regenerateReport"];
+  };
   "/api/reports/{id}/approve": {
     /**
      * Approve daily report
      * @description Approve a daily report, finalizing its content
      */
     post: operations["approveReport"];
+  };
+  "/api/reports/generate": {
+    /**
+     * Generate daily report
+     * @description Generate a new daily report using AI based on GitHub, Toggl, and Notion data
+     */
+    post: operations["generateReport"];
   };
   "/api/reports/{id}/export": {
     /**
@@ -146,6 +160,39 @@ export interface components {
       reportDate?: string;
       rawData?: string;
       generatedContent?: string;
+      additionalNotes?: string;
+      valid?: boolean;
+    };
+    /** @description Report regeneration request */
+    ReportRegenerationRequestDto: {
+      /** Format: uuid */
+      reportId?: string;
+      userFeedback?: string;
+      additionalNotes?: string;
+      valid?: boolean;
+    };
+    ReportGenerationResponseDto: {
+      /** Format: uuid */
+      reportId?: string;
+      /** Format: uuid */
+      userId?: string;
+      /** Format: date */
+      reportDate?: string;
+      generatedContent?: string;
+      status?: string;
+      /** Format: int32 */
+      generationCount?: number;
+      /** Format: date-time */
+      generatedAt?: string;
+      success?: boolean;
+      errorMessage?: string;
+    };
+    /** @description Report generation request */
+    ReportGenerationRequestDto: {
+      /** Format: uuid */
+      userId?: string;
+      /** Format: date */
+      reportDate?: string;
       additionalNotes?: string;
       valid?: boolean;
     };
@@ -404,6 +451,49 @@ export interface operations {
     };
   };
   /**
+   * Regenerate daily report
+   * @description Regenerate an existing daily report with user feedback and additional information
+   */
+  regenerateReport: {
+    parameters: {
+      path: {
+        /** @description Report ID */
+        id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReportRegenerationRequestDto"];
+      };
+    };
+    responses: {
+      /** @description Report regenerated successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+        };
+      };
+      /** @description Invalid request data */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+        };
+      };
+      /** @description Report not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+        };
+      };
+      /** @description Internal server error or AI regeneration failure */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+        };
+      };
+    };
+  };
+  /**
    * Approve daily report
    * @description Approve a daily report, finalizing its content
    */
@@ -436,6 +526,37 @@ export interface operations {
     };
   };
   /**
+   * Generate daily report
+   * @description Generate a new daily report using AI based on GitHub, Toggl, and Notion data
+   */
+  generateReport: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReportGenerationRequestDto"];
+      };
+    };
+    responses: {
+      /** @description Report generated successfully */
+      201: {
+        content: {
+          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+        };
+      };
+      /** @description Invalid request data or report already exists for the date */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+        };
+      };
+      /** @description Internal server error or AI generation failure */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+        };
+      };
+    };
+  };
+  /**
    * Export report as Markdown
    * @description Export a daily report in Markdown format for download
    */
@@ -454,7 +575,7 @@ export interface operations {
       /** @description Markdown export successful */
       200: {
         content: {
-          "text/markdown": string;
+          "text/markdown": unknown;
         };
       };
       /** @description Report not found */
@@ -551,7 +672,7 @@ export interface operations {
       /** @description Connection test completed successfully */
       200: {
         content: {
-          "application/json": boolean;
+          "application/json": unknown;
         };
       };
       /** @description Internal server error or ToggleTrack API connection failure */
@@ -571,7 +692,7 @@ export interface operations {
       /** @description Connection test completed successfully */
       200: {
         content: {
-          "application/json": boolean;
+          "application/json": unknown;
         };
       };
       /** @description Internal server error or Notion API connection failure */
@@ -657,7 +778,7 @@ export interface operations {
       /** @description Connection test completed successfully */
       200: {
         content: {
-          "application/json": boolean;
+          "application/json": unknown;
         };
       };
       /** @description Invalid request parameters (missing owner or repo) */
