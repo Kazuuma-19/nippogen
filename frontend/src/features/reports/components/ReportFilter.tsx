@@ -32,6 +32,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState<"start" | "end" | null>(null);
+  const [tempDate, setTempDate] = useState(new Date());
 
   const formatDateForDisplay = (dateString?: string) => {
     if (!dateString) return "選択してください";
@@ -165,7 +166,10 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                   />
                 ) : (
                   <TouchableOpacity
-                    onPress={() => setShowDatePicker("start")}
+                    onPress={() => {
+                      setTempDate(filters.startDate ? new Date(filters.startDate) : new Date());
+                      setShowDatePicker("start");
+                    }}
                     className="flex-row items-center"
                   >
                     <Text className="text-gray-800 flex-1">
@@ -211,7 +215,10 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                   />
                 ) : (
                   <TouchableOpacity
-                    onPress={() => setShowDatePicker("end")}
+                    onPress={() => {
+                      setTempDate(filters.endDate ? new Date(filters.endDate) : new Date());
+                      setShowDatePicker("end");
+                    }}
                     className="flex-row items-center"
                   >
                     <Text className="text-gray-800 flex-1">
@@ -281,32 +288,79 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
         </TouchableOpacity>
       </Modal>
 
-      {/* DateTimePicker for iOS/Android */}
-      {showDatePicker && Platform.OS !== 'web' && DateTimePicker && (
-        <DateTimePicker
-          value={filters[showDatePicker === "start" ? "startDate" : "endDate"] 
-                ? new Date(filters[showDatePicker === "start" ? "startDate" : "endDate"]!) 
-                : new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(null);
-            if (event.type === 'set' && selectedDate) {
-              const dateString = selectedDate.toISOString().split('T')[0];
-              if (showDatePicker === "start") {
-                onFiltersChange({
-                  ...filters,
-                  startDate: dateString,
-                });
-              } else if (showDatePicker === "end") {
-                onFiltersChange({
-                  ...filters,
-                  endDate: dateString,
-                });
-              }
-            }
-          }}
-        />
+      {/* DateTimePicker Modal for iOS/Android */}
+      {showDatePicker && Platform.OS !== 'web' && (
+        <Modal
+          visible={true}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShowDatePicker(null)}
+        >
+          <TouchableOpacity 
+            className="flex-1 justify-end bg-black/50"
+            activeOpacity={1}
+            onPress={() => setShowDatePicker(null)}
+          >
+            <TouchableOpacity 
+              className="bg-white"
+              activeOpacity={1}
+              onPress={(e) => e.stopPropagation()}
+            >
+              {/* Header with Cancel/Done buttons */}
+              <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
+                <TouchableOpacity 
+                  onPress={() => setShowDatePicker(null)}
+                  className="py-2"
+                >
+                  <Text className="text-blue-500 text-lg">キャンセル</Text>
+                </TouchableOpacity>
+                <Text className="text-lg font-semibold text-gray-800">
+                  {showDatePicker === "start" ? "開始日を選択" : "終了日を選択"}
+                </Text>
+                <TouchableOpacity 
+                  onPress={() => {
+                    const dateString = tempDate.toISOString().split('T')[0];
+                    if (showDatePicker === "start") {
+                      onFiltersChange({
+                        ...filters,
+                        startDate: dateString,
+                      });
+                    } else if (showDatePicker === "end") {
+                      onFiltersChange({
+                        ...filters,
+                        endDate: dateString,
+                      });
+                    }
+                    setShowDatePicker(null);
+                  }}
+                  className="py-2"
+                >
+                  <Text className="text-blue-500 text-lg font-semibold">完了</Text>
+                </TouchableOpacity>
+              </View>
+              
+              {/* DateTimePicker */}
+              <View className="bg-white" style={{ height: 250 }}>
+                {DateTimePicker && (
+                  <DateTimePicker
+                    value={tempDate}
+                    mode="date"
+                    display="spinner"
+                    onChange={(event, selectedDate) => {
+                      if (selectedDate) {
+                        setTempDate(selectedDate);
+                      }
+                    }}
+                    style={{
+                      backgroundColor: 'white',
+                      height: 250,
+                    }}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </Modal>
       )}
     </View>
   );
