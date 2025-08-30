@@ -121,8 +121,8 @@ public class OpenAiIReportGenerationService implements IReportGenerationService 
             prompt.append("データなし\n\n");
         }
         
-        // Togglデータ
-        prompt.append("### 時間記録（Toggl）\n");
+        // Toggleデータ
+        prompt.append("### 時間記録（Toggle）\n");
         if (togglData != null && !togglData.equals("{}")) {
             prompt.append("```json\n").append(togglData).append("\n```\n\n");
         } else {
@@ -183,8 +183,8 @@ public class OpenAiIReportGenerationService implements IReportGenerationService 
             prompt.append("データなし\n\n");
         }
         
-        // Togglデータ
-        prompt.append("### 時間記録（Toggl）\n");
+        // Toggleデータ
+        prompt.append("### 時間記録（Toggle）\n");
         if (togglData != null && !togglData.equals("{}")) {
             prompt.append("```json\n").append(togglData).append("\n```\n\n");
         } else {

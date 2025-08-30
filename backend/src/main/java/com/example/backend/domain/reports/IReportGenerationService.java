@@ -15,7 +15,7 @@ public interface IReportGenerationService {
      * @param userId ユーザーID
      * @param reportDate 日報対象日
      * @param githubData GitHubからの活動データ
-     * @param togglData Togglからの時間記録データ
+     * @param togglData Toggleからの時間記録データ
      * @param notionData Notionからのコンテンツデータ
      * @param additionalNotes ユーザーからの追加情報
      * @return 生成された日報コンテンツ
@@ -35,7 +35,7 @@ public interface IReportGenerationService {
      * @param userId ユーザーID
      * @param reportDate 日報対象日
      * @param githubData GitHubからの活動データ
-     * @param togglData Togglからの時間記録データ
+     * @param togglData Toggleからの時間記録データ
      * @param notionData Notionからのコンテンツデータ
      * @param previousContent 前回生成されたコンテンツ
      * @param userFeedback ユーザーからのフィードバック

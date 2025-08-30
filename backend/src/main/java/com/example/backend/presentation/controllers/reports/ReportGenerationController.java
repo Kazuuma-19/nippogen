@@ -33,7 +33,7 @@ public class ReportGenerationController {
     @PostMapping("/generate")
     @Operation(
         summary = "Generate daily report", 
-        description = "Generate a new daily report using AI based on GitHub, Toggl, and Notion data"
+        description = "Generate a new daily report using AI based on GitHub, Toggle, and Notion data"
     )
     @ApiResponses(value = {
         @ApiResponse(

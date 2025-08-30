@@ -1,9 +1,9 @@
-package com.example.backend.presentation.controllers.credentials.toggl;
+package com.example.backend.presentation.controllers.credentials.toggle;
 
-import com.example.backend.application.dto.credentials.toggl.TogglCredentialCreateRequestDto;
-import com.example.backend.application.dto.credentials.toggl.TogglCredentialResponseDto;
-import com.example.backend.application.dto.credentials.toggl.TogglCredentialUpdateRequestDto;
-import com.example.backend.application.usecases.credentials.toggl.TogglCredentialUseCase;
+import com.example.backend.application.dto.credentials.toggle.ToggleCredentialCreateRequestDto;
+import com.example.backend.application.dto.credentials.toggle.ToggleCredentialResponseDto;
+import com.example.backend.application.dto.credentials.toggle.ToggleCredentialUpdateRequestDto;
+import com.example.backend.application.usecases.credentials.toggle.ToggleCredentialUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,85 +20,85 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/credentials/toggl")
+@RequestMapping("/api/credentials/toggle")
 @RequiredArgsConstructor
-@Tag(name = "Toggl認証情報", description = "Toggl Track API認証情報の管理")
-public class TogglCredentialController {
+@Tag(name = "Toggle認証情報", description = "Toggle Track API認証情報の管理")
+public class ToggleCredentialController {
     
-    private final TogglCredentialUseCase togglCredentialUseCase;
+    private final ToggleCredentialUseCase toggleCredentialUseCase;
     
     @PostMapping
-    @Operation(summary = "Toggl認証情報作成", description = "新しいToggl認証情報を作成します")
+    @Operation(summary = "Toggle認証情報作成", description = "新しいToggle認証情報を作成します")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "認証情報の作成に成功"),
         @ApiResponse(responseCode = "400", description = "リクエストデータが不正"),
         @ApiResponse(responseCode = "500", description = "サーバーエラー")
     })
-    public ResponseEntity<TogglCredentialResponseDto> create(
+    public ResponseEntity<ToggleCredentialResponseDto> create(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId,
-            @Valid @RequestBody TogglCredentialCreateRequestDto request) {
+            @Valid @RequestBody ToggleCredentialCreateRequestDto request) {
         
-        TogglCredentialResponseDto response = togglCredentialUseCase.create(userId, request);
+        ToggleCredentialResponseDto response = toggleCredentialUseCase.create(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
     @GetMapping("/{id}")
-    @Operation(summary = "Toggl認証情報取得", description = "指定されたIDのToggl認証情報を取得します")
+    @Operation(summary = "Toggle認証情報取得", description = "指定されたIDのToggle認証情報を取得します")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "認証情報の取得に成功"),
         @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
         @ApiResponse(responseCode = "500", description = "サーバーエラー")
     })
-    public ResponseEntity<TogglCredentialResponseDto> findById(
+    public ResponseEntity<ToggleCredentialResponseDto> findById(
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
-        return togglCredentialUseCase.findById(id)
+        return toggleCredentialUseCase.findById(id)
                 .map(credential -> ResponseEntity.ok(credential))
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @GetMapping
-    @Operation(summary = "ユーザーのToggl認証情報取得", description = "指定されたユーザーのアクティブなToggl認証情報を取得します")
+    @Operation(summary = "ユーザーのToggle認証情報取得", description = "指定されたユーザーのアクティブなToggle認証情報を取得します")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "認証情報の取得に成功"),
         @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
         @ApiResponse(responseCode = "500", description = "サーバーエラー")
     })
-    public ResponseEntity<TogglCredentialResponseDto> findByUserId(
+    public ResponseEntity<ToggleCredentialResponseDto> findByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        return togglCredentialUseCase.findByUserId(userId)
+        return toggleCredentialUseCase.findByUserId(userId)
                 .map(credential -> ResponseEntity.ok(credential))
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @GetMapping("/all")
-    @Operation(summary = "ユーザーの全Toggl認証情報取得", description = "指定されたユーザーの全Toggl認証情報を取得します")
+    @Operation(summary = "ユーザーの全Toggle認証情報取得", description = "指定されたユーザーの全Toggle認証情報を取得します")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "認証情報の取得に成功"),
         @ApiResponse(responseCode = "500", description = "サーバーエラー")
     })
-    public ResponseEntity<List<TogglCredentialResponseDto>> findAllByUserId(
+    public ResponseEntity<List<ToggleCredentialResponseDto>> findAllByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        List<TogglCredentialResponseDto> credentials = togglCredentialUseCase.findAllByUserId(userId);
+        List<ToggleCredentialResponseDto> credentials = toggleCredentialUseCase.findAllByUserId(userId);
         return ResponseEntity.ok(credentials);
     }
     
     @PutMapping("/{id}")
-    @Operation(summary = "Toggl認証情報更新", description = "指定されたIDのToggl認証情報を更新します")
+    @Operation(summary = "Toggle認証情報更新", description = "指定されたIDのToggle認証情報を更新します")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "認証情報の更新に成功"),
         @ApiResponse(responseCode = "400", description = "リクエストデータが不正"),
         @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
         @ApiResponse(responseCode = "500", description = "サーバーエラー")
     })
-    public ResponseEntity<TogglCredentialResponseDto> update(
+    public ResponseEntity<ToggleCredentialResponseDto> update(
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id,
-            @RequestBody TogglCredentialUpdateRequestDto request) {
+            @RequestBody ToggleCredentialUpdateRequestDto request) {
         
         try {
-            TogglCredentialResponseDto response = togglCredentialUseCase.update(id, request);
+            ToggleCredentialResponseDto response = toggleCredentialUseCase.update(id, request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -106,7 +106,7 @@ public class TogglCredentialController {
     }
     
     @DeleteMapping("/{id}")
-    @Operation(summary = "Toggl認証情報削除", description = "指定されたIDのToggl認証情報を削除します")
+    @Operation(summary = "Toggle認証情報削除", description = "指定されたIDのToggle認証情報を削除します")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "認証情報の削除に成功"),
         @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
@@ -116,7 +116,7 @@ public class TogglCredentialController {
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
         try {
-            togglCredentialUseCase.deleteById(id);
+            toggleCredentialUseCase.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -124,7 +124,7 @@ public class TogglCredentialController {
     }
     
     @GetMapping("/exists")
-    @Operation(summary = "Toggl認証情報存在確認", description = "指定されたユーザーにToggl認証情報が存在するかチェックします")
+    @Operation(summary = "Toggle認証情報存在確認", description = "指定されたユーザーにToggle認証情報が存在するかチェックします")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "存在確認の結果を返却"),
         @ApiResponse(responseCode = "500", description = "サーバーエラー")
@@ -132,7 +132,7 @@ public class TogglCredentialController {
     public ResponseEntity<Boolean> exists(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
-        boolean exists = togglCredentialUseCase.existsByUserId(userId);
+        boolean exists = toggleCredentialUseCase.existsByUserId(userId);
         return ResponseEntity.ok(exists);
     }
 }

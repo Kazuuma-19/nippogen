@@ -1,6 +1,6 @@
-package com.example.backend.application.dto.credentials.toggl;
+package com.example.backend.application.dto.credentials.toggle;
 
-import com.example.backend.domain.credentials.toggl.TogglCredential;
+import com.example.backend.domain.credentials.toggle.ToggleCredential;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +11,8 @@ import java.util.UUID;
 
 @Data
 @Builder
-@Schema(description = "Toggl Track認証情報レスポンス")
-public class TogglCredentialResponseDto {
+@Schema(description = "Toggle Track認証情報レスポンス")
+public class ToggleCredentialResponseDto {
     
     @Schema(description = "認証情報ID", example = "123e4567-e89b-12d3-a456-426614174000")
     private UUID id;
@@ -53,8 +53,8 @@ public class TogglCredentialResponseDto {
     @Schema(description = "更新日時", example = "2023-01-01T00:00:00")
     private LocalDateTime updatedAt;
     
-    public static TogglCredentialResponseDto from(TogglCredential credential) {
-        return TogglCredentialResponseDto.builder()
+    public static ToggleCredentialResponseDto from(ToggleCredential credential) {
+        return ToggleCredentialResponseDto.builder()
                 .id(credential.getId())
                 .userId(credential.getUserId())
                 .maskedApiKey(maskApiKey(credential.getApiKey()))

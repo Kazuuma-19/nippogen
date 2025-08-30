@@ -1,4 +1,4 @@
-package com.example.backend.domain.credentials.toggl;
+package com.example.backend.domain.credentials.toggle;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Builder(toBuilder = true)
-public class TogglCredential {
+public class ToggleCredential {
     
     private final UUID id;
     private final UUID userId;

@@ -1,9 +1,9 @@
-package com.example.backend.infrastructure.repositories.credentials.toggl;
+package com.example.backend.infrastructure.repositories.credentials.toggle;
 
 import static com.example.backend.jooq.tables.JTogglCredentials.TOGGL_CREDENTIALS;
 
-import com.example.backend.domain.credentials.toggl.TogglCredential;
-import com.example.backend.domain.credentials.toggl.ITogglCredentialRepository;
+import com.example.backend.domain.credentials.toggle.ToggleCredential;
+import com.example.backend.domain.credentials.toggle.IToggleCredentialRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -16,12 +16,12 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class TogglCredentialRepository implements ITogglCredentialRepository {
+public class ToggleCredentialRepository implements IToggleCredentialRepository {
     
     private final DSLContext dsl;
 
     @Override
-    public TogglCredential save(TogglCredential credential) {
+    public ToggleCredential save(ToggleCredential credential) {
         if (existsById(credential.getId())) {
             return update(credential);
         } else {
@@ -30,7 +30,7 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
     }
 
     @Override
-    public Optional<TogglCredential> findById(UUID id) {
+    public Optional<ToggleCredential> findById(UUID id) {
         return dsl.selectFrom(TOGGL_CREDENTIALS)
                 .where(TOGGL_CREDENTIALS.ID.eq(id))
                 .fetchOptional()
@@ -38,7 +38,7 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
     }
 
     @Override
-    public Optional<TogglCredential> findByUserId(UUID userId) {
+    public Optional<ToggleCredential> findByUserId(UUID userId) {
         return dsl.selectFrom(TOGGL_CREDENTIALS)
                 .where(TOGGL_CREDENTIALS.USER_ID.eq(userId)
                        .and(TOGGL_CREDENTIALS.IS_ACTIVE.eq(true)))
@@ -47,7 +47,7 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
     }
 
     @Override
-    public List<TogglCredential> findAllByUserId(UUID userId) {
+    public List<ToggleCredential> findAllByUserId(UUID userId) {
         return dsl.selectFrom(TOGGL_CREDENTIALS)
                 .where(TOGGL_CREDENTIALS.USER_ID.eq(userId))
                 .orderBy(TOGGL_CREDENTIALS.CREATED_AT.desc())
@@ -56,7 +56,7 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
     }
 
     @Override
-    public List<TogglCredential> findActiveByUserId(UUID userId) {
+    public List<ToggleCredential> findActiveByUserId(UUID userId) {
         return dsl.selectFrom(TOGGL_CREDENTIALS)
                 .where(TOGGL_CREDENTIALS.USER_ID.eq(userId)
                        .and(TOGGL_CREDENTIALS.IS_ACTIVE.eq(true)))
@@ -107,7 +107,7 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
                 .fetchOne(0, Long.class);
     }
 
-    private TogglCredential insert(TogglCredential credential) {
+    private ToggleCredential insert(ToggleCredential credential) {
         var record = dsl.insertInto(TOGGL_CREDENTIALS)
                 .set(TOGGL_CREDENTIALS.ID, credential.getId())
                 .set(TOGGL_CREDENTIALS.USER_ID, credential.getUserId())
@@ -128,7 +128,7 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
         return mapToEntity(record);
     }
 
-    private TogglCredential update(TogglCredential credential) {
+    private ToggleCredential update(ToggleCredential credential) {
         var record = dsl.update(TOGGL_CREDENTIALS)
                 .set(TOGGL_CREDENTIALS.API_KEY, credential.getApiKey())
                 .set(TOGGL_CREDENTIALS.WORKSPACE_ID, credential.getWorkspaceId())
@@ -147,11 +147,11 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
         return mapToEntity(record);
     }
 
-    private TogglCredential mapToEntity(org.jooq.Record record) {
+    private ToggleCredential mapToEntity(org.jooq.Record record) {
         Integer[] projectIdsArray = record.get(TOGGL_CREDENTIALS.PROJECT_IDS);
         String[] defaultTagsArray = record.get(TOGGL_CREDENTIALS.DEFAULT_TAGS);
         
-        return TogglCredential.builder()
+        return ToggleCredential.builder()
                 .id(record.get(TOGGL_CREDENTIALS.ID))
                 .userId(record.get(TOGGL_CREDENTIALS.USER_ID))
                 .apiKey(record.get(TOGGL_CREDENTIALS.API_KEY))
