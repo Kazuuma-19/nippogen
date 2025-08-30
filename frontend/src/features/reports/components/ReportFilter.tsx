@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, Modal } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Modal, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -27,6 +27,7 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
   const [showDatePicker, setShowDatePicker] = useState<"start" | "end" | null>(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [tempDate, setTempDate] = useState(new Date());
 
   const formatDateForDisplay = (dateString?: string) => {
     if (!dateString) return "選択してください";
@@ -44,15 +45,37 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(null);
+    if (Platform.OS === 'android') {
+      setShowDatePicker(null);
+    }
     
-    if (selectedDate && showDatePicker) {
-      const dateString = selectedDate.toISOString().split('T')[0];
+    if (selectedDate) {
+      setTempDate(selectedDate);
+      
+      // Android: immediately apply the date
+      if (Platform.OS === 'android' && showDatePicker) {
+        const dateString = selectedDate.toISOString().split('T')[0];
+        onFiltersChange({
+          ...filters,
+          [showDatePicker === "start" ? "startDate" : "endDate"]: dateString,
+        });
+      }
+    }
+  };
+
+  const confirmDateSelection = () => {
+    if (showDatePicker) {
+      const dateString = tempDate.toISOString().split('T')[0];
       onFiltersChange({
         ...filters,
         [showDatePicker === "start" ? "startDate" : "endDate"]: dateString,
       });
     }
+    setShowDatePicker(null);
+  };
+
+  const cancelDateSelection = () => {
+    setShowDatePicker(null);
   };
 
   const handleStatusSelect = (status: FilterOptions["status"]) => {
@@ -138,7 +161,12 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
             <View className="flex-row space-x-3">
               <TouchableOpacity
                 className="flex-1 bg-white border border-gray-200 rounded-lg p-3"
-                onPress={() => setShowDatePicker("start")}
+                onPress={() => {
+                  if (filters.startDate) {
+                    setTempDate(new Date(filters.startDate));
+                  }
+                  setShowDatePicker("start");
+                }}
               >
                 <Text className="text-xs text-gray-500 mb-1">開始日</Text>
                 <Text className="text-gray-800">
@@ -148,7 +176,12 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
               
               <TouchableOpacity
                 className="flex-1 bg-white border border-gray-200 rounded-lg p-3"
-                onPress={() => setShowDatePicker("end")}
+                onPress={() => {
+                  if (filters.endDate) {
+                    setTempDate(new Date(filters.endDate));
+                  }
+                  setShowDatePicker("end");
+                }}
               >
                 <Text className="text-xs text-gray-500 mb-1">終了日</Text>
                 <Text className="text-gray-800">
@@ -183,12 +216,50 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
 
       {/* Date Picker Modal */}
       {showDatePicker && (
-        <DateTimePicker
-          value={new Date()}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
+        <>
+          {Platform.OS === 'ios' ? (
+            <Modal
+              visible={true}
+              transparent={true}
+              animationType="slide"
+              onRequestClose={cancelDateSelection}
+            >
+              <View className="flex-1 justify-end bg-black/50">
+                <View className="bg-white">
+                  {/* iOS Date Picker Header */}
+                  <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
+                    <TouchableOpacity onPress={cancelDateSelection}>
+                      <Text className="text-blue-500 text-lg">キャンセル</Text>
+                    </TouchableOpacity>
+                    <Text className="text-lg font-semibold text-gray-800">
+                      {showDatePicker === "start" ? "開始日を選択" : "終了日を選択"}
+                    </Text>
+                    <TouchableOpacity onPress={confirmDateSelection}>
+                      <Text className="text-blue-500 text-lg font-semibold">完了</Text>
+                    </TouchableOpacity>
+                  </View>
+                  
+                  {/* iOS Date Picker */}
+                  <DateTimePicker
+                    value={tempDate}
+                    mode="date"
+                    display="spinner"
+                    onChange={handleDateChange}
+                    style={{ backgroundColor: 'white' }}
+                  />
+                </View>
+              </View>
+            </Modal>
+          ) : (
+            // Android Date Picker
+            <DateTimePicker
+              value={tempDate}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
+        </>
       )}
 
       {/* Status Selection Modal */}
