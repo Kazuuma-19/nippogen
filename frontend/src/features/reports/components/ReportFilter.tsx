@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, TextInput, Modal, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from '@react-native-community/datetimepicker';
+
+// Conditional import for DateTimePicker (not available on web)
+let DateTimePicker: any = null;
+if (Platform.OS !== 'web') {
+  DateTimePicker = require('@react-native-community/datetimepicker').default;
+}
 
 export interface FilterOptions {
   startDate?: string;
@@ -217,7 +222,53 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
       {/* Date Picker Modal */}
       {showDatePicker && (
         <>
-          {Platform.OS === 'ios' ? (
+          {Platform.OS === 'web' ? (
+            // Web: HTML input type="date"
+            <Modal
+              visible={true}
+              transparent={true}
+              animationType="fade"
+              onRequestClose={cancelDateSelection}
+            >
+              <View className="flex-1 justify-center items-center bg-black/50">
+                <View className="bg-white rounded-lg p-6 m-4 min-w-[300px]">
+                  <Text className="text-lg font-semibold text-gray-800 mb-4">
+                    {showDatePicker === "start" ? "開始日を選択" : "終了日を選択"}
+                  </Text>
+                  
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 mb-4"
+                    // @ts-ignore - Web-only props
+                    type="date"
+                    value={tempDate.toISOString().split('T')[0]}
+                    onChange={(e: any) => {
+                      const date = new Date(e.target.value);
+                      setTempDate(date);
+                    }}
+                    style={{ 
+                      // @ts-ignore - Web-only styles
+                      outlineStyle: 'none',
+                    }}
+                  />
+                  
+                  <View className="flex-row justify-end space-x-3">
+                    <TouchableOpacity 
+                      onPress={cancelDateSelection}
+                      className="px-4 py-2 bg-gray-200 rounded-lg"
+                    >
+                      <Text className="text-gray-700">キャンセル</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      onPress={confirmDateSelection}
+                      className="px-4 py-2 bg-blue-500 rounded-lg"
+                    >
+                      <Text className="text-white">完了</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          ) : Platform.OS === 'ios' ? (
             <Modal
               visible={true}
               transparent={true}
@@ -240,24 +291,28 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                   </View>
                   
                   {/* iOS Date Picker */}
-                  <DateTimePicker
-                    value={tempDate}
-                    mode="date"
-                    display="spinner"
-                    onChange={handleDateChange}
-                    style={{ backgroundColor: 'white' }}
-                  />
+                  {DateTimePicker && (
+                    <DateTimePicker
+                      value={tempDate}
+                      mode="date"
+                      display="spinner"
+                      onChange={handleDateChange}
+                      style={{ backgroundColor: 'white' }}
+                    />
+                  )}
                 </View>
               </View>
             </Modal>
           ) : (
             // Android Date Picker
-            <DateTimePicker
-              value={tempDate}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
-            />
+            DateTimePicker && (
+              <DateTimePicker
+                value={tempDate}
+                mode="date"
+                display="default"
+                onChange={handleDateChange}
+              />
+            )
           )}
         </>
       )}
