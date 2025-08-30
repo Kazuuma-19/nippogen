@@ -178,10 +178,15 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       });
                     }}
                     onClick={(e: any) => {
-                      e.target.showPicker?.();
-                    }}
-                    onFocus={(e: any) => {
-                      e.target.showPicker?.();
+                      // Only call showPicker on direct user click
+                      try {
+                        if (e.isTrusted) {
+                          e.target.showPicker?.();
+                        }
+                      } catch (error) {
+                        // Fallback: let the browser handle the click naturally
+                        console.log('showPicker not available, using browser default');
+                      }
                     }}
                     style={{
                       width: '100%',
@@ -227,10 +232,15 @@ export default function ReportFilter({ filters, onFiltersChange, onClearFilters 
                       });
                     }}
                     onClick={(e: any) => {
-                      e.target.showPicker?.();
-                    }}
-                    onFocus={(e: any) => {
-                      e.target.showPicker?.();
+                      // Only call showPicker on direct user click
+                      try {
+                        if (e.isTrusted) {
+                          e.target.showPicker?.();
+                        }
+                      } catch (error) {
+                        // Fallback: let the browser handle the click naturally
+                        console.log('showPicker not available, using browser default');
+                      }
                     }}
                     style={{
                       width: '100%',
