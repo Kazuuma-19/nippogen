@@ -16,10 +16,6 @@ export default function ReportDetailScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    loadReport();
-  }, [loadReport]);
-
   const loadReport = useCallback(async () => {
     if (!date) return;
 
@@ -65,6 +61,10 @@ export default function ReportDetailScreen() {
       setIsLoading(false);
     }
   }, [date]);
+
+  useEffect(() => {
+    loadReport();
+  }, [loadReport]);
 
   const handleSave = async (content: string) => {
     if (!report) return;
