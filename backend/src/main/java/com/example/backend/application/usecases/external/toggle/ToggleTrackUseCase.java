@@ -4,7 +4,6 @@ import com.example.backend.application.dto.external.toggle.TimeEntryDto;
 import com.example.backend.domain.external.toggle.TimeEntry;
 import com.example.backend.domain.external.toggle.IToggleTrackRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ToggleTrackUseCase {
     
     private final IToggleTrackRepository toggleTrackRepository;
@@ -27,7 +25,6 @@ public class ToggleTrackUseCase {
      * @return 接続成功時true
      */
     public boolean testConnection() {
-        log.info("Testing ToggleTrack connection");
         return toggleTrackRepository.testConnection();
     }
     
@@ -37,7 +34,6 @@ public class ToggleTrackUseCase {
      * @return 今日の時間記録DTOのリスト
      */
     public List<TimeEntryDto> getTodayTimeEntries() {
-        log.info("Fetching today's ToggleTrack time entries");
         
         List<TimeEntry> timeEntries = toggleTrackRepository.getTodayTimeEntries();
         

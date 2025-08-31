@@ -3,7 +3,6 @@ package com.example.backend.infrastructure.repositories.external.notion;
 import com.example.backend.domain.external.notion.NotionPage;
 import com.example.backend.domain.external.notion.NotionTableRow;
 import com.example.backend.domain.external.notion.INotionRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -15,19 +14,16 @@ import java.util.Map;
  * 将来的にNotion API連携を実装する際の基盤クラス
  */
 @Repository
-@Slf4j
 public class NotionRepository implements INotionRepository {
 
     @Override
     public boolean testConnection() {
-        log.info("Testing connection to Notion");
         // TODO: 実際のNotion API接続テストを実装
         return true;
     }
 
     @Override
     public NotionPage getPageContent() {
-        log.info("Fetching Notion page content");
         // TODO: 実際のNotion API呼び出しを実装
         // 設定済みページIDを使用してAPIコールする
         
@@ -45,7 +41,6 @@ public class NotionRepository implements INotionRepository {
 
     @Override
     public List<NotionTableRow> getTableContent() {
-        log.info("Fetching Notion table content");
         // TODO: 実際のNotion API呼び出しを実装
         // 設定済みテーブルIDを使用してAPIコールする
         

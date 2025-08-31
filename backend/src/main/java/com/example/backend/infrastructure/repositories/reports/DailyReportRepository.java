@@ -7,7 +7,6 @@ import com.example.backend.domain.reports.ReportStatus;
 import com.example.backend.domain.reports.IDailyReportRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
@@ -25,14 +24,12 @@ import org.jooq.JSONB;
  */
 @Repository
 @RequiredArgsConstructor
-@Slf4j
 public class DailyReportRepository implements IDailyReportRepository {
     
     private final DSLContext dsl;
 
     @Override
     public DailyReport save(DailyReport report) {
-        log.info("Saving daily report: {}", report.getId());
         
         if (existsById(report.getId())) {
             return update(report);
@@ -43,7 +40,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public Optional<DailyReport> findById(UUID id) {
-        log.debug("Finding daily report by id: {}", id);
         
         return dsl.selectFrom(DAILY_REPORTS)
                 .where(DAILY_REPORTS.ID.eq(id))
@@ -53,7 +49,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public Optional<DailyReport> findByUserIdAndDate(UUID userId, LocalDate reportDate) {
-        log.debug("Finding daily report by userId: {} and date: {}", userId, reportDate);
         
         return dsl.selectFrom(DAILY_REPORTS)
                 .where(DAILY_REPORTS.USER_ID.eq(userId)
@@ -64,7 +59,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public List<DailyReport> findByUserId(UUID userId) {
-        log.debug("Finding daily reports by userId: {}", userId);
         
         return dsl.selectFrom(DAILY_REPORTS)
                 .where(DAILY_REPORTS.USER_ID.eq(userId))
@@ -75,7 +69,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public List<DailyReport> findByUserIdAndDateRange(UUID userId, LocalDate startDate, LocalDate endDate) {
-        log.debug("Finding daily reports by userId: {} and date range: {} to {}", userId, startDate, endDate);
         
         return dsl.selectFrom(DAILY_REPORTS)
                 .where(DAILY_REPORTS.USER_ID.eq(userId)
@@ -87,7 +80,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public List<DailyReport> findByUserIdAndStatus(UUID userId, ReportStatus status) {
-        log.debug("Finding daily reports by userId: {} and status: {}", userId, status);
         
         return dsl.selectFrom(DAILY_REPORTS)
                 .where(DAILY_REPORTS.USER_ID.eq(userId)
@@ -99,7 +91,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public List<DailyReport> findByUserIdAndDateRangeAndStatus(UUID userId, LocalDate startDate, LocalDate endDate, ReportStatus status) {
-        log.debug("Finding daily reports by userId: {}, date range: {} to {}, and status: {}", userId, startDate, endDate, status);
         
         return dsl.selectFrom(DAILY_REPORTS)
                 .where(DAILY_REPORTS.USER_ID.eq(userId)
@@ -112,7 +103,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public boolean deleteById(UUID id) {
-        log.info("Deleting daily report by id: {}", id);
         
         int deletedCount = dsl.deleteFrom(DAILY_REPORTS)
                 .where(DAILY_REPORTS.ID.eq(id))
@@ -123,7 +113,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public boolean existsById(UUID id) {
-        log.debug("Checking existence of daily report by id: {}", id);
         
         return dsl.selectCount()
                 .from(DAILY_REPORTS)
@@ -133,7 +122,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public boolean existsByUserIdAndDate(UUID userId, LocalDate reportDate) {
-        log.debug("Checking existence of daily report by userId: {} and date: {}", userId, reportDate);
         
         return dsl.selectCount()
                 .from(DAILY_REPORTS)
@@ -144,7 +132,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public long countByUserId(UUID userId) {
-        log.debug("Counting daily reports by userId: {}", userId);
         
         return dsl.selectCount()
                 .from(DAILY_REPORTS)
@@ -154,7 +141,6 @@ public class DailyReportRepository implements IDailyReportRepository {
     
     @Override
     public long countByUserIdAndStatus(UUID userId, ReportStatus status) {
-        log.debug("Counting daily reports by userId: {} and status: {}", userId, status);
         
         return dsl.selectCount()
                 .from(DAILY_REPORTS)
@@ -170,7 +156,6 @@ public class DailyReportRepository implements IDailyReportRepository {
      * @return 挿入された日報エンティティ
      */
     private DailyReport insert(DailyReport report) {
-        log.debug("Inserting new daily report: {}", report.getId());
         
         dsl.insertInto(DAILY_REPORTS)
                 .set(DAILY_REPORTS.ID, report.getId())
@@ -197,7 +182,6 @@ public class DailyReportRepository implements IDailyReportRepository {
      * @return 更新された日報エンティティ
      */
     private DailyReport update(DailyReport report) {
-        log.debug("Updating existing daily report: {}", report.getId());
         
         dsl.update(DAILY_REPORTS)
                 .set(DAILY_REPORTS.RAW_DATA, report.getRawData() != null ? JSONB.valueOf(report.getRawData()) : null)
