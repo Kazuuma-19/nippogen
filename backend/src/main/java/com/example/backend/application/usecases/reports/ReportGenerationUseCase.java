@@ -11,7 +11,6 @@ import com.example.backend.application.usecases.external.notion.NotionUseCase;
 import com.example.backend.application.usecases.external.toggle.ToggleTrackUseCase;
 import com.example.backend.domain.reports.IReportGenerationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +24,6 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ReportGenerationUseCase {
     
     private final IReportGenerationService reportGenerationService;
@@ -43,7 +41,6 @@ public class ReportGenerationUseCase {
     @Transactional
     public ReportGenerationResponseDto generateReport(ReportGenerationRequestDto request) {
         try {
-            log.info("日報生成開始 - ユーザーID: {}, 対象日: {}", request.getUserId(), request.getReportDate());
             
             if (!request.isValid()) {
                 return ReportGenerationResponseDto.failure(
@@ -92,7 +89,6 @@ public class ReportGenerationUseCase {
                 
             DailyReportDto createdReport = reportUseCase.createReport(createRequest);
             
-            log.info("日報生成完了 - 日報ID: {}", createdReport.getId());
             
             return ReportGenerationResponseDto.success(
                 createdReport.getId(),
@@ -103,8 +99,6 @@ public class ReportGenerationUseCase {
             );
             
         } catch (Exception e) {
-            log.error("日報生成エラー - ユーザーID: {}, 対象日: {}", 
-                request.getUserId(), request.getReportDate(), e);
             
             return ReportGenerationResponseDto.failure(
                 request.getUserId(),
@@ -123,7 +117,6 @@ public class ReportGenerationUseCase {
     @Transactional
     public ReportGenerationResponseDto regenerateReport(ReportRegenerationRequestDto request) {
         try {
-            log.info("日報再生成開始 - 日報ID: {}", request.getReportId());
             
             if (!request.isValid()) {
                 return ReportGenerationResponseDto.failure(
@@ -168,7 +161,6 @@ public class ReportGenerationUseCase {
                 
             DailyReportDto updatedReport = reportUseCase.updateReport(request.getReportId(), updateRequest);
             
-            log.info("日報再生成完了 - 日報ID: {}", updatedReport.getId());
             
             return ReportGenerationResponseDto.success(
                 updatedReport.getId(),
@@ -179,7 +171,6 @@ public class ReportGenerationUseCase {
             );
             
         } catch (Exception e) {
-            log.error("日報再生成エラー - 日報ID: {}", request.getReportId(), e);
             
             return ReportGenerationResponseDto.failure(
                 null, null,
@@ -197,7 +188,6 @@ public class ReportGenerationUseCase {
             //現在は空データを返す
             return "{}";
         } catch (Exception e) {
-            log.warn("GitHubデータ取得エラー - ユーザーID: {}, 日付: {}", userId, date, e);
             return "{}";
         }
     }
@@ -211,7 +201,6 @@ public class ReportGenerationUseCase {
             // 現在は空データを返す
             return "{}";
         } catch (Exception e) {
-            log.warn("Togglデータ取得エラー - ユーザーID: {}, 日付: {}", userId, date, e);
             return "{}";
         }
     }
@@ -225,7 +214,6 @@ public class ReportGenerationUseCase {
             // 現在は空データを返す
             return "{}";
         } catch (Exception e) {
-            log.warn("Notionデータ取得エラー - ユーザーID: {}, 日付: {}", userId, date, e);
             return "{}";
         }
     }

@@ -1,6 +1,5 @@
 package com.example.backend.common.exceptions;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,12 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-@Slf4j
 public class GlobalExceptionHandler {
     
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
-        log.error("Parameter type mismatch: {}", e.getMessage());
         
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", "INVALID_PARAMETER_TYPE");
@@ -30,7 +27,6 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception e) {
-        log.error("Unexpected error: {}", e.getMessage(), e);
         
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", "INTERNAL_SERVER_ERROR");

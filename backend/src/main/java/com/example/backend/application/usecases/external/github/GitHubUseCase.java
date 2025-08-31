@@ -6,7 +6,6 @@ import com.example.backend.domain.external.github.GitHubCommit;
 import com.example.backend.domain.external.github.PullRequest;
 import com.example.backend.domain.external.github.IGitHubRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class GitHubUseCase {
     
     private final IGitHubRepository IGitHubRepository;
@@ -32,7 +30,6 @@ public class GitHubUseCase {
      * @return 接続成功時true
      */
     public boolean testConnection(String owner, String repo) {
-        log.info("Testing GitHub connection for {}/{}", owner, repo);
         return IGitHubRepository.testConnection(owner, repo);
     }
     
@@ -45,7 +42,6 @@ public class GitHubUseCase {
      * @return プルリクエストDTO一覧
      */
     public List<PullRequestDto> getPullRequestsForDate(String owner, String repo, LocalDate date) {
-        log.info("Fetching pull requests for {}/{} on {}", owner, repo, date);
         
         List<PullRequest> pullRequests = IGitHubRepository.findPullRequestsByDate(owner, repo, date);
         
@@ -63,7 +59,6 @@ public class GitHubUseCase {
      * @return コミットDTO一覧
      */
     public List<CommitDto> getCommitsForDate(String owner, String repo, LocalDate date) {
-        log.info("Fetching commits for {}/{} on {}", owner, repo, date);
         
         List<GitHubCommit> commits = IGitHubRepository.findCommitsByDate(owner, repo, date);
         

@@ -2,7 +2,6 @@ package com.example.backend.infrastructure.repositories.external.toggle;
 
 import com.example.backend.domain.external.toggle.TimeEntry;
 import com.example.backend.domain.external.toggle.IToggleTrackRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -13,19 +12,16 @@ import java.util.List;
  * 将来的にToggleTrack API連携を実装する際の基盤クラス
  */
 @Repository
-@Slf4j
 public class ToggleTrackRepository implements IToggleTrackRepository {
 
     @Override
     public boolean testConnection() {
-        log.info("Testing connection to ToggleTrack");
         // TODO: 実際のToggleTrack API接続テストを実装
         return true;
     }
 
     @Override
     public List<TimeEntry> getTodayTimeEntries() {
-        log.info("Fetching today's ToggleTrack time entries");
         // TODO: 実際のToggleTrack API呼び出しを実装
         // 今日の日付を使用してAPIコールする
         

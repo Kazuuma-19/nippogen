@@ -6,7 +6,6 @@ import com.example.backend.domain.external.notion.NotionPage;
 import com.example.backend.domain.external.notion.NotionTableRow;
 import com.example.backend.domain.external.notion.INotionRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class NotionUseCase {
     
     private final INotionRepository notionRepository;
@@ -29,7 +27,6 @@ public class NotionUseCase {
      * @return 接続成功時true
      */
     public boolean testConnection() {
-        log.info("Testing Notion connection");
         return notionRepository.testConnection();
     }
     
@@ -39,7 +36,6 @@ public class NotionUseCase {
      * @return ページ情報DTO
      */
     public NotionPageDto getPageContent() {
-        log.info("Fetching Notion page content");
         
         NotionPage page = notionRepository.getPageContent();
         return toNotionPageDto(page);
@@ -51,7 +47,6 @@ public class NotionUseCase {
      * @return テーブル行データDTOのリスト
      */
     public List<NotionTableRowDto> getTableContent() {
-        log.info("Fetching Notion table content");
         
         List<NotionTableRow> rows = notionRepository.getTableContent();
         

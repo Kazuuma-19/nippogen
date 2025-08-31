@@ -1,7 +1,6 @@
 package com.example.backend.infrastructure.repositories.reports;
 
 import com.example.backend.domain.reports.IReportGenerationService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import java.util.UUID;
  * Spring AI ChatClientを使用してAI日報生成を実装
  */
 @Service
-@Slf4j
 public class OpenAiIReportGenerationService implements IReportGenerationService {
     
     private final ChatClient chatClient;
@@ -50,7 +48,6 @@ public class OpenAiIReportGenerationService implements IReportGenerationService 
         String additionalNotes
     ) {
         try {
-            log.info("AI日報生成開始 - ユーザーID: {}, 日付: {}", userId, reportDate);
             
             String userPrompt = buildGenerationPrompt(
                 reportDate, githubData, togglData, notionData, additionalNotes
@@ -58,11 +55,9 @@ public class OpenAiIReportGenerationService implements IReportGenerationService 
             
             String generatedContent = callOpenAI(userPrompt);
             
-            log.info("AI日報生成完了 - ユーザーID: {}", userId);
             return generatedContent;
             
         } catch (Exception e) {
-            log.error("AI日報生成エラー - ユーザーID: {}", userId, e);
             throw new RuntimeException("AI日報生成に失敗しました", e);
         }
     }
@@ -79,7 +74,6 @@ public class OpenAiIReportGenerationService implements IReportGenerationService 
         String additionalNotes
     ) {
         try {
-            log.info("AI日報再生成開始 - ユーザーID: {}, 日付: {}", userId, reportDate);
             
             String userPrompt = buildRegenerationPrompt(
                 reportDate, githubData, togglData, notionData, 
@@ -88,11 +82,9 @@ public class OpenAiIReportGenerationService implements IReportGenerationService 
             
             String regeneratedContent = callOpenAI(userPrompt);
             
-            log.info("AI日報再生成完了 - ユーザーID: {}", userId);
             return regeneratedContent;
             
         } catch (Exception e) {
-            log.error("AI日報再生成エラー - ユーザーID: {}", userId, e);
             throw new RuntimeException("AI日報再生成に失敗しました", e);
         }
     }
