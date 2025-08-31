@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { router } from "expo-router";
-import type { components } from "@/types/api";
 
-type ReportGenerationRequest = components["schemas"]["ReportGenerationRequestDto"];
 
 export default function GenerateReportScreen() {
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -30,12 +28,6 @@ export default function GenerateReportScreen() {
     
     try {
       // Mock request data - later will be replaced with actual API call
-      const requestData: ReportGenerationRequest = {
-        userId: "mock-user-id", // Later will be from auth context
-        reportDate: selectedDate,
-        additionalNotes: additionalNotes.trim() || undefined,
-        valid: true
-      };
 
       // Mock delay to simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));

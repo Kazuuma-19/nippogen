@@ -17,7 +17,7 @@ export default function DateInput({ value, onChange }: DateInputProps) {
       if (e.isTrusted) {
         e.target.showPicker?.();
       }
-    } catch (error) {
+    } catch {
       console.log("showPicker not available, using browser default");
     }
   };

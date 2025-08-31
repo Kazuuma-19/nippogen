@@ -47,7 +47,7 @@ export function GitHubCredentialForm({
     setIsSaving(true);
     try {
       await onSave(data);
-    } catch (error) {
+    } catch {
       // Error handling is done in the hook
     } finally {
       setIsSaving(false);

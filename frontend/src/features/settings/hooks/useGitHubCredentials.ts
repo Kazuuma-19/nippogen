@@ -16,7 +16,7 @@ export function useGitHubCredentials() {
     try {
       const response = await credentialsApi.github.findAllByUserId()
       setCredentials(response.data)
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', 'GitHub認証情報の読み込みに失敗しました')
     } finally {
       setLoading(false)
@@ -29,7 +29,7 @@ export function useGitHubCredentials() {
       setCredentials(prev => [...prev, response.data])
       Alert.alert('成功', 'GitHub認証情報を保存しました')
       return response.data
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', 'GitHub認証情報の保存に失敗しました')
       throw error
     }
@@ -40,7 +40,7 @@ export function useGitHubCredentials() {
       await credentialsApi.github.delete(id)
       setCredentials(prev => prev.filter(cred => cred.id !== id))
       Alert.alert('成功', 'GitHub認証情報を削除しました')
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', 'GitHub認証情報の削除に失敗しました')
     }
   }, [])
@@ -49,7 +49,7 @@ export function useGitHubCredentials() {
     try {
       await credentialsApi.github.test(owner, repo)
       Alert.alert('成功', 'GitHub接続テストに成功しました')
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', 'GitHub接続テストに失敗しました')
     }
   }, [])

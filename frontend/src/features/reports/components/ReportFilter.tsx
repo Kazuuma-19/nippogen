@@ -37,20 +37,6 @@ export default function ReportFilter({
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const formatDateForDisplay = (dateString?: string) => {
-    if (!dateString) return "選択してください";
-
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("ja-JP", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
-    } catch {
-      return "選択してください";
-    }
-  };
 
   const handleStatusSelect = (status: FilterOptions["status"]) => {
     onFiltersChange({
