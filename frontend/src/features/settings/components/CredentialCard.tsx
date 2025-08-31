@@ -32,7 +32,7 @@ export function CredentialCard({
     try {
       await onTest(credential)
       Alert.alert('成功', '接続テストに成功しました')
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', '接続テストに失敗しました')
     } finally {
       setIsTestLoading(false)

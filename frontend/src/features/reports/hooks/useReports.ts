@@ -136,7 +136,7 @@ export default function useReports(): UseReportsReturn {
   // Initial load
   useEffect(() => {
     fetchReports({});
-  }, []);
+  }, [fetchReports]);
 
   return {
     ...state,

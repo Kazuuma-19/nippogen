@@ -16,7 +16,7 @@ export function useTogglCredentials() {
     try {
       const response = await credentialsApi.toggl.findAllByUserId()
       setCredentials(response.data)
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', 'Toggl認証情報の読み込みに失敗しました')
     } finally {
       setLoading(false)
@@ -29,7 +29,7 @@ export function useTogglCredentials() {
       setCredentials(prev => [...prev, response.data])
       Alert.alert('成功', 'Toggl認証情報を保存しました')
       return response.data
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', 'Toggl認証情報の保存に失敗しました')
       throw error
     }
@@ -40,7 +40,7 @@ export function useTogglCredentials() {
       await credentialsApi.toggl.delete(id)
       setCredentials(prev => prev.filter(cred => cred.id !== id))
       Alert.alert('成功', 'Toggl認証情報を削除しました')
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', 'Toggl認証情報の削除に失敗しました')
     }
   }, [])
@@ -49,7 +49,7 @@ export function useTogglCredentials() {
     try {
       await credentialsApi.toggl.test()
       Alert.alert('成功', 'Toggl接続テストに成功しました')
-    } catch (error) {
+    } catch {
       Alert.alert('エラー', 'Toggl接続テストに失敗しました')
     }
   }, [])

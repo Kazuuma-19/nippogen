@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import type { components } from "@/types/api";
@@ -18,9 +18,9 @@ export default function ReportDetailScreen() {
 
   useEffect(() => {
     loadReport();
-  }, [date]);
+  }, [loadReport]);
 
-  const loadReport = async () => {
+  const loadReport = useCallback(async () => {
     if (!date) return;
 
     setIsLoading(true);
@@ -64,7 +64,7 @@ export default function ReportDetailScreen() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [date]);
 
   const handleSave = async (content: string) => {
     if (!report) return;
@@ -109,7 +109,7 @@ export default function ReportDetailScreen() {
               await new Promise(resolve => setTimeout(resolve, 2000));
               loadReport(); // Reload the report
               Alert.alert("成功", "日報を再生成しました");
-            } catch (error) {
+            } catch {
               Alert.alert("エラー", "日報の再生成に失敗しました");
             } finally {
               setIsLoading(false);
@@ -126,7 +126,7 @@ export default function ReportDetailScreen() {
     try {
       // Mock export - later implement actual download functionality
       Alert.alert("エクスポート", "Markdownファイルとしてエクスポートする機能は準備中です");
-    } catch (error) {
+    } catch {
       Alert.alert("エラー", "エクスポートに失敗しました");
     }
   };

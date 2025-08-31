@@ -74,8 +74,7 @@ const parseMarkdown = (content: string) => {
       // Bold text **text**
       processedLine = processedLine.replace(/\*\*(.*?)\*\*/g, '$1');
       
-      // Inline code `code`
-      const codeMatch = processedLine.match(/`([^`]+)`/g);
+      // Inline code `code` - could be enhanced in future
       
       elements.push(
         <Text key={key} className="text-gray-700 mb-2 leading-6">
