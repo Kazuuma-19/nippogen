@@ -166,42 +166,6 @@ public class ReportController {
         }
     }
     
-    @PostMapping("/{id}/approve")
-    @Operation(
-        summary = "Approve daily report", 
-        description = "Approve a daily report, finalizing its content"
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", 
-            description = "Report approved successfully",
-            content = @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = DailyReportDto.class)
-            )
-        ),
-        @ApiResponse(
-            responseCode = "404", 
-            description = "Report not found",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "Internal server error",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        )
-    })
-    public ResponseEntity<DailyReportDto> approveReport(
-            @Parameter(description = "Report ID", required = true)
-            @PathVariable UUID id
-    ) {
-        try {
-            DailyReportDto approvedReport = reportUseCase.approveReport(id);
-            return ResponseEntity.ok(approvedReport);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
     
     @DeleteMapping("/{id}")
     @Operation(

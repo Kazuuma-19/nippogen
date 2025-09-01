@@ -64,40 +64,6 @@ public class ReportUseCase {
         return convertToDto(saved);
     }
     
-    /**
-     * 日報を承認
-     * 
-     * @param reportId 日報ID
-     * @return 承認された日報DTO
-     * @throws IllegalArgumentException 日報が見つからない場合
-     */
-    @Transactional
-    public DailyReportDto approveReport(UUID reportId) {
-        Optional<DailyReport> optionalReport = dailyReportRepository.findById(reportId);
-        if (optionalReport.isEmpty()) {
-            throw new IllegalArgumentException("Report not found: " + reportId);
-        }
-        
-        DailyReport existingReport = optionalReport.get();
-        String finalContent = existingReport.getDisplayContent();
-        
-        DailyReport approvedReport = DailyReport.builder()
-                .id(existingReport.getId())
-                .userId(existingReport.getUserId())
-                .reportDate(existingReport.getReportDate())
-                .rawData(existingReport.getRawData())
-                .generatedContent(existingReport.getGeneratedContent())
-                .editedContent(existingReport.getEditedContent())
-                .finalContent(finalContent)
-                .generationCount(existingReport.getGenerationCount())
-                .additionalNotes(existingReport.getAdditionalNotes())
-                .createdAt(existingReport.getCreatedAt())
-                .updatedAt(LocalDateTime.now())
-                .build();
-        
-        DailyReport saved = dailyReportRepository.save(approvedReport);
-        return convertToDto(saved);
-    }
     
     /**
      * 日付範囲で日報一覧を取得
