@@ -4,7 +4,6 @@ import com.example.backend.application.dto.credentials.toggl.TogglCredentialCrea
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialResponseDto;
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialUpdateRequestDto;
 import com.example.backend.application.usecases.credentials.toggl.TogglCredentialUseCase;
-import com.example.backend.application.usecases.external.toggle.ToggleTrackUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +26,6 @@ import java.util.UUID;
 public class TogglCredentialController {
     
     private final TogglCredentialUseCase togglCredentialUseCase;
-    private final ToggleTrackUseCase toggleTrackUseCase;
     
     @PostMapping
     @Operation(summary = "Toggl認証情報作成", description = "新しいToggl認証情報を作成します")
@@ -125,19 +123,6 @@ public class TogglCredentialController {
         }
     }
     
-    @GetMapping("/exists")
-    @Operation(summary = "Toggl認証情報存在確認", description = "指定されたユーザーにToggl認証情報が存在するかチェックします")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "存在確認の結果を返却"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<Boolean> exists(
-            @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
-        
-        boolean exists = togglCredentialUseCase.existsByUserId(userId);
-        return ResponseEntity.ok(exists);
-    }
-    
     @GetMapping("/test")
     @Operation(summary = "ToggleTrack接続テスト", description = "ToggleTrack API接続をテストして、アクセス権限を確認します")
     @ApiResponses({
@@ -145,7 +130,7 @@ public class TogglCredentialController {
         @ApiResponse(responseCode = "500", description = "内部サーバーエラーまたはToggleTrack API接続失敗")
     })
     public ResponseEntity<Boolean> testConnection() {
-        boolean isConnected = toggleTrackUseCase.testConnection();
+        boolean isConnected = togglCredentialUseCase.testConnection();
         return ResponseEntity.ok(isConnected);
     }
 }

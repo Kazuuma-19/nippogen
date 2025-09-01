@@ -4,7 +4,6 @@ import com.example.backend.application.dto.credentials.notion.NotionCredentialCr
 import com.example.backend.application.dto.credentials.notion.NotionCredentialResponseDto;
 import com.example.backend.application.dto.credentials.notion.NotionCredentialUpdateRequestDto;
 import com.example.backend.application.usecases.credentials.notion.NotionCredentialUseCase;
-import com.example.backend.application.usecases.external.notion.NotionUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +26,6 @@ import java.util.UUID;
 public class NotionCredentialController {
     
     private final NotionCredentialUseCase notionCredentialUseCase;
-    private final NotionUseCase notionUseCase;
     
     @PostMapping
     @Operation(summary = "Notion認証情報作成", description = "新しいNotion認証情報を作成します")
@@ -125,19 +123,6 @@ public class NotionCredentialController {
         }
     }
     
-    @GetMapping("/exists")
-    @Operation(summary = "Notion認証情報存在確認", description = "指定されたユーザーにNotion認証情報が存在するかチェックします")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "存在確認の結果を返却"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<Boolean> exists(
-            @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
-        
-        boolean exists = notionCredentialUseCase.existsByUserId(userId);
-        return ResponseEntity.ok(exists);
-    }
-    
     @GetMapping("/test")
     @Operation(summary = "Notion接続テスト", description = "Notion API接続をテストして、アクセス権限を確認します")
     @ApiResponses({
@@ -145,7 +130,7 @@ public class NotionCredentialController {
         @ApiResponse(responseCode = "500", description = "内部サーバーエラーまたはNotion API接続失敗")
     })
     public ResponseEntity<Boolean> testConnection() {
-        boolean isConnected = notionUseCase.testConnection();
+        boolean isConnected = notionCredentialUseCase.testConnection();
         return ResponseEntity.ok(isConnected);
     }
 }

@@ -5,6 +5,7 @@ import com.example.backend.application.dto.credentials.toggl.TogglCredentialResp
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialUpdateRequestDto;
 import com.example.backend.domain.credentials.toggl.TogglCredential;
 import com.example.backend.domain.credentials.toggl.ITogglCredentialRepository;
+import com.example.backend.domain.external.toggle.IToggleTrackRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class TogglCredentialUseCase {
     
     private final ITogglCredentialRepository togglCredentialRepository;
+    private final IToggleTrackRepository toggleTrackRepository;
     
     public TogglCredentialResponseDto create(UUID userId, TogglCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
@@ -129,5 +131,15 @@ public class TogglCredentialUseCase {
     @Transactional(readOnly = true)
     public long countByUserId(UUID userId) {
         return togglCredentialRepository.countByUserId(userId);
+    }
+    
+    /**
+     * ToggleTrack接続テスト
+     * 
+     * @return 接続成功時true
+     */
+    @Transactional(readOnly = true)
+    public boolean testConnection() {
+        return toggleTrackRepository.testConnection();
     }
 }
