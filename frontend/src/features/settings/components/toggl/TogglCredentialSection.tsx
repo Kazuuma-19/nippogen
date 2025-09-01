@@ -79,7 +79,7 @@ export function TogglCredentialSection() {
       </View>
 
       {/* Loading State */}
-      {loading.toggl && (
+      {loading && (
         <View className="items-center py-8">
           <ActivityIndicator size="large" color="#267D00" />
           <Text className="text-gray-500 mt-2">読み込み中...</Text>
@@ -87,7 +87,7 @@ export function TogglCredentialSection() {
       )}
 
       {/* Credentials List */}
-      {!loading.toggl && (
+      {!loading && (
         <>
           {togglCredentials.length > 0 ? (
             <View>

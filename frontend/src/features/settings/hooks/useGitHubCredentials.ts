@@ -29,7 +29,7 @@ export function useGitHubCredentials() {
       setCredentials(prev => [...prev, response.data])
       Alert.alert('成功', 'GitHub認証情報を保存しました')
       return response.data
-    } catch {
+    } catch (error) {
       Alert.alert('エラー', 'GitHub認証情報の保存に失敗しました')
       throw error
     }

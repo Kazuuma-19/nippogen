@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   gitHubCredentialSchema,
@@ -31,7 +31,11 @@ export function GitHubCredentialForm({
   const [showApiKey, setShowApiKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const form = useForm<GitHubCredentialFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<GitHubCredentialFormData>({
     resolver: zodResolver(gitHubCredentialSchema),
     defaultValues: {
       apiKey: initialData?.maskedApiKey?.includes("****")
@@ -73,28 +77,35 @@ export function GitHubCredentialForm({
             <Text className="text-sm font-medium text-gray-700 mb-2">
               GitHub API Token <Text className="text-red-500">*</Text>
             </Text>
-            <View className="relative">
-              <TextInput
-                {...form.register("apiKey")}
-                secureTextEntry={!showApiKey}
-                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
-                multiline={false}
-              />
-              <TouchableOpacity
-                onPress={() => setShowApiKey(!showApiKey)}
-                className="absolute right-3 top-3"
-              >
-                <Ionicons
-                  name={showApiKey ? "eye-off" : "eye"}
-                  size={20}
-                  color="gray"
-                />
-              </TouchableOpacity>
-            </View>
-            {form.formState.errors.apiKey && (
+            <Controller
+              name="apiKey"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <View className="relative">
+                  <TextInput
+                    value={value}
+                    onChangeText={onChange}
+                    secureTextEntry={!showApiKey}
+                    placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                    className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
+                    multiline={false}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowApiKey(!showApiKey)}
+                    className="absolute right-3 top-3"
+                  >
+                    <Ionicons
+                      name={showApiKey ? "eye-off" : "eye"}
+                      size={20}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+            {errors.apiKey && (
               <Text className="text-red-500 text-xs mt-1">
-                {form.formState.errors.apiKey.message}
+                {errors.apiKey.message}
               </Text>
             )}
             <Text className="text-gray-500 text-xs mt-1">
@@ -108,15 +119,22 @@ export function GitHubCredentialForm({
             <Text className="text-sm font-medium text-gray-700 mb-2">
               API Base URL
             </Text>
-            <TextInput
-              {...form.register("baseUrl")}
-              placeholder="https://api.github.com"
-              className="border border-gray-300 rounded-lg p-3 text-sm"
-              keyboardType="url"
+            <Controller
+              name="baseUrl"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="https://api.github.com"
+                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                  keyboardType="url"
+                />
+              )}
             />
-            {form.formState.errors.baseUrl && (
+            {errors.baseUrl && (
               <Text className="text-red-500 text-xs mt-1">
-                {form.formState.errors.baseUrl.message}
+                {errors.baseUrl.message}
               </Text>
             )}
             <Text className="text-gray-500 text-xs mt-1">
@@ -134,14 +152,21 @@ export function GitHubCredentialForm({
               {/* Owner Field */}
               <View className="flex-1">
                 <Text className="text-xs text-gray-600 mb-1">Owner</Text>
-                <TextInput
-                  {...form.register("owner")}
-                  placeholder="octocat"
-                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                <Controller
+                  name="owner"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="octocat"
+                      className="border border-gray-300 rounded-lg p-3 text-sm"
+                    />
+                  )}
                 />
-                {form.formState.errors.owner && (
+                {errors.owner && (
                   <Text className="text-red-500 text-xs mt-1">
-                    {form.formState.errors.owner.message}
+                    {errors.owner.message}
                   </Text>
                 )}
               </View>
@@ -151,14 +176,21 @@ export function GitHubCredentialForm({
                 <Text className="text-xs text-gray-600 mb-1">
                   Repository
                 </Text>
-                <TextInput
-                  {...form.register("repo")}
-                  placeholder="Hello-World"
-                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                <Controller
+                  name="repo"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="Hello-World"
+                      className="border border-gray-300 rounded-lg p-3 text-sm"
+                    />
+                  )}
                 />
-                {form.formState.errors.repo && (
+                {errors.repo && (
                   <Text className="text-red-500 text-xs mt-1">
-                    {form.formState.errors.repo.message}
+                    {errors.repo.message}
                   </Text>
                 )}
               </View>
@@ -194,12 +226,10 @@ export function GitHubCredentialForm({
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={form.handleSubmit(onSubmit)}
-              disabled={form.formState.isSubmitting || isSaving}
+              onPress={handleSubmit(onSubmit)}
+              disabled={isSaving}
               className={`flex-1 py-3 rounded-lg ${
-                !form.formState.isSubmitting && !isSaving
-                  ? "bg-primary"
-                  : "bg-gray-400"
+                !isSaving ? "bg-primary" : "bg-gray-400"
               }`}
             >
               <Text className="text-white text-center font-medium">
