@@ -52,7 +52,7 @@ export const togglCredentialsApi = {
     axiosInstance.get<boolean>('/api/credentials/toggl/exists'),
   
   test: () => 
-    axiosInstance.get('/api/external/toggl/test')
+    axiosInstance.get('/api/credentials/toggl/test')
 }
 
 // Notion Credentials API
@@ -79,7 +79,7 @@ export const notionCredentialsApi = {
     axiosInstance.get<boolean>('/api/credentials/notion/exists'),
   
   test: () => 
-    axiosInstance.get('/api/external/notion/test')
+    axiosInstance.get('/api/credentials/notion/test')
 }
 
 // Combined credentials API

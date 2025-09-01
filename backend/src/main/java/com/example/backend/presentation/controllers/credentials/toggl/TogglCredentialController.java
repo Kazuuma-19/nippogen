@@ -4,6 +4,7 @@ import com.example.backend.application.dto.credentials.toggl.TogglCredentialCrea
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialResponseDto;
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialUpdateRequestDto;
 import com.example.backend.application.usecases.credentials.toggl.TogglCredentialUseCase;
+import com.example.backend.application.usecases.external.toggle.ToggleTrackUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class TogglCredentialController {
     
     private final TogglCredentialUseCase togglCredentialUseCase;
+    private final ToggleTrackUseCase toggleTrackUseCase;
     
     @PostMapping
     @Operation(summary = "Toggl認証情報作成", description = "新しいToggl認証情報を作成します")
@@ -134,5 +136,16 @@ public class TogglCredentialController {
         
         boolean exists = togglCredentialUseCase.existsByUserId(userId);
         return ResponseEntity.ok(exists);
+    }
+    
+    @GetMapping("/test")
+    @Operation(summary = "ToggleTrack接続テスト", description = "ToggleTrack API接続をテストして、アクセス権限を確認します")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "接続テストが正常に完了"),
+        @ApiResponse(responseCode = "500", description = "内部サーバーエラーまたはToggleTrack API接続失敗")
+    })
+    public ResponseEntity<Boolean> testConnection() {
+        boolean isConnected = toggleTrackUseCase.testConnection();
+        return ResponseEntity.ok(isConnected);
     }
 }
