@@ -21,9 +21,6 @@ export const githubCredentialsApi = {
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/github/${id}`),
   
-  exists: () => 
-    axiosInstance.get<boolean>('/api/credentials/github/exists'),
-  
   test: (owner: string, repo: string) => 
     axiosInstance.get('/api/credentials/github/test', { params: { owner, repo } })
 }
@@ -48,9 +45,6 @@ export const togglCredentialsApi = {
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/toggl/${id}`),
   
-  exists: () => 
-    axiosInstance.get<boolean>('/api/credentials/toggl/exists'),
-  
   test: () => 
     axiosInstance.get('/api/credentials/toggl/test')
 }
@@ -74,9 +68,6 @@ export const notionCredentialsApi = {
   
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/notion/${id}`),
-  
-  exists: () => 
-    axiosInstance.get<boolean>('/api/credentials/notion/exists'),
   
   test: () => 
     axiosInstance.get('/api/credentials/notion/test')

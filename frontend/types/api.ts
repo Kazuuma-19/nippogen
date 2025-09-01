@@ -146,68 +146,12 @@ export interface paths {
      */
     get: operations["getReportByDate"];
   };
-  "/api/external/toggl/today": {
+  "/api/credentials/toggl/test": {
     /**
-     * Get today's time entries
-     * @description Retrieve all time entries for today from ToggleTrack. Backend automatically uses current date.
-     */
-    get: operations["getTodayTimeEntries"];
-  };
-  "/api/external/toggl/test": {
-    /**
-     * Test ToggleTrack connection
-     * @description Test ToggleTrack API connection to verify access permissions
+     * ToggleTrack接続テスト
+     * @description ToggleTrack API接続をテストして、アクセス権限を確認します
      */
     get: operations["testConnection"];
-  };
-  "/api/external/notion/test": {
-    /**
-     * Test Notion connection
-     * @description Test Notion API connection to verify access permissions
-     */
-    get: operations["testConnection_1"];
-  };
-  "/api/external/notion/table": {
-    /**
-     * Get table content
-     * @description Retrieve all rows from the pre-configured Notion table
-     */
-    get: operations["getTableContent"];
-  };
-  "/api/external/notion/page": {
-    /**
-     * Get page content
-     * @description Retrieve content from the pre-configured Notion page
-     */
-    get: operations["getPageContent"];
-  };
-  "/api/external/github/test": {
-    /**
-     * Test GitHub connection
-     * @description Test GitHub repository connection via MCP to verify access permissions and repository existence
-     */
-    get: operations["testConnection_2"];
-  };
-  "/api/external/github/pull-requests": {
-    /**
-     * Get pull requests for date
-     * @description Retrieve all pull requests created, updated, or merged on the specified date via MCP
-     */
-    get: operations["getPullRequestsForDate"];
-  };
-  "/api/external/github/commits": {
-    /**
-     * Get commits for date
-     * @description Retrieve all commits made on the specified date via MCP
-     */
-    get: operations["getCommitsForDate"];
-  };
-  "/api/credentials/toggl/exists": {
-    /**
-     * Toggl認証情報存在確認
-     * @description 指定されたユーザーにToggl認証情報が存在するかチェックします
-     */
-    get: operations["exists"];
   };
   "/api/credentials/toggl/all": {
     /**
@@ -216,12 +160,12 @@ export interface paths {
      */
     get: operations["findAllByUserId"];
   };
-  "/api/credentials/notion/exists": {
+  "/api/credentials/notion/test": {
     /**
-     * Notion認証情報存在確認
-     * @description 指定されたユーザーにNotion認証情報が存在するかチェックします
+     * Notion接続テスト
+     * @description Notion API接続をテストして、アクセス権限を確認します
      */
-    get: operations["exists_1"];
+    get: operations["testConnection_1"];
   };
   "/api/credentials/notion/all": {
     /**
@@ -230,12 +174,12 @@ export interface paths {
      */
     get: operations["findAllByUserId_1"];
   };
-  "/api/credentials/github/exists": {
+  "/api/credentials/github/test": {
     /**
-     * GitHub認証情報存在確認
-     * @description 指定されたユーザーにGitHub認証情報が存在するかチェックします
+     * GitHub接続テスト
+     * @description GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します
      */
-    get: operations["exists_2"];
+    get: operations["testConnection_2"];
   };
   "/api/credentials/github/all": {
     /**
@@ -738,91 +682,6 @@ export interface components {
       dateRange?: string;
       /** Format: int32 */
       actualCount?: number;
-    };
-    TimeEntryDto: {
-      /** Format: int64 */
-      id?: number;
-      description?: string;
-      projectName?: string;
-      /** Format: int64 */
-      projectId?: number;
-      /** Format: date-time */
-      startTime?: string;
-      /** Format: date-time */
-      endTime?: string;
-      /** Format: int64 */
-      durationSeconds?: number;
-      billable?: boolean;
-      userId?: string;
-      workspaceName?: string;
-      /** Format: int64 */
-      workspaceId?: number;
-      tags?: string[];
-    };
-    NotionTableRowDto: {
-      id?: string;
-      title?: string;
-      properties?: {
-        [key: string]: unknown;
-      };
-      /** Format: date-time */
-      createdAt?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-      url?: string;
-    };
-    NotionPageDto: {
-      id?: string;
-      title?: string;
-      content?: string;
-      /** Format: date-time */
-      createdAt?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-      url?: string;
-      tags?: string[];
-      status?: string;
-    };
-    PullRequestDto: {
-      /** Format: int64 */
-      id?: number;
-      /** Format: int32 */
-      number?: number;
-      title?: string;
-      body?: string;
-      state?: string;
-      author?: string;
-      /** Format: date-time */
-      createdAt?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-      /** Format: date-time */
-      mergedAt?: string;
-      baseBranch?: string;
-      headBranch?: string;
-      reviewers?: string[];
-      /** Format: int32 */
-      additions?: number;
-      /** Format: int32 */
-      deletions?: number;
-      /** Format: int32 */
-      changedFiles?: number;
-      htmlUrl?: string;
-    };
-    CommitDto: {
-      sha?: string;
-      message?: string;
-      author?: string;
-      authorEmail?: string;
-      /** Format: date-time */
-      date?: string;
-      /** Format: int32 */
-      additions?: number;
-      /** Format: int32 */
-      deletions?: number;
-      /** Format: int32 */
-      total?: number;
-      htmlUrl?: string;
     };
   };
   responses: never;
@@ -1649,284 +1508,18 @@ export interface operations {
     };
   };
   /**
-   * Get today's time entries
-   * @description Retrieve all time entries for today from ToggleTrack. Backend automatically uses current date.
-   */
-  getTodayTimeEntries: {
-    responses: {
-      /** @description Today's time entries retrieved successfully */
-      200: {
-        content: {
-          "application/json": components["schemas"]["TimeEntryDto"];
-        };
-      };
-      /** @description Unauthorized - invalid ToggleTrack credentials */
-      401: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error or ToggleTrack API connection failure */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Test ToggleTrack connection
-   * @description Test ToggleTrack API connection to verify access permissions
+   * ToggleTrack接続テスト
+   * @description ToggleTrack API接続をテストして、アクセス権限を確認します
    */
   testConnection: {
     responses: {
-      /** @description Connection test completed successfully */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error or ToggleTrack API connection failure */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Test Notion connection
-   * @description Test Notion API connection to verify access permissions
-   */
-  testConnection_1: {
-    responses: {
-      /** @description Connection test completed successfully */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error or Notion API connection failure */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Get table content
-   * @description Retrieve all rows from the pre-configured Notion table
-   */
-  getTableContent: {
-    responses: {
-      /** @description Table content retrieved successfully */
-      200: {
-        content: {
-          "application/json": components["schemas"]["NotionTableRowDto"];
-        };
-      };
-      /** @description Table not found or access denied */
-      404: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error or Notion API connection failure */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Get page content
-   * @description Retrieve content from the pre-configured Notion page
-   */
-  getPageContent: {
-    responses: {
-      /** @description Page content retrieved successfully */
-      200: {
-        content: {
-          "application/json": components["schemas"]["NotionPageDto"];
-        };
-      };
-      /** @description Page not found or access denied */
-      404: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error or Notion API connection failure */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Test GitHub connection
-   * @description Test GitHub repository connection via MCP to verify access permissions and repository existence
-   */
-  testConnection_2: {
-    parameters: {
-      query: {
-        /**
-         * @description Repository owner/organization name
-         * @example octocat
-         */
-        owner: string;
-        /**
-         * @description Repository name
-         * @example Hello-World
-         */
-        repo: string;
-      };
-    };
-    responses: {
-      /** @description Connection test completed successfully */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Invalid request parameters (missing owner or repo) */
-      400: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error or MCP connection failure */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Get pull requests for date
-   * @description Retrieve all pull requests created, updated, or merged on the specified date via MCP
-   */
-  getPullRequestsForDate: {
-    parameters: {
-      query: {
-        /**
-         * @description Repository owner/organization name
-         * @example octocat
-         */
-        owner: string;
-        /**
-         * @description Repository name
-         * @example Hello-World
-         */
-        repo: string;
-        /**
-         * @description Target date in ISO format (YYYY-MM-DD)
-         * @example 2024-01-15
-         */
-        date: string;
-      };
-    };
-    responses: {
-      /** @description Pull requests retrieved successfully */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PullRequestDto"];
-        };
-      };
-      /** @description Invalid request parameters or date format */
-      400: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Repository not found or access denied */
-      404: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error or MCP connection failure */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Get commits for date
-   * @description Retrieve all commits made on the specified date via MCP
-   */
-  getCommitsForDate: {
-    parameters: {
-      query: {
-        /**
-         * @description Repository owner/organization name
-         * @example octocat
-         */
-        owner: string;
-        /**
-         * @description Repository name
-         * @example Hello-World
-         */
-        repo: string;
-        /**
-         * @description Target date in ISO format (YYYY-MM-DD)
-         * @example 2024-01-15
-         */
-        date: string;
-      };
-    };
-    responses: {
-      /** @description Commits retrieved successfully */
-      200: {
-        content: {
-          "application/json": components["schemas"]["CommitDto"];
-        };
-      };
-      /** @description Invalid request parameters or date format */
-      400: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Repository not found or access denied */
-      404: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error or MCP connection failure */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Toggl認証情報存在確認
-   * @description 指定されたユーザーにToggl認証情報が存在するかチェックします
-   */
-  exists: {
-    parameters: {
-      header: {
-        /** @description ユーザーID */
-        "X-User-Id": string;
-      };
-    };
-    responses: {
-      /** @description 存在確認の結果を返却 */
+      /** @description 接続テストが正常に完了 */
       200: {
         content: {
           "*/*": boolean;
         };
       };
-      /** @description サーバーエラー */
+      /** @description 内部サーバーエラーまたはToggleTrack API接続失敗 */
       500: {
         content: {
           "*/*": boolean;
@@ -1961,24 +1554,18 @@ export interface operations {
     };
   };
   /**
-   * Notion認証情報存在確認
-   * @description 指定されたユーザーにNotion認証情報が存在するかチェックします
+   * Notion接続テスト
+   * @description Notion API接続をテストして、アクセス権限を確認します
    */
-  exists_1: {
-    parameters: {
-      header: {
-        /** @description ユーザーID */
-        "X-User-Id": string;
-      };
-    };
+  testConnection_1: {
     responses: {
-      /** @description 存在確認の結果を返却 */
+      /** @description 接続テストが正常に完了 */
       200: {
         content: {
           "*/*": boolean;
         };
       };
-      /** @description サーバーエラー */
+      /** @description 内部サーバーエラーまたはNotion API接続失敗 */
       500: {
         content: {
           "*/*": boolean;
@@ -2013,24 +1600,38 @@ export interface operations {
     };
   };
   /**
-   * GitHub認証情報存在確認
-   * @description 指定されたユーザーにGitHub認証情報が存在するかチェックします
+   * GitHub接続テスト
+   * @description GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します
    */
-  exists_2: {
+  testConnection_2: {
     parameters: {
-      header: {
-        /** @description ユーザーID */
-        "X-User-Id": string;
+      query: {
+        /**
+         * @description リポジトリオーナー/組織名
+         * @example octocat
+         */
+        owner: string;
+        /**
+         * @description リポジトリ名
+         * @example Hello-World
+         */
+        repo: string;
       };
     };
     responses: {
-      /** @description 存在確認の結果を返却 */
+      /** @description 接続テストが正常に完了 */
       200: {
         content: {
           "*/*": boolean;
         };
       };
-      /** @description サーバーエラー */
+      /** @description リクエストパラメータが無効（owner または repo が不足） */
+      400: {
+        content: {
+          "*/*": boolean;
+        };
+      };
+      /** @description 内部サーバーエラーまたは接続失敗 */
       500: {
         content: {
           "*/*": boolean;
