@@ -1,5 +1,12 @@
 // JOOQ設定ファイル
 // コード生成関連の設定
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.jooq:jooq-codegen'
+    jooqGenerator 'org.postgresql:postgresql:42.7.7'
+    jooqGenerator 'org.jooq:jooq-codegen'
+    jooqGenerator sourceSets.main.output
+}
 
 jooq {
 	version = dependencyManagement.importedProperties['jooq.version']

@@ -1,8 +1,7 @@
 package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
-import com.example.backend.presentation.controllers.reports.DailyReportCreateRequestDto;
-import com.example.backend.presentation.controllers.reports.DailyReportUpdateRequestDto;
+import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
 import com.example.backend.presentation.dto.reports.ReportRegenerationRequestDto;
@@ -10,11 +9,15 @@ import com.example.backend.application.usecases.external.github.GitHubUseCase;
 import com.example.backend.application.usecases.external.notion.NotionUseCase;
 import com.example.backend.application.usecases.external.toggle.ToggleTrackUseCase;
 import com.example.backend.domain.reports.IReportGenerationService;
+import com.example.backend.domain.reports.DailyReport;
+import com.example.backend.domain.reports.ReportStatus;
+import com.example.backend.domain.reports.IDailyReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +34,7 @@ public class ReportGenerationUseCase {
     private final ToggleTrackUseCase toggleTrackUseCase;
     private final NotionUseCase notionUseCase;
     private final ReportUseCase reportUseCase;
+    private final IDailyReportRepository dailyReportRepository;
     
     /**
      * 新規日報を生成する
@@ -51,16 +55,11 @@ public class ReportGenerationUseCase {
             }
             
             // 既存日報の重複チェック
-            Optional<DailyReportDto> existingReport = reportUseCase.getReportByDate(
-                request.getUserId(), 
-                request.getReportDate()
-            );
-            
-            if (existingReport.isPresent()) {
+            if (dailyReportRepository.existsByUserIdAndDate(request.getUserId(), request.getReportDate())) {
                 return ReportGenerationResponseDto.failure(
                     request.getUserId(),
                     request.getReportDate(),
-                    "指定日の日報は既に存在します"
+                    "指定された日付の日報が既に存在しています"
                 );
             }
             
@@ -79,15 +78,21 @@ public class ReportGenerationUseCase {
                 request.getAdditionalNotes()
             );
             
-            // 生成された日報をDBに保存
-            DailyReportCreateRequestDto createRequest = DailyReportCreateRequestDto.builder()
-                .userId(request.getUserId())
-                .reportDate(request.getReportDate())
-                .generatedContent(generatedContent)
-                .additionalNotes(request.getAdditionalNotes())
-                .build();
-                
-            DailyReportDto createdReport = reportUseCase.createReport(createRequest);
+            // 生成された日報をDBに直接保存
+            DailyReport report = DailyReport.builder()
+                    .id(UUID.randomUUID())
+                    .userId(request.getUserId())
+                    .reportDate(request.getReportDate())
+                    .generatedContent(generatedContent)
+                    .status(ReportStatus.DRAFT)
+                    .generationCount(1)
+                    .additionalNotes(request.getAdditionalNotes())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            
+            DailyReport savedReport = dailyReportRepository.save(report);
+            DailyReportDto createdReport = convertToDto(savedReport);
             
             
             return ReportGenerationResponseDto.success(
@@ -216,5 +221,28 @@ public class ReportGenerationUseCase {
         } catch (Exception e) {
             return "{}";
         }
+    }
+    
+    /**
+     * DailyReportエンティティをDTOに変換
+     * 
+     * @param report 日報エンティティ
+     * @return 日報DTO
+     */
+    private DailyReportDto convertToDto(DailyReport report) {
+        return DailyReportDto.builder()
+                .id(report.getId())
+                .userId(report.getUserId())
+                .reportDate(report.getReportDate())
+                .rawData(report.getRawData())
+                .generatedContent(report.getGeneratedContent())
+                .editedContent(report.getEditedContent())
+                .finalContent(report.getFinalContent())
+                .status(report.getStatus().getValue())
+                .generationCount(report.getGenerationCount())
+                .additionalNotes(report.getAdditionalNotes())
+                .createdAt(report.getCreatedAt())
+                .updatedAt(report.getUpdatedAt())
+                .build();
     }
 }

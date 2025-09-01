@@ -5,9 +5,8 @@ import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.domain.reports.DailyReport;
 import com.example.backend.domain.reports.ReportStatus;
 import com.example.backend.domain.reports.IDailyReportRepository;
-import com.example.backend.presentation.controllers.reports.DailyReportCreateRequestDto;
-import com.example.backend.presentation.controllers.reports.DailyReportListResponseDto;
-import com.example.backend.presentation.controllers.reports.DailyReportUpdateRequestDto;
+import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
+import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,40 +29,6 @@ public class ReportUseCase {
     
     private final IDailyReportRepository dailyReportRepository;
     
-    /**
-     * 日報を作成
-     * 
-     * @param request 作成リクエスト
-     * @return 作成された日報DTO
-     * @throws IllegalArgumentException リクエストが無効な場合
-     * @throws IllegalStateException 同じ日付の日報が既に存在する場合
-     */
-    @Transactional
-    public DailyReportDto createReport(DailyReportCreateRequestDto request) {
-        if (!request.isValid()) {
-            throw new IllegalArgumentException("Invalid request: userId and reportDate are required");
-        }
-        
-        if (dailyReportRepository.existsByUserIdAndDate(request.getUserId(), request.getReportDate())) {
-            throw new IllegalStateException("Report already exists for the specified date");
-        }
-        
-        DailyReport report = DailyReport.builder()
-                .id(UUID.randomUUID())
-                .userId(request.getUserId())
-                .reportDate(request.getReportDate())
-                .rawData(request.getRawData())
-                .generatedContent(request.getGeneratedContent())
-                .status(ReportStatus.DRAFT)
-                .generationCount(request.hasGeneratedContent() ? 1 : 0)
-                .additionalNotes(request.getAdditionalNotes())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-        
-        DailyReport saved = dailyReportRepository.save(report);
-        return convertToDto(saved);
-    }
     
     /**
      * 日報を更新
