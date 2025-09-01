@@ -4,12 +4,14 @@ import com.example.backend.application.dto.reports.DailyReportDto;
 import com.example.backend.application.usecases.external.github.GitHubUseCase;
 import com.example.backend.application.usecases.external.notion.NotionUseCase;
 import com.example.backend.application.usecases.external.toggle.ToggleTrackUseCase;
-import com.example.backend.presentation.controllers.reports.DailyReportCreateRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
 import com.example.backend.application.usecases.reports.ReportGenerationUseCase;
 import com.example.backend.application.usecases.reports.ReportUseCase;
 import com.example.backend.domain.reports.IReportGenerationService;
+import com.example.backend.domain.reports.IDailyReportRepository;
+import com.example.backend.domain.reports.DailyReport;
+import com.example.backend.domain.reports.ReportStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,6 +46,9 @@ class ReportGenerationUseCaseTest {
     @Mock
     private ReportUseCase reportUseCase;
     
+    @Mock
+    private IDailyReportRepository dailyReportRepository;
+    
     private ReportGenerationUseCase reportGenerationUseCase;
     
     @BeforeEach
@@ -53,7 +58,8 @@ class ReportGenerationUseCaseTest {
             gitHubUseCase,
             toggleTrackUseCase, 
             notionUseCase,
-            reportUseCase
+            reportUseCase,
+            dailyReportRepository
         );
     }
     
@@ -71,24 +77,28 @@ class ReportGenerationUseCaseTest {
             .build();
         
         // Mocking
-        when(reportUseCase.getReportByDate(userId, reportDate))
-            .thenReturn(Optional.empty());
+        when(dailyReportRepository.existsByUserIdAndDate(userId, reportDate))
+            .thenReturn(false);
         
         when(reportGenerationService.generateReport(
             eq(userId), eq(reportDate), any(), any(), any(), any()
         )).thenReturn("生成された日報コンテンツ");
         
         UUID reportId = UUID.randomUUID();
-        DailyReportDto createdReport = DailyReportDto.builder()
+        DailyReport savedReport = DailyReport.builder()
             .id(reportId)
             .userId(userId)
             .reportDate(reportDate)
             .generatedContent("生成された日報コンテンツ")
+            .status(ReportStatus.DRAFT)
             .generationCount(1)
+            .additionalNotes("テスト用追加メモ")
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
-        
-        when(reportUseCase.createReport(any(DailyReportCreateRequestDto.class)))
-            .thenReturn(createdReport);
+            
+        when(dailyReportRepository.save(any(DailyReport.class)))
+            .thenReturn(savedReport);
         
         // When
         ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(request);
@@ -105,7 +115,7 @@ class ReportGenerationUseCaseTest {
         verify(reportGenerationService, times(1)).generateReport(
             eq(userId), eq(reportDate), any(), any(), any(), eq("テスト用追加メモ")
         );
-        verify(reportUseCase, times(1)).createReport(any(DailyReportCreateRequestDto.class));
+        verify(dailyReportRepository, times(1)).save(any(DailyReport.class));
     }
     
     @Test
@@ -121,25 +131,19 @@ class ReportGenerationUseCaseTest {
             .build();
         
         // 既存日報が存在する場合
-        DailyReportDto existingReport = DailyReportDto.builder()
-            .id(UUID.randomUUID())
-            .userId(userId)
-            .reportDate(reportDate)
-            .build();
-        
-        when(reportUseCase.getReportByDate(userId, reportDate))
-            .thenReturn(Optional.of(existingReport));
+        when(dailyReportRepository.existsByUserIdAndDate(userId, reportDate))
+            .thenReturn(true);
         
         // When
         ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(request);
         
         // Then
         assertThat(response.isSuccess()).isFalse();
-        assertThat(response.getErrorMessage()).contains("既に存在します");
+        assertThat(response.getErrorMessage()).contains("既に存在しています");
         
         // Verify - AI生成は呼ばれないはず
         verify(reportGenerationService, never()).generateReport(any(), any(), any(), any(), any(), any());
-        verify(reportUseCase, never()).createReport(any());
+        verify(dailyReportRepository, never()).save(any(DailyReport.class));
     }
     
     @Test
@@ -159,7 +163,7 @@ class ReportGenerationUseCaseTest {
         assertThat(response.getErrorMessage()).contains("必須項目が不足");
         
         // Verify - 何も呼ばれないはず
-        verify(reportUseCase, never()).getReportByDate(any(), any());
+        verify(dailyReportRepository, never()).existsByUserIdAndDate(any(), any());
         verify(reportGenerationService, never()).generateReport(any(), any(), any(), any(), any(), any());
     }
     
@@ -175,8 +179,8 @@ class ReportGenerationUseCaseTest {
             .reportDate(reportDate)
             .build();
         
-        when(reportUseCase.getReportByDate(userId, reportDate))
-            .thenReturn(Optional.empty());
+        when(dailyReportRepository.existsByUserIdAndDate(userId, reportDate))
+            .thenReturn(false);
         
         // AI生成でエラーが発生
         when(reportGenerationService.generateReport(any(), any(), any(), any(), any(), any()))
@@ -189,7 +193,7 @@ class ReportGenerationUseCaseTest {
         assertThat(response.isSuccess()).isFalse();
         assertThat(response.getErrorMessage()).contains("エラーが発生しました");
         
-        // Verify - createReportは呼ばれないはず
-        verify(reportUseCase, never()).createReport(any());
+        // Verify - saveは呼ばれないはず
+        verify(dailyReportRepository, never()).save(any(DailyReport.class));
     }
 }
