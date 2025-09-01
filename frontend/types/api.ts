@@ -158,7 +158,6 @@ export interface components {
       createdAt?: string;
       /** Format: date-time */
       updatedAt?: string;
-      displayContent?: string;
     };
     /** @description 日報再生成リクエスト */
     ReportRegenerationRequestDto: {
@@ -503,8 +502,6 @@ export interface components {
       /** Format: int32 */
       totalCount?: number;
       dateRange?: string;
-      /** Format: int32 */
-      actualCount?: number;
     };
   };
   responses: never;

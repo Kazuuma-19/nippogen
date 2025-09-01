@@ -23,9 +23,6 @@ public class TogglCredential {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     
-    public boolean hasWorkspace() {
-        return workspaceId != null;
-    }
     
     public boolean hasProjects() {
         return projectIds != null && !projectIds.isEmpty();
@@ -35,9 +32,6 @@ public class TogglCredential {
         return defaultTags != null && !defaultTags.isEmpty();
     }
     
-    public String getEffectiveTimeZone() {
-        return timeZone != null ? timeZone : "UTC";
-    }
     
     public boolean isValid() {
         return apiKey != null && !apiKey.trim().isEmpty() && userId != null;

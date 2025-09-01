@@ -25,21 +25,5 @@ public class ReportRegenerationRequestDto {
         return reportId != null;
     }
     
-    /**
-     * ユーザーフィードバックが存在するかチェック
-     * 
-     * @return ユーザーフィードバックが存在する場合true
-     */
-    public boolean hasUserFeedback() {
-        return userFeedback != null && !userFeedback.trim().isEmpty();
-    }
     
-    /**
-     * 追加情報が存在するかチェック
-     * 
-     * @return 追加情報が存在する場合true
-     */
-    public boolean hasAdditionalNotes() {
-        return additionalNotes != null && !additionalNotes.trim().isEmpty();
-    }
 }

@@ -58,6 +58,16 @@
               "application/json" : { }
             }
           },
+          "200" : {
+            "description" : "日報の更新に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DailyReportDto"
+                }
+              }
+            }
+          },
           "500" : {
             "description" : "サーバー内部エラー",
             "content" : {
@@ -68,16 +78,6 @@
             "description" : "リクエストデータが不正または編集不可",
             "content" : {
               "application/json" : { }
-            }
-          },
-          "200" : {
-            "description" : "日報の更新に成功",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DailyReportDto"
-                }
-              }
             }
           }
         }
@@ -140,16 +140,6 @@
           "required" : true
         },
         "responses" : {
-          "404" : {
-            "description" : "日報が見つからない",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
-            }
-          },
           "200" : {
             "description" : "日報の再生成に成功",
             "content" : {
@@ -179,6 +169,16 @@
                 }
               }
             }
+          },
+          "404" : {
+            "description" : "日報が見つからない",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
+                }
+              }
+            }
           }
         }
       }
@@ -200,6 +200,16 @@
           "required" : true
         },
         "responses" : {
+          "201" : {
+            "description" : "日報の生成に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
+                }
+              }
+            }
+          },
           "500" : {
             "description" : "サーバー内部エラーまたはAI生成失敗",
             "content" : {
@@ -212,16 +222,6 @@
           },
           "400" : {
             "description" : "リクエストデータが不正または指定日の日報が既に存在",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
-            }
-          },
-          "201" : {
-            "description" : "日報の生成に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -450,14 +450,10 @@
           "example" : "2024-12-31"
         } ],
         "responses" : {
-          "200" : {
-            "description" : "日報の取得に成功",
+          "400" : {
+            "description" : "リクエストパラメータが不正",
             "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DailyReportListResponseDto"
-                }
-              }
+              "application/json" : { }
             }
           },
           "500" : {
@@ -466,10 +462,14 @@
               "application/json" : { }
             }
           },
-          "400" : {
-            "description" : "リクエストパラメータが不正",
+          "200" : {
+            "description" : "日報の取得に成功",
             "content" : {
-              "application/json" : { }
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DailyReportListResponseDto"
+                }
+              }
             }
           }
         }
@@ -502,6 +502,22 @@
           }
         } ],
         "responses" : {
+          "200" : {
+            "description" : "日報の取得に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DailyReportDto"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "日付形式が不正",
+            "content" : {
+              "application/json" : { }
+            }
+          },
           "500" : {
             "description" : "サーバー内部エラー",
             "content" : {
@@ -512,22 +528,6 @@
             "description" : "指定された日付の日報が見つからない",
             "content" : {
               "application/json" : { }
-            }
-          },
-          "400" : {
-            "description" : "日付形式が不正",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "200" : {
-            "description" : "日報の取得に成功",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DailyReportDto"
-                }
-              }
             }
           }
         }
@@ -933,9 +933,6 @@
           "updatedAt" : {
             "type" : "string",
             "format" : "date-time"
-          },
-          "displayContent" : {
-            "type" : "string"
           }
         }
       },
@@ -1358,10 +1355,6 @@
           },
           "dateRange" : {
             "type" : "string"
-          },
-          "actualCount" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       }

@@ -26,12 +26,4 @@ public class ReportGenerationRequestDto {
         return userId != null && reportDate != null;
     }
     
-    /**
-     * 追加情報が存在するかチェック
-     * 
-     * @return 追加情報が存在する場合true
-     */
-    public boolean hasAdditionalNotes() {
-        return additionalNotes != null && !additionalNotes.trim().isEmpty();
-    }
 }

@@ -54,14 +54,6 @@ public class DailyReport {
         return finalContent != null && !finalContent.trim().isEmpty();
     }
     
-    /**
-     * 生データを持っているかチェック
-     * 
-     * @return 生データがある場合true
-     */
-    public boolean hasRawData() {
-        return rawData != null && !rawData.trim().isEmpty();
-    }
     
     /**
      * 表示用のコンテンツを取得
@@ -82,57 +74,8 @@ public class DailyReport {
         return "";
     }
     
-    /**
-     * 日報が今日のものかチェック
-     * 
-     * @return 今日の日報の場合true
-     */
-    public boolean isToday() {
-        return reportDate != null && reportDate.equals(LocalDate.now());
-    }
     
-    /**
-     * 日報が指定した日付範囲内にあるかチェック
-     * 
-     * @param startDate 開始日
-     * @param endDate 終了日
-     * @return 範囲内にある場合true
-     */
-    public boolean isWithinDateRange(LocalDate startDate, LocalDate endDate) {
-        if (reportDate == null) {
-            return false;
-        }
-        return !reportDate.isBefore(startDate) && !reportDate.isAfter(endDate);
-    }
     
-    /**
-     * 追加メモを持っているかチェック
-     * 
-     * @return 追加メモがある場合true
-     */
-    public boolean hasAdditionalNotes() {
-        return additionalNotes != null && !additionalNotes.trim().isEmpty();
-    }
     
-    /**
-     * 生成回数が0より大きいかチェック
-     * 
-     * @return 生成回数がある場合true
-     */
-    public boolean hasGenerationHistory() {
-        return generationCount != null && generationCount > 0;
-    }
     
-    /**
-     * 最近更新されたかチェック
-     * 
-     * @param hours 時間数
-     * @return 指定時間以内に更新された場合true
-     */
-    public boolean isRecentlyUpdated(int hours) {
-        if (updatedAt == null) {
-            return false;
-        }
-        return updatedAt.isAfter(LocalDateTime.now().minusHours(hours));
-    }
 }

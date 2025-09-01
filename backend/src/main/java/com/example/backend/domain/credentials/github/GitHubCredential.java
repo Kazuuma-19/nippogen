@@ -39,9 +39,6 @@ public class GitHubCredential {
         return "";
     }
     
-    public String getEffectiveBaseUrl() {
-        return baseUrl != null ? baseUrl : "https://api.github.com";
-    }
     
     public boolean isValid() {
         return apiKey != null && !apiKey.trim().isEmpty() && userId != null;

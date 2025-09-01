@@ -18,30 +18,6 @@ public class DailyReportListResponseDto {
     private final int totalCount;
     private final String dateRange;
     
-    /**
-     * レポートが存在するかチェック
-     * 
-     * @return レポートが存在する場合true
-     */
-    public boolean hasReports() {
-        return reports != null && !reports.isEmpty();
-    }
     
-    /**
-     * 実際のレポート数を取得
-     * 
-     * @return レポート数
-     */
-    public int getActualCount() {
-        return reports != null ? reports.size() : 0;
-    }
     
-    /**
-     * ページネーション情報があるかチェック
-     * 
-     * @return totalCountが設定されている場合true
-     */
-    public boolean hasPagination() {
-        return totalCount > 0;
-    }
 }
