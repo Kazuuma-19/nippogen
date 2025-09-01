@@ -5,9 +5,9 @@ import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.domain.reports.DailyReport;
 import com.example.backend.domain.reports.ReportStatus;
 import com.example.backend.domain.reports.IDailyReportRepository;
-import com.example.backend.presentation.controllers.reports.DailyReportCreateRequestDto;
-import com.example.backend.presentation.controllers.reports.DailyReportListResponseDto;
-import com.example.backend.presentation.controllers.reports.DailyReportUpdateRequestDto;
+import com.example.backend.presentation.dto.reports.DailyReportCreateRequestDto;
+import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
+import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

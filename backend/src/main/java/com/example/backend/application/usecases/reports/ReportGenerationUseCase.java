@@ -1,8 +1,8 @@
 package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
-import com.example.backend.presentation.controllers.reports.DailyReportCreateRequestDto;
-import com.example.backend.presentation.controllers.reports.DailyReportUpdateRequestDto;
+import com.example.backend.presentation.dto.reports.DailyReportCreateRequestDto;
+import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
 import com.example.backend.presentation.dto.reports.ReportRegenerationRequestDto;

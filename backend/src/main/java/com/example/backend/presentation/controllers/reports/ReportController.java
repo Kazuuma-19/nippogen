@@ -4,6 +4,10 @@ import com.example.backend.application.dto.reports.DailyReportDto;
 import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.application.usecases.reports.ReportUseCase;
 import com.example.backend.domain.reports.ReportStatus;
+import com.example.backend.presentation.dto.reports.DailyReportCreateRequestDto;
+import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
+import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
