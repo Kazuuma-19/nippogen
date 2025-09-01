@@ -1,5 +1,6 @@
 package com.example.backend.common.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -18,6 +19,7 @@ import java.nio.file.Paths;
 public class OpenApiExporter {
 
     private final WebClient.Builder webClientBuilder;
+    private final ObjectMapper objectMapper;
 
     // アプリケーション起動後にOpenAPI仕様を取得してファイルに保存
     @EventListener(ApplicationReadyEvent.class)
@@ -35,8 +37,12 @@ public class OpenApiExporter {
     private void writeOpenApiFile(String openApiJson) {
         try {
             if (openApiJson != null && !openApiJson.isEmpty()) {
+                Object json = objectMapper.readValue(openApiJson, Object.class);
+                String formattedJson = objectMapper.writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(json);
+
                 Path outputPath = Paths.get("/app/generated/openapi.json");
-                Files.write(outputPath, openApiJson.getBytes());
+                Files.write(outputPath, formattedJson.getBytes());
             }
         } catch (Exception e) {
             // エラー処理省略
