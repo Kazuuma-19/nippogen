@@ -4,6 +4,7 @@ import com.example.backend.application.dto.credentials.github.GitHubCredentialCr
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialUpdateRequestDto;
 import com.example.backend.application.usecases.credentials.github.GitHubCredentialUseCase;
+import com.example.backend.application.usecases.external.github.GitHubUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class GitHubCredentialController {
     
     private final GitHubCredentialUseCase gitHubCredentialUseCase;
+    private final GitHubUseCase gitHubUseCase;
     
     @PostMapping
     @Operation(summary = "GitHub認証情報作成", description = "新しいGitHub認証情報を作成します")
@@ -134,5 +136,22 @@ public class GitHubCredentialController {
         
         boolean exists = gitHubCredentialUseCase.existsByUserId(userId);
         return ResponseEntity.ok(exists);
+    }
+    
+    @GetMapping("/test")
+    @Operation(summary = "GitHub接続テスト", description = "GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "接続テストが正常に完了"),
+        @ApiResponse(responseCode = "400", description = "リクエストパラメータが無効（owner または repo が不足）"),
+        @ApiResponse(responseCode = "500", description = "内部サーバーエラーまたは接続失敗")
+    })
+    public ResponseEntity<Boolean> testConnection(
+            @Parameter(description = "リポジトリオーナー/組織名", example = "octocat", required = true) 
+            @RequestParam String owner,
+            @Parameter(description = "リポジトリ名", example = "Hello-World", required = true) 
+            @RequestParam String repo) {
+        
+        boolean isConnected = gitHubUseCase.testConnection(owner, repo);
+        return ResponseEntity.ok(isConnected);
     }
 }

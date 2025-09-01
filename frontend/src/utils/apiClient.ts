@@ -25,7 +25,7 @@ export const githubCredentialsApi = {
     axiosInstance.get<boolean>('/api/credentials/github/exists'),
   
   test: (owner: string, repo: string) => 
-    axiosInstance.get('/api/external/github/test', { params: { owner, repo } })
+    axiosInstance.get('/api/credentials/github/test', { params: { owner, repo } })
 }
 
 // Toggl Credentials API
