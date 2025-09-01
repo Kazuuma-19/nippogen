@@ -5,7 +5,6 @@ import com.example.backend.application.dto.credentials.github.GitHubCredentialRe
 import com.example.backend.application.dto.credentials.github.GitHubCredentialUpdateRequestDto;
 import com.example.backend.domain.credentials.github.GitHubCredential;
 import com.example.backend.domain.credentials.github.IGitHubCredentialRepository;
-import com.example.backend.domain.external.github.IGitHubRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,7 @@ import java.util.UUID;
 public class GitHubCredentialUseCase {
     
     private final IGitHubCredentialRepository gitHubCredentialRepository;
-    private final IGitHubRepository gitHubRepository;
-    
+
     public GitHubCredentialResponseDto create(UUID userId, GitHubCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
         gitHubCredentialRepository.findByUserId(userId)
@@ -134,6 +132,6 @@ public class GitHubCredentialUseCase {
      */
     @Transactional(readOnly = true)
     public boolean testConnection(String owner, String repo) {
-        return gitHubRepository.testConnection(owner, repo);
+        return gitHubCredentialRepository.testConnection(owner, repo);
     }
 }

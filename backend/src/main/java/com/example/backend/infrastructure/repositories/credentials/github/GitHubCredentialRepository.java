@@ -20,6 +20,12 @@ public class GitHubCredentialRepository implements IGitHubCredentialRepository {
     private final DSLContext dsl;
 
     @Override
+    public boolean testConnection(String owner, String repo) {
+        // TODO: 実際のGitHub API接続テストを実装
+        return true;
+    }
+
+    @Override
     public GitHubCredential save(GitHubCredential credential) {
         if (existsById(credential.getId())) {
             return update(credential);
