@@ -34,22 +34,6 @@ public class NotionCredentialRepository implements INotionCredentialRepository {
         }
     }
 
-    @Override
-    public Optional<NotionCredential> findById(UUID id) {
-        return dsl.selectFrom(NOTION_CREDENTIALS)
-                .where(NOTION_CREDENTIALS.ID.eq(id))
-                .fetchOptional()
-                .map(this::mapToEntity);
-    }
-
-    @Override
-    public Optional<NotionCredential> findByUserId(UUID userId) {
-        return dsl.selectFrom(NOTION_CREDENTIALS)
-                .where(NOTION_CREDENTIALS.USER_ID.eq(userId)
-                       .and(NOTION_CREDENTIALS.IS_ACTIVE.eq(true)))
-                .fetchOptional()
-                .map(this::mapToEntity);
-    }
 
     @Override
     public List<NotionCredential> findAllByUserId(UUID userId) {

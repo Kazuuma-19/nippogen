@@ -9,14 +9,8 @@ export const githubCredentialsApi = {
   findByUserId: () => 
     axiosInstance.get<components['schemas']['GitHubCredentialResponseDto']>('/api/credentials/github'),
   
-  findById: (id: string) => 
-    axiosInstance.get<components['schemas']['GitHubCredentialResponseDto']>(`/api/credentials/github/${id}`),
-  
   create: (data: components['schemas']['GitHubCredentialCreateRequestDto']) => 
     axiosInstance.post<components['schemas']['GitHubCredentialResponseDto']>('/api/credentials/github', data),
-  
-  update: (id: string, data: components['schemas']['GitHubCredentialUpdateRequestDto']) => 
-    axiosInstance.put<components['schemas']['GitHubCredentialResponseDto']>(`/api/credentials/github/${id}`, data),
   
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/github/${id}`),
@@ -33,14 +27,8 @@ export const togglCredentialsApi = {
   findByUserId: () => 
     axiosInstance.get<components['schemas']['TogglCredentialResponseDto']>('/api/credentials/toggl'),
   
-  findById: (id: string) => 
-    axiosInstance.get<components['schemas']['TogglCredentialResponseDto']>(`/api/credentials/toggl/${id}`),
-  
   create: (data: components['schemas']['TogglCredentialCreateRequestDto']) => 
     axiosInstance.post<components['schemas']['TogglCredentialResponseDto']>('/api/credentials/toggl', data),
-  
-  update: (id: string, data: components['schemas']['TogglCredentialUpdateRequestDto']) => 
-    axiosInstance.put<components['schemas']['TogglCredentialResponseDto']>(`/api/credentials/toggl/${id}`, data),
   
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/toggl/${id}`),
@@ -57,14 +45,8 @@ export const notionCredentialsApi = {
   findByUserId: () => 
     axiosInstance.get<components['schemas']['NotionCredentialResponseDto']>('/api/credentials/notion'),
   
-  findById: (id: string) => 
-    axiosInstance.get<components['schemas']['NotionCredentialResponseDto']>(`/api/credentials/notion/${id}`),
-  
   create: (data: components['schemas']['NotionCredentialCreateRequestDto']) => 
     axiosInstance.post<components['schemas']['NotionCredentialResponseDto']>('/api/credentials/notion', data),
-  
-  update: (id: string, data: components['schemas']['NotionCredentialUpdateRequestDto']) => 
-    axiosInstance.put<components['schemas']['NotionCredentialResponseDto']>(`/api/credentials/notion/${id}`, data),
   
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/notion/${id}`),

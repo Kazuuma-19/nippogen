@@ -8,9 +8,6 @@ public interface INotionCredentialRepository {
     
     NotionCredential save(NotionCredential credential);
     
-    Optional<NotionCredential> findById(UUID id);
-    
-    Optional<NotionCredential> findByUserId(UUID userId);
     
     List<NotionCredential> findAllByUserId(UUID userId);
     

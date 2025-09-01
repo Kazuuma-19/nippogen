@@ -16,9 +16,6 @@ public interface IGitHubCredentialRepository {
 
     GitHubCredential save(GitHubCredential credential);
     
-    Optional<GitHubCredential> findById(UUID id);
-    
-    Optional<GitHubCredential> findByUserId(UUID userId);
     
     List<GitHubCredential> findAllByUserId(UUID userId);
     

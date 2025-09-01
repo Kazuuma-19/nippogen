@@ -2,7 +2,6 @@ package com.example.backend.presentation.controllers.credentials.toggl;
 
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialResponseDto;
-import com.example.backend.application.dto.credentials.toggl.TogglCredentialUpdateRequestDto;
 import com.example.backend.application.usecases.credentials.toggl.TogglCredentialUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,35 +41,6 @@ public class TogglCredentialController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
-    @GetMapping("/{id}")
-    @Operation(summary = "Toggl認証情報取得", description = "指定されたIDのToggl認証情報を取得します")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "認証情報の取得に成功"),
-        @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<TogglCredentialResponseDto> findById(
-            @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
-        
-        return togglCredentialUseCase.findById(id)
-                .map(credential -> ResponseEntity.ok(credential))
-                .orElse(ResponseEntity.notFound().build());
-    }
-    
-    @GetMapping
-    @Operation(summary = "ユーザーのToggl認証情報取得", description = "指定されたユーザーのアクティブなToggl認証情報を取得します")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "認証情報の取得に成功"),
-        @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<TogglCredentialResponseDto> findByUserId(
-            @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
-        
-        return togglCredentialUseCase.findByUserId(userId)
-                .map(credential -> ResponseEntity.ok(credential))
-                .orElse(ResponseEntity.notFound().build());
-    }
     
     @GetMapping("/all")
     @Operation(summary = "ユーザーの全Toggl認証情報取得", description = "指定されたユーザーの全Toggl認証情報を取得します")
@@ -83,26 +53,6 @@ public class TogglCredentialController {
         
         List<TogglCredentialResponseDto> credentials = togglCredentialUseCase.findAllByUserId(userId);
         return ResponseEntity.ok(credentials);
-    }
-    
-    @PutMapping("/{id}")
-    @Operation(summary = "Toggl認証情報更新", description = "指定されたIDのToggl認証情報を更新します")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "認証情報の更新に成功"),
-        @ApiResponse(responseCode = "400", description = "リクエストデータが不正"),
-        @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<TogglCredentialResponseDto> update(
-            @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id,
-            @RequestBody TogglCredentialUpdateRequestDto request) {
-        
-        try {
-            TogglCredentialResponseDto response = togglCredentialUseCase.update(id, request);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
     
     @DeleteMapping("/{id}")

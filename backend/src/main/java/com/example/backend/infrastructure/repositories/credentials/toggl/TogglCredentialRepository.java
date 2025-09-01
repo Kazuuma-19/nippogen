@@ -29,22 +29,6 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
         }
     }
 
-    @Override
-    public Optional<TogglCredential> findById(UUID id) {
-        return dsl.selectFrom(TOGGL_CREDENTIALS)
-                .where(TOGGL_CREDENTIALS.ID.eq(id))
-                .fetchOptional()
-                .map(this::mapToEntity);
-    }
-
-    @Override
-    public Optional<TogglCredential> findByUserId(UUID userId) {
-        return dsl.selectFrom(TOGGL_CREDENTIALS)
-                .where(TOGGL_CREDENTIALS.USER_ID.eq(userId)
-                       .and(TOGGL_CREDENTIALS.IS_ACTIVE.eq(true)))
-                .fetchOptional()
-                .map(this::mapToEntity);
-    }
 
     @Override
     public List<TogglCredential> findAllByUserId(UUID userId) {
