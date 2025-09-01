@@ -17,23 +17,19 @@ export const notionCredentialSchema = z.object({
   
   titleProperty: z
     .string()
-    .optional()
-    .default('Name'),
+    .optional(),
   
   statusProperty: z
     .string()
-    .optional()
-    .default('Status'),
+    .optional(),
   
   dateProperty: z
     .string()
-    .optional()
-    .default('Date'),
+    .optional(),
   
   filterConditions: z
     .record(z.string(), z.unknown())
-    .optional()
-    .default({})
+    .optional(),
 })
 
 export type NotionCredentialFormData = z.infer<typeof notionCredentialSchema>

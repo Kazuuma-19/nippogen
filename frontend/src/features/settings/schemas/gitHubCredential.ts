@@ -8,8 +8,7 @@ export const gitHubCredentialSchema = z.object({
   
   baseUrl: z
     .url('有効なURLを入力してください')
-    .optional()
-    .default('https://api.github.com'),
+    .optional(),
   
   owner: z
     .string()

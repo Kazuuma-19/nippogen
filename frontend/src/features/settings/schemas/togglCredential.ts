@@ -14,23 +14,19 @@ export const togglCredentialSchema = z.object({
   
   projectIds: z
     .array(z.number().int().positive())
-    .optional()
-    .default([]),
+    .optional(),
   
   defaultTags: z
     .array(z.string().min(1))
-    .optional()
-    .default([]),
+    .optional(),
   
   timeZone: z
     .string()
-    .optional()
-    .default('UTC'),
+    .optional(),
   
   includeWeekends: z
     .boolean()
-    .optional()
-    .default(false)
+    .optional(),
 })
 
 export type TogglCredentialFormData = z.infer<typeof togglCredentialSchema>
