@@ -19,11 +19,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import org.jooq.Check;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function12;
+import org.jooq.Function11;
 import org.jooq.Index;
 import org.jooq.InverseForeignKey;
 import org.jooq.JSONB;
@@ -33,7 +32,7 @@ import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row12;
+import org.jooq.Row11;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Select;
@@ -44,7 +43,6 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
-import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -104,11 +102,6 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
      * The column <code>public.daily_reports.final_content</code>.
      */
     public final TableField<JDailyReportsRecord, String> FINAL_CONTENT = createField(DSL.name("final_content"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.daily_reports.status</code>.
-     */
-    public final TableField<JDailyReportsRecord, String> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'DRAFT'::character varying"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.daily_reports.generation_count</code>.
@@ -238,13 +231,6 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
     }
 
     @Override
-    public List<Check<JDailyReportsRecord>> getChecks() {
-        return Arrays.asList(
-            Internal.createCheck(this, DSL.name("daily_reports_status_check"), "(((status)::text = ANY ((ARRAY['DRAFT'::character varying, 'EDITED'::character varying, 'APPROVED'::character varying])::text[])))", true)
-        );
-    }
-
-    @Override
     public JDailyReports as(String alias) {
         return new JDailyReports(DSL.name(alias), this);
     }
@@ -368,18 +354,18 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<UUID, UUID, LocalDate, JSONB, String, String, String, String, Integer, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row11<UUID, UUID, LocalDate, JSONB, String, String, String, Integer, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function12<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function11<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super String, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -387,7 +373,7 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function11<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super String, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

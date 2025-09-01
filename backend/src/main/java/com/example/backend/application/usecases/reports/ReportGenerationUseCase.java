@@ -10,7 +10,6 @@ import com.example.backend.application.usecases.external.notion.NotionUseCase;
 import com.example.backend.application.usecases.external.toggle.ToggleTrackUseCase;
 import com.example.backend.domain.reports.IReportGenerationService;
 import com.example.backend.domain.reports.DailyReport;
-import com.example.backend.domain.reports.ReportStatus;
 import com.example.backend.domain.reports.IDailyReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -84,7 +83,6 @@ public class ReportGenerationUseCase {
                     .userId(request.getUserId())
                     .reportDate(request.getReportDate())
                     .generatedContent(generatedContent)
-                    .status(ReportStatus.DRAFT)
                     .generationCount(1)
                     .additionalNotes(request.getAdditionalNotes())
                     .createdAt(LocalDateTime.now())
@@ -238,7 +236,6 @@ public class ReportGenerationUseCase {
                 .generatedContent(report.getGeneratedContent())
                 .editedContent(report.getEditedContent())
                 .finalContent(report.getFinalContent())
-                .status(report.getStatus().getValue())
                 .generationCount(report.getGenerationCount())
                 .additionalNotes(report.getAdditionalNotes())
                 .createdAt(report.getCreatedAt())

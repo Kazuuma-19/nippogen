@@ -3,7 +3,6 @@ package com.example.backend.infrastructure.repositories.reports;
 import static com.example.backend.jooq.tables.JDailyReports.DAILY_REPORTS;
 
 import com.example.backend.domain.reports.DailyReport;
-import com.example.backend.domain.reports.ReportStatus;
 import com.example.backend.domain.reports.IDailyReportRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -78,28 +77,6 @@ public class DailyReportRepository implements IDailyReportRepository {
                 .map(this::mapToEntity);
     }
     
-    @Override
-    public List<DailyReport> findByUserIdAndStatus(UUID userId, ReportStatus status) {
-        
-        return dsl.selectFrom(DAILY_REPORTS)
-                .where(DAILY_REPORTS.USER_ID.eq(userId)
-                       .and(DAILY_REPORTS.STATUS.eq(status.getValue())))
-                .orderBy(DAILY_REPORTS.REPORT_DATE.desc())
-                .fetch()
-                .map(this::mapToEntity);
-    }
-    
-    @Override
-    public List<DailyReport> findByUserIdAndDateRangeAndStatus(UUID userId, LocalDate startDate, LocalDate endDate, ReportStatus status) {
-        
-        return dsl.selectFrom(DAILY_REPORTS)
-                .where(DAILY_REPORTS.USER_ID.eq(userId)
-                       .and(DAILY_REPORTS.REPORT_DATE.between(startDate, endDate))
-                       .and(DAILY_REPORTS.STATUS.eq(status.getValue())))
-                .orderBy(DAILY_REPORTS.REPORT_DATE.desc())
-                .fetch()
-                .map(this::mapToEntity);
-    }
     
     @Override
     public boolean deleteById(UUID id) {
@@ -139,15 +116,6 @@ public class DailyReportRepository implements IDailyReportRepository {
                 .fetchOne(0, long.class);
     }
     
-    @Override
-    public long countByUserIdAndStatus(UUID userId, ReportStatus status) {
-        
-        return dsl.selectCount()
-                .from(DAILY_REPORTS)
-                .where(DAILY_REPORTS.USER_ID.eq(userId)
-                       .and(DAILY_REPORTS.STATUS.eq(status.getValue())))
-                .fetchOne(0, long.class);
-    }
     
     /**
      * 新しい日報レコードを挿入
@@ -165,7 +133,6 @@ public class DailyReportRepository implements IDailyReportRepository {
                 .set(DAILY_REPORTS.GENERATED_CONTENT, report.getGeneratedContent())
                 .set(DAILY_REPORTS.EDITED_CONTENT, report.getEditedContent())
                 .set(DAILY_REPORTS.FINAL_CONTENT, report.getFinalContent())
-                .set(DAILY_REPORTS.STATUS, report.getStatus().getValue())
                 .set(DAILY_REPORTS.GENERATION_COUNT, report.getGenerationCount())
                 .set(DAILY_REPORTS.ADDITIONAL_NOTES, report.getAdditionalNotes())
                 .set(DAILY_REPORTS.CREATED_AT, report.getCreatedAt())
@@ -188,7 +155,6 @@ public class DailyReportRepository implements IDailyReportRepository {
                 .set(DAILY_REPORTS.GENERATED_CONTENT, report.getGeneratedContent())
                 .set(DAILY_REPORTS.EDITED_CONTENT, report.getEditedContent())
                 .set(DAILY_REPORTS.FINAL_CONTENT, report.getFinalContent())
-                .set(DAILY_REPORTS.STATUS, report.getStatus().getValue())
                 .set(DAILY_REPORTS.GENERATION_COUNT, report.getGenerationCount())
                 .set(DAILY_REPORTS.ADDITIONAL_NOTES, report.getAdditionalNotes())
                 .set(DAILY_REPORTS.UPDATED_AT, LocalDateTime.now())
@@ -215,7 +181,6 @@ public class DailyReportRepository implements IDailyReportRepository {
                 .generatedContent(record.get(DAILY_REPORTS.GENERATED_CONTENT))
                 .editedContent(record.get(DAILY_REPORTS.EDITED_CONTENT))
                 .finalContent(record.get(DAILY_REPORTS.FINAL_CONTENT))
-                .status(ReportStatus.fromValue(record.get(DAILY_REPORTS.STATUS)))
                 .generationCount(record.get(DAILY_REPORTS.GENERATION_COUNT))
                 .additionalNotes(record.get(DAILY_REPORTS.ADDITIONAL_NOTES))
                 .createdAt(record.get(DAILY_REPORTS.CREATED_AT))

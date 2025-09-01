@@ -17,7 +17,6 @@ public class DailyReportListResponseDto {
     private final List<DailyReportDto> reports;
     private final int totalCount;
     private final String dateRange;
-    private final String status;
     
     /**
      * レポートが存在するかチェック

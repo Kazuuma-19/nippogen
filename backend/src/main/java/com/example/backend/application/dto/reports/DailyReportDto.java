@@ -21,7 +21,6 @@ public class DailyReportDto {
     private final String generatedContent;
     private final String editedContent;
     private final String finalContent;
-    private final String status;
     private final Integer generationCount;
     private final String additionalNotes;
     private final LocalDateTime createdAt;
