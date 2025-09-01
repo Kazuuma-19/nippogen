@@ -4,7 +4,6 @@ import com.example.backend.application.dto.reports.DailyReportDto;
 import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.application.usecases.reports.ReportUseCase;
 import com.example.backend.domain.reports.ReportStatus;
-import com.example.backend.presentation.dto.reports.DailyReportCreateRequestDto;
 import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
 import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 
@@ -133,42 +132,6 @@ public class ReportController {
                     .orElse(ResponseEntity.notFound().build());
     }
     
-    @PostMapping
-    @Operation(
-        summary = "Create daily report", 
-        description = "Create a new daily report"
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "201", 
-            description = "Report created successfully",
-            content = @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = DailyReportDto.class)
-            )
-        ),
-        @ApiResponse(
-            responseCode = "400", 
-            description = "Invalid request data or report already exists for the date",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "Internal server error",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        )
-    })
-    public ResponseEntity<DailyReportDto> createReport(
-            @Parameter(description = "Report creation request", required = true)
-            @RequestBody DailyReportCreateRequestDto request
-    ) {
-        try {
-            DailyReportDto createdReport = reportUseCase.createReport(request);
-            return ResponseEntity.status(201).body(createdReport);
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
     
     @PutMapping("/{id}")
     @Operation(
