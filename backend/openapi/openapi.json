@@ -9,14 +9,14 @@
     "description" : "Generated server url"
   } ],
   "tags" : [ {
-    "name" : "Daily Report Management",
-    "description" : "Daily report CRUD operations and export functionality"
-  }, {
-    "name" : "AI Report Generation",
-    "description" : "AI-powered daily report generation using GPT-5-mini"
-  }, {
     "name" : "GitHub認証情報",
     "description" : "GitHub API認証情報の管理"
+  }, {
+    "name" : "AI日報生成",
+    "description" : "GPT-5-miniを使用したAI駆動の日報生成"
+  }, {
+    "name" : "日報管理",
+    "description" : "日報の作成・読取・更新・削除操作"
   }, {
     "name" : "Toggl認証情報",
     "description" : "Toggl Track API認証情報の管理"
@@ -27,14 +27,14 @@
   "paths" : {
     "/api/reports/{id}" : {
       "put" : {
-        "tags" : [ "Daily Report Management" ],
-        "summary" : "Update daily report",
-        "description" : "Update an existing daily report content",
+        "tags" : [ "日報管理" ],
+        "summary" : "日報更新",
+        "description" : "既存の日報内容を更新",
         "operationId" : "updateReport",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
-          "description" : "Report ID",
+          "description" : "日報ID",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -53,13 +53,25 @@
         },
         "responses" : {
           "404" : {
-            "description" : "Report not found",
+            "description" : "日報が見つからない",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "500" : {
+            "description" : "サーバー内部エラー",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正または編集不可",
             "content" : {
               "application/json" : { }
             }
           },
           "200" : {
-            "description" : "Report updated successfully",
+            "description" : "日報の更新に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -67,30 +79,18 @@
                 }
               }
             }
-          },
-          "400" : {
-            "description" : "Invalid request data or report not editable",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "500" : {
-            "description" : "Internal server error",
-            "content" : {
-              "application/json" : { }
-            }
           }
         }
       },
       "delete" : {
-        "tags" : [ "Daily Report Management" ],
-        "summary" : "Delete daily report",
-        "description" : "Delete a daily report",
+        "tags" : [ "日報管理" ],
+        "summary" : "日報削除",
+        "description" : "日報を削除",
         "operationId" : "deleteReport",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
-          "description" : "Report ID",
+          "description" : "日報ID",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -98,31 +98,31 @@
           }
         } ],
         "responses" : {
-          "404" : {
-            "description" : "Report not found"
-          },
           "204" : {
-            "description" : "Report deleted successfully"
+            "description" : "日報の削除に成功"
           },
           "500" : {
-            "description" : "Internal server error",
+            "description" : "サーバー内部エラー",
             "content" : {
               "application/json" : { }
             }
+          },
+          "404" : {
+            "description" : "日報が見つからない"
           }
         }
       }
     },
     "/api/reports/{id}/regenerate" : {
       "post" : {
-        "tags" : [ "AI Report Generation" ],
-        "summary" : "Regenerate daily report",
-        "description" : "Regenerate an existing daily report with user feedback and additional information",
+        "tags" : [ "AI日報生成" ],
+        "summary" : "日報再生成",
+        "description" : "ユーザーフィードバックと追加情報で既存の日報を再生成",
         "operationId" : "regenerateReport",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
-          "description" : "Report ID",
+          "description" : "日報ID",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -141,7 +141,27 @@
         },
         "responses" : {
           "404" : {
-            "description" : "Report not found",
+            "description" : "日報が見つからない",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "日報の再生成に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "サーバー内部エラーまたはAI再生成失敗",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -151,75 +171,13 @@
             }
           },
           "400" : {
-            "description" : "Invalid request data",
+            "description" : "リクエストデータが不正",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ReportGenerationResponseDto"
                 }
               }
-            }
-          },
-          "200" : {
-            "description" : "Report regenerated successfully",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal server error or AI regeneration failure",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/reports/{id}/approve" : {
-      "post" : {
-        "tags" : [ "Daily Report Management" ],
-        "summary" : "Approve daily report",
-        "description" : "Approve a daily report, finalizing its content",
-        "operationId" : "approveReport",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "Report ID",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Report approved successfully",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DailyReportDto"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Report not found",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "500" : {
-            "description" : "Internal server error",
-            "content" : {
-              "application/json" : { }
             }
           }
         }
@@ -227,9 +185,9 @@
     },
     "/api/reports/generate" : {
       "post" : {
-        "tags" : [ "AI Report Generation" ],
-        "summary" : "Generate daily report",
-        "description" : "Generate a new daily report using AI based on GitHub, Toggl, and Notion data",
+        "tags" : [ "AI日報生成" ],
+        "summary" : "日報生成",
+        "description" : "GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成",
         "operationId" : "generateReport",
         "requestBody" : {
           "content" : {
@@ -242,8 +200,8 @@
           "required" : true
         },
         "responses" : {
-          "400" : {
-            "description" : "Invalid request data or report already exists for the date",
+          "500" : {
+            "description" : "サーバー内部エラーまたはAI生成失敗",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -252,8 +210,8 @@
               }
             }
           },
-          "500" : {
-            "description" : "Internal server error or AI generation failure",
+          "400" : {
+            "description" : "リクエストデータが不正または指定日の日報が既に存在",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -263,7 +221,7 @@
             }
           },
           "201" : {
-            "description" : "Report generated successfully",
+            "description" : "日報の生成に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -457,14 +415,14 @@
     },
     "/api/reports" : {
       "get" : {
-        "tags" : [ "Daily Report Management" ],
-        "summary" : "Get daily reports list",
-        "description" : "Retrieve daily reports with optional filtering by date range and status",
+        "tags" : [ "日報管理" ],
+        "summary" : "日報一覧取得",
+        "description" : "日付範囲とステータスによる任意フィルタリングで日報一覧を取得",
         "operationId" : "getReports",
         "parameters" : [ {
           "name" : "userId",
           "in" : "query",
-          "description" : "User ID",
+          "description" : "ユーザーID",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -473,7 +431,7 @@
         }, {
           "name" : "startDate",
           "in" : "query",
-          "description" : "Start date for filtering (YYYY-MM-DD format)",
+          "description" : "フィルタリング開始日 (YYYY-MM-DD形式)",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -483,7 +441,7 @@
         }, {
           "name" : "endDate",
           "in" : "query",
-          "description" : "End date for filtering (YYYY-MM-DD format)",
+          "description" : "フィルタリング終了日 (YYYY-MM-DD形式)",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -492,14 +450,8 @@
           "example" : "2024-12-31"
         } ],
         "responses" : {
-          "400" : {
-            "description" : "Invalid request parameters",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "200" : {
-            "description" : "Reports retrieved successfully",
+            "description" : "日報の取得に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -509,7 +461,13 @@
             }
           },
           "500" : {
-            "description" : "Internal server error",
+            "description" : "サーバー内部エラー",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "400" : {
+            "description" : "リクエストパラメータが不正",
             "content" : {
               "application/json" : { }
             }
@@ -519,14 +477,14 @@
     },
     "/api/reports/{date}" : {
       "get" : {
-        "tags" : [ "Daily Report Management" ],
-        "summary" : "Get daily report by date",
-        "description" : "Retrieve a specific daily report for the given date",
+        "tags" : [ "日報管理" ],
+        "summary" : "日付指定日報取得",
+        "description" : "指定された日付の日報を取得",
         "operationId" : "getReportByDate",
         "parameters" : [ {
           "name" : "date",
           "in" : "path",
-          "description" : "Report date in YYYY-MM-DD format",
+          "description" : "日報日付 (YYYY-MM-DD形式)",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -536,7 +494,7 @@
         }, {
           "name" : "userId",
           "in" : "query",
-          "description" : "User ID",
+          "description" : "ユーザーID",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -544,32 +502,32 @@
           }
         } ],
         "responses" : {
+          "500" : {
+            "description" : "サーバー内部エラー",
+            "content" : {
+              "application/json" : { }
+            }
+          },
           "404" : {
-            "description" : "Report not found for the specified date",
+            "description" : "指定された日付の日報が見つからない",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "400" : {
+            "description" : "日付形式が不正",
             "content" : {
               "application/json" : { }
             }
           },
           "200" : {
-            "description" : "Report retrieved successfully",
+            "description" : "日報の取得に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/DailyReportDto"
                 }
               }
-            }
-          },
-          "400" : {
-            "description" : "Invalid date format",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "500" : {
-            "description" : "Internal server error",
-            "content" : {
-              "application/json" : { }
             }
           }
         }
@@ -924,7 +882,7 @@
     "schemas" : {
       "DailyReportUpdateRequestDto" : {
         "type" : "object",
-        "description" : "Report update request",
+        "description" : "日報更新リクエスト",
         "properties" : {
           "editedContent" : {
             "type" : "string"
@@ -983,7 +941,7 @@
       },
       "ReportRegenerationRequestDto" : {
         "type" : "object",
-        "description" : "Report regeneration request",
+        "description" : "日報再生成リクエスト",
         "properties" : {
           "reportId" : {
             "type" : "string",
@@ -1039,7 +997,7 @@
       },
       "ReportGenerationRequestDto" : {
         "type" : "object",
-        "description" : "Report generation request",
+        "description" : "日報生成リクエスト",
         "properties" : {
           "userId" : {
             "type" : "string",
