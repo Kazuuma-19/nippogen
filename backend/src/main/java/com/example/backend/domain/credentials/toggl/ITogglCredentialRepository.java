@@ -25,4 +25,6 @@ public interface ITogglCredentialRepository {
     void deleteByUserId(UUID userId);
     
     long countByUserId(UUID userId);
+    
+    boolean testConnection();
 }

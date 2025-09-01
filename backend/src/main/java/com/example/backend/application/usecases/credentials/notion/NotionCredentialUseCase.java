@@ -5,7 +5,6 @@ import com.example.backend.application.dto.credentials.notion.NotionCredentialRe
 import com.example.backend.application.dto.credentials.notion.NotionCredentialUpdateRequestDto;
 import com.example.backend.domain.credentials.notion.NotionCredential;
 import com.example.backend.domain.credentials.notion.INotionCredentialRepository;
-import com.example.backend.domain.external.notion.INotionRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import java.util.UUID;
 public class NotionCredentialUseCase {
     
     private final INotionCredentialRepository notionCredentialRepository;
-    private final INotionRepository notionRepository;
     
     public NotionCredentialResponseDto create(UUID userId, NotionCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
@@ -140,6 +138,6 @@ public class NotionCredentialUseCase {
      */
     @Transactional(readOnly = true)
     public boolean testConnection() {
-        return notionRepository.testConnection();
+        return notionCredentialRepository.testConnection();
     }
 }

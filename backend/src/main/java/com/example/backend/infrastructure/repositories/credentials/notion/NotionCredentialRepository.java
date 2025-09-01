@@ -111,6 +111,12 @@ public class NotionCredentialRepository implements INotionCredentialRepository {
                        .and(NOTION_CREDENTIALS.IS_ACTIVE.eq(true)))
                 .fetchOne(0, Long.class);
     }
+    
+    @Override
+    public boolean testConnection() {
+        // TODO: 実際のNotion API接続テストを実装
+        return true;
+    }
 
     private NotionCredential insert(NotionCredential credential) {
         var record = dsl.insertInto(NOTION_CREDENTIALS)
