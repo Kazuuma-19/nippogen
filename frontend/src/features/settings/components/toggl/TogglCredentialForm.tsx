@@ -8,6 +8,8 @@ import {
   Switch,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   togglCredentialSchema,
   type TogglCredentialFormData,
@@ -29,52 +31,33 @@ export function TogglCredentialForm({
 }: TogglCredentialFormProps) {
   const [showApiKey, setShowApiKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<TogglCredentialFormData>({
-    apiKey: initialData?.maskedApiKey?.includes("****")
-      ? ""
-      : initialData?.maskedApiKey || "",
-    workspaceId: initialData?.workspaceId || undefined,
-    projectIds: initialData?.projectIds || [],
-    defaultTags: initialData?.defaultTags || [],
-    timeZone: initialData?.timeZone || "UTC",
-    includeWeekends: initialData?.includeWeekends || false,
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TogglCredentialFormData>({
+    resolver: zodResolver(togglCredentialSchema),
+    defaultValues: {
+      apiKey: initialData?.maskedApiKey?.includes("****")
+        ? ""
+        : initialData?.maskedApiKey || "",
+      workspaceId: initialData?.workspaceId || undefined,
+      projectIds: initialData?.projectIds || [],
+      defaultTags: initialData?.defaultTags || [],
+      timeZone: initialData?.timeZone || "UTC",
+      includeWeekends: initialData?.includeWeekends || false,
+    },
   });
-  const [errors, setErrors] = useState<Partial<Record<keyof TogglCredentialFormData, string>>>({});
 
-  const validateForm = (): boolean => {
-    const result = togglCredentialSchema.safeParse(formData);
-    if (!result.success) {
-      const newErrors: Partial<Record<keyof TogglCredentialFormData, string>> = {};
-      result.error.issues.forEach(issue => {
-        if (issue.path.length > 0) {
-          const field = issue.path[0] as keyof TogglCredentialFormData;
-          newErrors[field] = issue.message;
-        }
-      });
-      setErrors(newErrors);
-      return false;
-    }
-    setErrors({});
-    return true;
-  };
-
-  const onSubmit = async () => {
-    if (!validateForm()) return;
-    
+  const onSubmit = async (data: TogglCredentialFormData) => {
     setIsSaving(true);
     try {
-      await onSave(formData);
+      await onSave(data);
     } catch {
       // Error handling is done in the hook
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const updateField = (field: keyof TogglCredentialFormData, value: string | number | boolean | number[] | string[] | undefined) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -97,29 +80,35 @@ export function TogglCredentialForm({
             <Text className="text-sm font-medium text-gray-700 mb-2">
               Toggl Track API Token <Text className="text-red-500">*</Text>
             </Text>
-            <View className="relative">
-              <TextInput
-                value={formData.apiKey}
-                onChangeText={(text) => updateField("apiKey", text)}
-                secureTextEntry={!showApiKey}
-                placeholder="1234567890abcdef1234567890abcdef"
-                className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
-                multiline={false}
-              />
-              <TouchableOpacity
-                onPress={() => setShowApiKey(!showApiKey)}
-                className="absolute right-3 top-3"
-              >
-                <Ionicons
-                  name={showApiKey ? "eye-off" : "eye"}
-                  size={20}
-                  color="gray"
-                />
-              </TouchableOpacity>
-            </View>
+            <Controller
+              name="apiKey"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <View className="relative">
+                  <TextInput
+                    value={value}
+                    onChangeText={onChange}
+                    secureTextEntry={!showApiKey}
+                    placeholder="1234567890abcdef1234567890abcdef"
+                    className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
+                    multiline={false}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowApiKey(!showApiKey)}
+                    className="absolute right-3 top-3"
+                  >
+                    <Ionicons
+                      name={showApiKey ? "eye-off" : "eye"}
+                      size={20}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             {errors.apiKey && (
               <Text className="text-red-500 text-xs mt-1">
-                {errors.apiKey}
+                {errors.apiKey.message}
               </Text>
             )}
             <Text className="text-gray-500 text-xs mt-1">
@@ -132,25 +121,31 @@ export function TogglCredentialForm({
             <Text className="text-sm font-medium text-gray-700 mb-2">
               ワークスペースID
             </Text>
-            <TextInput
-              value={formData.workspaceId?.toString() || ""}
-              onChangeText={(text) => {
-                if (text === "") {
-                  updateField("workspaceId", undefined);
-                } else {
-                  const num = parseInt(text, 10);
-                  if (!isNaN(num)) {
-                    updateField("workspaceId", num);
-                  }
-                }
-              }}
-              placeholder="12345"
-              className="border border-gray-300 rounded-lg p-3 text-sm"
-              keyboardType="numeric"
+            <Controller
+              name="workspaceId"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  value={value?.toString() || ""}
+                  onChangeText={(text) => {
+                    if (text === "") {
+                      onChange(undefined);
+                    } else {
+                      const num = parseInt(text, 10);
+                      if (!isNaN(num)) {
+                        onChange(num);
+                      }
+                    }
+                  }}
+                  placeholder="12345"
+                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                  keyboardType="numeric"
+                />
+              )}
             />
             {errors.workspaceId && (
               <Text className="text-red-500 text-xs mt-1">
-                {errors.workspaceId}
+                {errors.workspaceId.message}
               </Text>
             )}
             <Text className="text-gray-500 text-xs mt-1">
@@ -163,22 +158,28 @@ export function TogglCredentialForm({
             <Text className="text-sm font-medium text-gray-700 mb-2">
               デフォルトタグ
             </Text>
-            <TextInput
-              value={formData.defaultTags?.join(", ") || ""}
-              onChangeText={(text) => {
-                const tags = text
-                  .split(",")
-                  .map((tag) => tag.trim())
-                  .filter((tag) => tag.length > 0);
-                updateField("defaultTags", tags);
-              }}
-              placeholder="development, backend, project-name"
-              className="border border-gray-300 rounded-lg p-3 text-sm"
-              multiline
+            <Controller
+              name="defaultTags"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  value={value?.join(", ") || ""}
+                  onChangeText={(text) => {
+                    const tags = text
+                      .split(",")
+                      .map((tag) => tag.trim())
+                      .filter((tag) => tag.length > 0);
+                    onChange(tags);
+                  }}
+                  placeholder="development, backend, project-name"
+                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                  multiline
+                />
+              )}
             />
             {errors.defaultTags && (
               <Text className="text-red-500 text-xs mt-1">
-                {errors.defaultTags}
+                {errors.defaultTags.message}
               </Text>
             )}
             <Text className="text-gray-500 text-xs mt-1">
@@ -191,15 +192,21 @@ export function TogglCredentialForm({
             <Text className="text-sm font-medium text-gray-700 mb-2">
               タイムゾーン
             </Text>
-            <TextInput
-              value={formData.timeZone}
-              onChangeText={(text) => updateField("timeZone", text)}
-              placeholder="Asia/Tokyo"
-              className="border border-gray-300 rounded-lg p-3 text-sm"
+            <Controller
+              name="timeZone"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="Asia/Tokyo"
+                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                />
+              )}
             />
             {errors.timeZone && (
               <Text className="text-red-500 text-xs mt-1">
-                {errors.timeZone}
+                {errors.timeZone.message}
               </Text>
             )}
             <Text className="text-gray-500 text-xs mt-1">
@@ -218,11 +225,17 @@ export function TogglCredentialForm({
                   日報生成時に土日の作業時間も含めます
                 </Text>
               </View>
-              <Switch
-                value={formData.includeWeekends || false}
-                onValueChange={(value) => updateField("includeWeekends", value)}
-                trackColor={{ false: "#f3f4f6", true: "#267D00" }}
-                thumbColor={"#ffffff"}
+              <Controller
+                name="includeWeekends"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Switch
+                    value={value || false}
+                    onValueChange={onChange}
+                    trackColor={{ false: "#f3f4f6", true: "#267D00" }}
+                    thumbColor={"#ffffff"}
+                  />
+                )}
               />
             </View>
           </View>
@@ -257,7 +270,7 @@ export function TogglCredentialForm({
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={onSubmit}
+              onPress={handleSubmit(onSubmit)}
               disabled={isSaving}
               className={`flex-1 py-3 rounded-lg ${
                 !isSaving ? "bg-primary" : "bg-gray-400"

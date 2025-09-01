@@ -7,6 +7,8 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   notionCredentialSchema,
   type NotionCredentialFormData,
@@ -28,52 +30,33 @@ export function NotionCredentialForm({
 }: NotionCredentialFormProps) {
   const [showApiKey, setShowApiKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<NotionCredentialFormData>({
-    apiKey: initialData?.maskedApiKey?.includes("****")
-      ? ""
-      : initialData?.maskedApiKey || "",
-    databaseId: initialData?.databaseId || "",
-    titleProperty: initialData?.titleProperty || "Name",
-    statusProperty: initialData?.statusProperty || "Status",
-    dateProperty: initialData?.dateProperty || "Date",
-    filterConditions: initialData?.filterConditions || {},
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<NotionCredentialFormData>({
+    resolver: zodResolver(notionCredentialSchema),
+    defaultValues: {
+      apiKey: initialData?.maskedApiKey?.includes("****")
+        ? ""
+        : initialData?.maskedApiKey || "",
+      databaseId: initialData?.databaseId || "",
+      titleProperty: initialData?.titleProperty || "Name",
+      statusProperty: initialData?.statusProperty || "Status",
+      dateProperty: initialData?.dateProperty || "Date",
+      filterConditions: initialData?.filterConditions || {},
+    },
   });
-  const [errors, setErrors] = useState<Partial<Record<keyof NotionCredentialFormData, string>>>({});
 
-  const validateForm = (): boolean => {
-    const result = notionCredentialSchema.safeParse(formData);
-    if (!result.success) {
-      const newErrors: Partial<Record<keyof NotionCredentialFormData, string>> = {};
-      result.error.issues.forEach(issue => {
-        if (issue.path.length > 0) {
-          const field = issue.path[0] as keyof NotionCredentialFormData;
-          newErrors[field] = issue.message;
-        }
-      });
-      setErrors(newErrors);
-      return false;
-    }
-    setErrors({});
-    return true;
-  };
-
-  const onSubmit = async () => {
-    if (!validateForm()) return;
-    
+  const onSubmit = async (data: NotionCredentialFormData) => {
     setIsSaving(true);
     try {
-      await onSave(formData);
+      await onSave(data);
     } catch {
       // Error handling is done in the hook
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const updateField = (field: keyof NotionCredentialFormData, value: string | Record<string, unknown>) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -97,29 +80,35 @@ export function NotionCredentialForm({
               Notion Integration Token{" "}
               <Text className="text-red-500">*</Text>
             </Text>
-            <View className="relative">
-              <TextInput
-                value={formData.apiKey}
-                onChangeText={(text) => updateField("apiKey", text)}
-                secureTextEntry={!showApiKey}
-                placeholder="secret_xxxxxxxxxxxxxxxxxxxx"
-                className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
-                multiline={false}
-              />
-              <TouchableOpacity
-                onPress={() => setShowApiKey(!showApiKey)}
-                className="absolute right-3 top-3"
-              >
-                <Ionicons
-                  name={showApiKey ? "eye-off" : "eye"}
-                  size={20}
-                  color="gray"
-                />
-              </TouchableOpacity>
-            </View>
+            <Controller
+              name="apiKey"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <View className="relative">
+                  <TextInput
+                    value={value}
+                    onChangeText={onChange}
+                    secureTextEntry={!showApiKey}
+                    placeholder="secret_xxxxxxxxxxxxxxxxxxxx"
+                    className="border border-gray-300 rounded-lg p-3 pr-12 text-sm"
+                    multiline={false}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowApiKey(!showApiKey)}
+                    className="absolute right-3 top-3"
+                  >
+                    <Ionicons
+                      name={showApiKey ? "eye-off" : "eye"}
+                      size={20}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             {errors.apiKey && (
               <Text className="text-red-500 text-xs mt-1">
-                {errors.apiKey}
+                {errors.apiKey.message}
               </Text>
             )}
             <Text className="text-gray-500 text-xs mt-1">
@@ -132,15 +121,21 @@ export function NotionCredentialForm({
             <Text className="text-sm font-medium text-gray-700 mb-2">
               データベースID
             </Text>
-            <TextInput
-              value={formData.databaseId}
-              onChangeText={(text) => updateField("databaseId", text)}
-              placeholder="123e4567-e89b-12d3-a456-426614174000"
-              className="border border-gray-300 rounded-lg p-3 text-sm"
+            <Controller
+              name="databaseId"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  value={value}
+                  onChangeText={onChange}
+                  placeholder="123e4567-e89b-12d3-a456-426614174000"
+                  className="border border-gray-300 rounded-lg p-3 text-sm"
+                />
+              )}
             />
             {errors.databaseId && (
               <Text className="text-red-500 text-xs mt-1">
-                {errors.databaseId}
+                {errors.databaseId.message}
               </Text>
             )}
             <Text className="text-gray-500 text-xs mt-1">
@@ -159,15 +154,21 @@ export function NotionCredentialForm({
               <Text className="text-xs text-gray-600 mb-1">
                 タイトルプロパティ名
               </Text>
-              <TextInput
-                value={formData.titleProperty}
-                onChangeText={(text) => updateField("titleProperty", text)}
-                placeholder="Name"
-                className="border border-gray-300 rounded-lg p-3 text-sm"
+              <Controller
+                name="titleProperty"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    value={value}
+                    onChangeText={onChange}
+                    placeholder="Name"
+                    className="border border-gray-300 rounded-lg p-3 text-sm"
+                  />
+                )}
               />
               {errors.titleProperty && (
                 <Text className="text-red-500 text-xs mt-1">
-                  {errors.titleProperty}
+                  {errors.titleProperty.message}
                 </Text>
               )}
             </View>
@@ -177,15 +178,21 @@ export function NotionCredentialForm({
               <Text className="text-xs text-gray-600 mb-1">
                 ステータスプロパティ名
               </Text>
-              <TextInput
-                value={formData.statusProperty}
-                onChangeText={(text) => updateField("statusProperty", text)}
-                placeholder="Status"
-                className="border border-gray-300 rounded-lg p-3 text-sm"
+              <Controller
+                name="statusProperty"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    value={value}
+                    onChangeText={onChange}
+                    placeholder="Status"
+                    className="border border-gray-300 rounded-lg p-3 text-sm"
+                  />
+                )}
               />
               {errors.statusProperty && (
                 <Text className="text-red-500 text-xs mt-1">
-                  {errors.statusProperty}
+                  {errors.statusProperty.message}
                 </Text>
               )}
             </View>
@@ -195,15 +202,21 @@ export function NotionCredentialForm({
               <Text className="text-xs text-gray-600 mb-1">
                 日付プロパティ名
               </Text>
-              <TextInput
-                value={formData.dateProperty}
-                onChangeText={(text) => updateField("dateProperty", text)}
-                placeholder="Date"
-                className="border border-gray-300 rounded-lg p-3 text-sm"
+              <Controller
+                name="dateProperty"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    value={value}
+                    onChangeText={onChange}
+                    placeholder="Date"
+                    className="border border-gray-300 rounded-lg p-3 text-sm"
+                  />
+                )}
               />
               {errors.dateProperty && (
                 <Text className="text-red-500 text-xs mt-1">
-                  {errors.dateProperty}
+                  {errors.dateProperty.message}
                 </Text>
               )}
             </View>
@@ -255,7 +268,7 @@ export function NotionCredentialForm({
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={onSubmit}
+              onPress={handleSubmit(onSubmit)}
               disabled={isSaving}
               className={`flex-1 py-3 rounded-lg ${
                 !isSaving ? "bg-primary" : "bg-gray-400"

@@ -7,7 +7,6 @@ export const gitHubCredentialSchema = z.object({
     .regex(/^gh[ps]_[A-Za-z0-9]{36}$/, 'GitHub APIキーの形式が正しくありません'),
   
   baseUrl: z
-    .string()
     .url('有効なURLを入力してください')
     .optional()
     .default('https://api.github.com'),
