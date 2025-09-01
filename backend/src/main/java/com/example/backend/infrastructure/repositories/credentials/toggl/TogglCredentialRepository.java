@@ -106,6 +106,12 @@ public class TogglCredentialRepository implements ITogglCredentialRepository {
                        .and(TOGGL_CREDENTIALS.IS_ACTIVE.eq(true)))
                 .fetchOne(0, Long.class);
     }
+    
+    @Override
+    public boolean testConnection() {
+        // TODO: 実際のToggleTrack API接続テストを実装
+        return true;
+    }
 
     private TogglCredential insert(TogglCredential credential) {
         var record = dsl.insertInto(TOGGL_CREDENTIALS)

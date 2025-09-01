@@ -123,16 +123,20 @@ public class GitHubCredentialController {
         }
     }
     
-    @GetMapping("/exists")
-    @Operation(summary = "GitHub認証情報存在確認", description = "指定されたユーザーにGitHub認証情報が存在するかチェックします")
+    @GetMapping("/test")
+    @Operation(summary = "GitHub接続テスト", description = "GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "存在確認の結果を返却"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
+        @ApiResponse(responseCode = "200", description = "接続テストが正常に完了"),
+        @ApiResponse(responseCode = "400", description = "リクエストパラメータが無効（owner または repo が不足）"),
+        @ApiResponse(responseCode = "500", description = "内部サーバーエラーまたは接続失敗")
     })
-    public ResponseEntity<Boolean> exists(
-            @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
+    public ResponseEntity<Boolean> testConnection(
+            @Parameter(description = "リポジトリオーナー/組織名", example = "octocat", required = true) 
+            @RequestParam String owner,
+            @Parameter(description = "リポジトリ名", example = "Hello-World", required = true) 
+            @RequestParam String repo) {
         
-        boolean exists = gitHubCredentialUseCase.existsByUserId(userId);
-        return ResponseEntity.ok(exists);
+        boolean isConnected = gitHubCredentialUseCase.testConnection(owner, repo);
+        return ResponseEntity.ok(isConnected);
     }
 }

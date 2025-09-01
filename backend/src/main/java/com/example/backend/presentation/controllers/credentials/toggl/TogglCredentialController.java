@@ -123,16 +123,14 @@ public class TogglCredentialController {
         }
     }
     
-    @GetMapping("/exists")
-    @Operation(summary = "Toggl認証情報存在確認", description = "指定されたユーザーにToggl認証情報が存在するかチェックします")
+    @GetMapping("/test")
+    @Operation(summary = "ToggleTrack接続テスト", description = "ToggleTrack API接続をテストして、アクセス権限を確認します")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "存在確認の結果を返却"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
+        @ApiResponse(responseCode = "200", description = "接続テストが正常に完了"),
+        @ApiResponse(responseCode = "500", description = "内部サーバーエラーまたはToggleTrack API接続失敗")
     })
-    public ResponseEntity<Boolean> exists(
-            @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
-        
-        boolean exists = togglCredentialUseCase.existsByUserId(userId);
-        return ResponseEntity.ok(exists);
+    public ResponseEntity<Boolean> testConnection() {
+        boolean isConnected = togglCredentialUseCase.testConnection();
+        return ResponseEntity.ok(isConnected);
     }
 }

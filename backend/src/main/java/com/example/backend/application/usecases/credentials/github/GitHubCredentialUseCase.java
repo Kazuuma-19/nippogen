@@ -21,7 +21,7 @@ import java.util.UUID;
 public class GitHubCredentialUseCase {
     
     private final IGitHubCredentialRepository gitHubCredentialRepository;
-    
+
     public GitHubCredentialResponseDto create(UUID userId, GitHubCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
         gitHubCredentialRepository.findByUserId(userId)
@@ -121,5 +121,17 @@ public class GitHubCredentialUseCase {
     @Transactional(readOnly = true)
     public long countByUserId(UUID userId) {
         return gitHubCredentialRepository.countByUserId(userId);
+    }
+    
+    /**
+     * GitHub接続テスト
+     * 
+     * @param owner リポジトリオーナー
+     * @param repo リポジトリ名
+     * @return 接続成功時true
+     */
+    @Transactional(readOnly = true)
+    public boolean testConnection(String owner, String repo) {
+        return gitHubCredentialRepository.testConnection(owner, repo);
     }
 }

@@ -5,9 +5,6 @@ import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
 import com.example.backend.presentation.dto.reports.ReportRegenerationRequestDto;
-import com.example.backend.application.usecases.external.github.GitHubUseCase;
-import com.example.backend.application.usecases.external.notion.NotionUseCase;
-import com.example.backend.application.usecases.external.toggle.ToggleTrackUseCase;
 import com.example.backend.domain.reports.IReportGenerationService;
 import com.example.backend.domain.reports.DailyReport;
 import com.example.backend.domain.reports.IDailyReportRepository;
@@ -29,9 +26,6 @@ import java.util.UUID;
 public class ReportGenerationUseCase {
     
     private final IReportGenerationService reportGenerationService;
-    private final GitHubUseCase gitHubUseCase;
-    private final ToggleTrackUseCase toggleTrackUseCase;
-    private final NotionUseCase notionUseCase;
     private final ReportUseCase reportUseCase;
     private final IDailyReportRepository dailyReportRepository;
     

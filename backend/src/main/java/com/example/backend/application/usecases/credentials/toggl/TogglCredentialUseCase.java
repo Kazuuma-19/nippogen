@@ -130,4 +130,14 @@ public class TogglCredentialUseCase {
     public long countByUserId(UUID userId) {
         return togglCredentialRepository.countByUserId(userId);
     }
+    
+    /**
+     * ToggleTrack接続テスト
+     * 
+     * @return 接続成功時true
+     */
+    @Transactional(readOnly = true)
+    public boolean testConnection() {
+        return togglCredentialRepository.testConnection();
+    }
 }

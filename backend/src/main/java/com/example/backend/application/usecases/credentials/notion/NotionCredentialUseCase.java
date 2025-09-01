@@ -130,4 +130,14 @@ public class NotionCredentialUseCase {
     public long countByUserId(UUID userId) {
         return notionCredentialRepository.countByUserId(userId);
     }
+    
+    /**
+     * Notion接続テスト
+     * 
+     * @return 接続成功時true
+     */
+    @Transactional(readOnly = true)
+    public boolean testConnection() {
+        return notionCredentialRepository.testConnection();
+    }
 }

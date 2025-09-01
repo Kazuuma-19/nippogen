@@ -5,7 +5,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IGitHubCredentialRepository {
-    
+    /**
+     * GitHub接続をテストする
+     *
+     * @param owner リポジトリオーナー
+     * @param repo リポジトリ名
+     * @return 接続成功時true
+     */
+    boolean testConnection(String owner, String repo);
+
     GitHubCredential save(GitHubCredential credential);
     
     Optional<GitHubCredential> findById(UUID id);

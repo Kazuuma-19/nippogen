@@ -21,11 +21,8 @@ export const githubCredentialsApi = {
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/github/${id}`),
   
-  exists: () => 
-    axiosInstance.get<boolean>('/api/credentials/github/exists'),
-  
   test: (owner: string, repo: string) => 
-    axiosInstance.get('/api/external/github/test', { params: { owner, repo } })
+    axiosInstance.get('/api/credentials/github/test', { params: { owner, repo } })
 }
 
 // Toggl Credentials API
@@ -48,11 +45,8 @@ export const togglCredentialsApi = {
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/toggl/${id}`),
   
-  exists: () => 
-    axiosInstance.get<boolean>('/api/credentials/toggl/exists'),
-  
   test: () => 
-    axiosInstance.get('/api/external/toggl/test')
+    axiosInstance.get('/api/credentials/toggl/test')
 }
 
 // Notion Credentials API
@@ -75,11 +69,8 @@ export const notionCredentialsApi = {
   delete: (id: string) => 
     axiosInstance.delete(`/api/credentials/notion/${id}`),
   
-  exists: () => 
-    axiosInstance.get<boolean>('/api/credentials/notion/exists'),
-  
   test: () => 
-    axiosInstance.get('/api/external/notion/test')
+    axiosInstance.get('/api/credentials/notion/test')
 }
 
 // Combined credentials API

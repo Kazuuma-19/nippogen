@@ -25,4 +25,6 @@ public interface INotionCredentialRepository {
     void deleteByUserId(UUID userId);
     
     long countByUserId(UUID userId);
+    
+    boolean testConnection();
 }
