@@ -3,7 +3,6 @@ package com.example.backend.application.usecases.reports;
 import com.example.backend.application.dto.reports.DailyReportDto;
 import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.domain.reports.DailyReport;
-import com.example.backend.domain.reports.ReportStatus;
 import com.example.backend.domain.reports.IDailyReportRepository;
 import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
 import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
@@ -47,9 +46,6 @@ public class ReportUseCase {
         }
         
         DailyReport existingReport = optionalReport.get();
-        if (!existingReport.isEditable()) {
-            throw new IllegalStateException("Report is not editable in current status: " + existingReport.getStatus());
-        }
         
         DailyReport updatedReport = DailyReport.builder()
                 .id(existingReport.getId())
@@ -59,7 +55,6 @@ public class ReportUseCase {
                 .generatedContent(existingReport.getGeneratedContent())
                 .editedContent(request.getEditedContent())
                 .finalContent(existingReport.getFinalContent())
-                .status(request.hasEditedContent() ? ReportStatus.EDITED : existingReport.getStatus())
                 .generationCount(existingReport.getGenerationCount())
                 .additionalNotes(request.getAdditionalNotes() != null ? request.getAdditionalNotes() : existingReport.getAdditionalNotes())
                 .createdAt(existingReport.getCreatedAt())
@@ -95,7 +90,6 @@ public class ReportUseCase {
                 .generatedContent(existingReport.getGeneratedContent())
                 .editedContent(existingReport.getEditedContent())
                 .finalContent(finalContent)
-                .status(ReportStatus.APPROVED)
                 .generationCount(existingReport.getGenerationCount())
                 .additionalNotes(existingReport.getAdditionalNotes())
                 .createdAt(existingReport.getCreatedAt())
@@ -112,19 +106,14 @@ public class ReportUseCase {
      * @param userId ユーザーID
      * @param startDate 開始日（オプション）
      * @param endDate 終了日（オプション）
-     * @param status ステータス（オプション）
      * @return 日報一覧レスポンス
      */
     @Transactional(readOnly = true)
-    public DailyReportListResponseDto getReportsByDateRange(UUID userId, LocalDate startDate, LocalDate endDate, ReportStatus status) {
+    public DailyReportListResponseDto getReportsByDateRange(UUID userId, LocalDate startDate, LocalDate endDate) {
         List<DailyReport> reports;
         
-        if (startDate != null && endDate != null && status != null) {
-            reports = dailyReportRepository.findByUserIdAndDateRangeAndStatus(userId, startDate, endDate, status);
-        } else if (startDate != null && endDate != null) {
+        if (startDate != null && endDate != null) {
             reports = dailyReportRepository.findByUserIdAndDateRange(userId, startDate, endDate);
-        } else if (status != null) {
-            reports = dailyReportRepository.findByUserIdAndStatus(userId, status);
         } else {
             reports = dailyReportRepository.findByUserId(userId);
         }
@@ -134,13 +123,11 @@ public class ReportUseCase {
                 .collect(Collectors.toList());
         
         String dateRange = buildDateRangeString(startDate, endDate);
-        String statusStr = status != null ? status.getValue() : null;
         
         return DailyReportListResponseDto.builder()
                 .reports(reportDtos)
                 .totalCount(reportDtos.size())
                 .dateRange(dateRange)
-                .status(statusStr)
                 .build();
     }
     
@@ -208,7 +195,6 @@ public class ReportUseCase {
                 .generatedContent(report.getGeneratedContent())
                 .editedContent(report.getEditedContent())
                 .finalContent(report.getFinalContent())
-                .status(report.getStatus().getValue())
                 .generationCount(report.getGenerationCount())
                 .additionalNotes(report.getAdditionalNotes())
                 .createdAt(report.getCreatedAt())

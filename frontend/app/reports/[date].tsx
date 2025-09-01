@@ -44,12 +44,11 @@ export default function ReportDetailScreen() {
 
 ## 所感
 今日は効率的に作業を進めることができました。特に新しいTypeScriptの機能を学ぶことができて有意義でした。`,
-        editedContent: null,
-        status: "DRAFT",
+        editedContent: undefined,
         generationCount: 1,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        displayContent: null
+        displayContent: undefined
       };
 
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -77,7 +76,6 @@ export default function ReportDetailScreen() {
       setReport({
         ...report,
         editedContent: content,
-        status: "EDITED",
         updatedAt: new Date().toISOString()
       });
       
@@ -162,10 +160,6 @@ export default function ReportDetailScreen() {
         <View className="flex-row justify-between items-center">
           <View>
             <Text className="text-xl font-bold text-gray-800">{date} の日報</Text>
-            <Text className="text-sm text-gray-600">
-              ステータス: {report.status === 'DRAFT' ? '下書き' : 
-                         report.status === 'EDITED' ? '編集済み' : '承認済み'}
-            </Text>
           </View>
           
           <View className="flex-row space-x-2">

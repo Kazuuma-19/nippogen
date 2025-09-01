@@ -21,47 +21,11 @@ public class DailyReport {
     private final String generatedContent;
     private final String editedContent;
     private final String finalContent;
-    private final ReportStatus status;
     private final Integer generationCount;
     private final String additionalNotes;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     
-    /**
-     * ドラフト状態かチェック
-     * 
-     * @return ドラフト状態の場合true
-     */
-    public boolean isDraft() {
-        return status != null && status.isDraft();
-    }
-    
-    /**
-     * 編集済み状態かチェック
-     * 
-     * @return 編集済み状態の場合true
-     */
-    public boolean isEdited() {
-        return status != null && status.isEdited();
-    }
-    
-    /**
-     * 承認済み状態かチェック
-     * 
-     * @return 承認済み状態の場合true
-     */
-    public boolean isApproved() {
-        return status != null && status.isApproved();
-    }
-    
-    /**
-     * 編集可能な状態かチェック
-     * 
-     * @return 編集可能な場合true（DRAFT または EDITED）
-     */
-    public boolean isEditable() {
-        return status != null && status.isEditable();
-    }
     
     /**
      * 生成されたコンテンツを持っているかチェック

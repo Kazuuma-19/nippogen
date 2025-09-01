@@ -3,7 +3,6 @@ package com.example.backend.presentation.controllers.reports;
 import com.example.backend.application.dto.reports.DailyReportDto;
 import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.application.usecases.reports.ReportUseCase;
-import com.example.backend.domain.reports.ReportStatus;
 import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
 import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 
@@ -72,21 +71,9 @@ public class ReportController {
             
             @Parameter(description = "End date for filtering (YYYY-MM-DD format)", example = "2024-12-31")
             @RequestParam(required = false) 
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            
-            @Parameter(description = "Status filter", schema = @Schema(allowableValues = {"DRAFT", "EDITED", "APPROVED"}))
-            @RequestParam(required = false) String status
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
-        ReportStatus reportStatus = null;
-        if (status != null) {
-            try {
-                reportStatus = ReportStatus.fromValue(status);
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-        
-        DailyReportListResponseDto response = reportUseCase.getReportsByDateRange(userId, startDate, endDate, reportStatus);
+        DailyReportListResponseDto response = reportUseCase.getReportsByDateRange(userId, startDate, endDate);
         return ResponseEntity.ok(response);
     }
     

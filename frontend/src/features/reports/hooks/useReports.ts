@@ -52,9 +52,6 @@ export default function useReports(): UseReportsReturn {
       params.append("endDate", filters.endDate);
     }
     
-    if (filters.status) {
-      params.append("status", filters.status);
-    }
 
     // Note: Search functionality would need backend support for text search
     // This is a placeholder for when backend implements search

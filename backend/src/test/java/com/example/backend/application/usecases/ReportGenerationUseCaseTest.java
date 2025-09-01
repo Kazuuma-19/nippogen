@@ -11,7 +11,6 @@ import com.example.backend.application.usecases.reports.ReportUseCase;
 import com.example.backend.domain.reports.IReportGenerationService;
 import com.example.backend.domain.reports.IDailyReportRepository;
 import com.example.backend.domain.reports.DailyReport;
-import com.example.backend.domain.reports.ReportStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -90,7 +89,6 @@ class ReportGenerationUseCaseTest {
             .userId(userId)
             .reportDate(reportDate)
             .generatedContent("生成された日報コンテンツ")
-            .status(ReportStatus.DRAFT)
             .generationCount(1)
             .additionalNotes("テスト用追加メモ")
             .createdAt(LocalDateTime.now())

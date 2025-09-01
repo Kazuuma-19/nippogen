@@ -68,18 +68,6 @@ export interface paths {
      */
     delete: operations["delete_2"];
   };
-  "/api/reports": {
-    /**
-     * Get daily reports list
-     * @description Retrieve daily reports with optional filtering by date range and status
-     */
-    get: operations["getReports"];
-    /**
-     * Create daily report
-     * @description Create a new daily report
-     */
-    post: operations["createReport"];
-  };
   "/api/reports/{id}/regenerate": {
     /**
      * Regenerate daily report
@@ -136,6 +124,13 @@ export interface paths {
      * @description 新しいGitHub認証情報を作成します
      */
     post: operations["create_2"];
+  };
+  "/api/reports": {
+    /**
+     * Get daily reports list
+     * @description Retrieve daily reports with optional filtering by date range and status
+     */
+    get: operations["getReports"];
   };
   "/api/reports/{id}/export": {
     /**
@@ -271,7 +266,6 @@ export interface components {
       generatedContent?: string;
       editedContent?: string;
       finalContent?: string;
-      status?: string;
       /** Format: int32 */
       generationCount?: number;
       additionalNotes?: string;
@@ -595,17 +589,6 @@ export interface components {
       updatedAt?: string;
       active?: boolean;
     };
-    /** @description Report creation request */
-    DailyReportCreateRequestDto: {
-      /** Format: uuid */
-      userId?: string;
-      /** Format: date */
-      reportDate?: string;
-      rawData?: string;
-      generatedContent?: string;
-      additionalNotes?: string;
-      valid?: boolean;
-    };
     /** @description Report regeneration request */
     ReportRegenerationRequestDto: {
       /** Format: uuid */
@@ -753,7 +736,6 @@ export interface components {
       /** Format: int32 */
       totalCount?: number;
       dateRange?: string;
-      status?: string;
       /** Format: int32 */
       actualCount?: number;
     };
@@ -1231,81 +1213,6 @@ export interface operations {
     };
   };
   /**
-   * Get daily reports list
-   * @description Retrieve daily reports with optional filtering by date range and status
-   */
-  getReports: {
-    parameters: {
-      query: {
-        /** @description User ID */
-        userId: string;
-        /**
-         * @description Start date for filtering (YYYY-MM-DD format)
-         * @example 2024-01-01
-         */
-        startDate?: string;
-        /**
-         * @description End date for filtering (YYYY-MM-DD format)
-         * @example 2024-12-31
-         */
-        endDate?: string;
-        /** @description Status filter */
-        status?: "DRAFT" | "EDITED" | "APPROVED";
-      };
-    };
-    responses: {
-      /** @description Reports retrieved successfully */
-      200: {
-        content: {
-          "application/json": components["schemas"]["DailyReportListResponseDto"];
-        };
-      };
-      /** @description Invalid request parameters */
-      400: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Create daily report
-   * @description Create a new daily report
-   */
-  createReport: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DailyReportCreateRequestDto"];
-      };
-    };
-    responses: {
-      /** @description Report created successfully */
-      201: {
-        content: {
-          "application/json": components["schemas"]["DailyReportDto"];
-        };
-      };
-      /** @description Invalid request data or report already exists for the date */
-      400: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
    * Regenerate daily report
    * @description Regenerate an existing daily report with user feedback and additional information
    */
@@ -1614,6 +1521,48 @@ export interface operations {
       500: {
         content: {
           "*/*": components["schemas"]["GitHubCredentialResponseDto"];
+        };
+      };
+    };
+  };
+  /**
+   * Get daily reports list
+   * @description Retrieve daily reports with optional filtering by date range and status
+   */
+  getReports: {
+    parameters: {
+      query: {
+        /** @description User ID */
+        userId: string;
+        /**
+         * @description Start date for filtering (YYYY-MM-DD format)
+         * @example 2024-01-01
+         */
+        startDate?: string;
+        /**
+         * @description End date for filtering (YYYY-MM-DD format)
+         * @example 2024-12-31
+         */
+        endDate?: string;
+      };
+    };
+    responses: {
+      /** @description Reports retrieved successfully */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DailyReportListResponseDto"];
+        };
+      };
+      /** @description Invalid request parameters */
+      400: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": unknown;
         };
       };
     };

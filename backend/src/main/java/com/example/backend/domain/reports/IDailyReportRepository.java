@@ -1,7 +1,6 @@
 package com.example.backend.domain.reports;
 
 import com.example.backend.domain.reports.DailyReport;
-import com.example.backend.domain.reports.ReportStatus;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -56,25 +55,6 @@ public interface IDailyReportRepository {
      */
     List<DailyReport> findByUserIdAndDateRange(UUID userId, LocalDate startDate, LocalDate endDate);
     
-    /**
-     * ユーザーIDとステータスで日報リストを取得
-     * 
-     * @param userId ユーザーID
-     * @param status 日報ステータス
-     * @return 日報エンティティのリスト（日付降順）
-     */
-    List<DailyReport> findByUserIdAndStatus(UUID userId, ReportStatus status);
-    
-    /**
-     * ユーザーID、日付範囲、ステータスで日報リストを取得
-     * 
-     * @param userId ユーザーID
-     * @param startDate 開始日
-     * @param endDate 終了日
-     * @param status 日報ステータス
-     * @return 日報エンティティのリスト（日付降順）
-     */
-    List<DailyReport> findByUserIdAndDateRangeAndStatus(UUID userId, LocalDate startDate, LocalDate endDate, ReportStatus status);
     
     /**
      * 日報を削除
@@ -109,12 +89,4 @@ public interface IDailyReportRepository {
      */
     long countByUserId(UUID userId);
     
-    /**
-     * ユーザーの指定ステータスの日報数を取得
-     * 
-     * @param userId ユーザーID
-     * @param status 日報ステータス
-     * @return 指定ステータスの日報数
-     */
-    long countByUserIdAndStatus(UUID userId, ReportStatus status);
 }
