@@ -79,7 +79,7 @@ export function NotionCredentialSection() {
       </View>
 
       {/* Loading State */}
-      {loading.notion && (
+      {loading && (
         <View className="items-center py-8">
           <ActivityIndicator size="large" color="#267D00" />
           <Text className="text-gray-500 mt-2">読み込み中...</Text>
@@ -87,7 +87,7 @@ export function NotionCredentialSection() {
       )}
 
       {/* Credentials List */}
-      {!loading.notion && (
+      {!loading && (
         <>
           {notionCredentials.length > 0 ? (
             <View>

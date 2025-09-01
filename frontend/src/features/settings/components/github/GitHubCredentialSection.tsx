@@ -84,7 +84,7 @@ export function GitHubCredentialSection() {
       </View>
 
       {/* Loading State */}
-      {loading.github && (
+      {loading && (
         <View className="items-center py-8">
           <ActivityIndicator size="large" color="#267D00" />
           <Text className="text-gray-500 mt-2">読み込み中...</Text>
@@ -92,7 +92,7 @@ export function GitHubCredentialSection() {
       )}
 
       {/* Credentials List */}
-      {!loading.github && (
+      {!loading && (
         <>
           {gitHubCredentials.length > 0 ? (
             <View>
