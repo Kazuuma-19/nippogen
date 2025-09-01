@@ -24,7 +24,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/reports")
-@Tag(name = "AI Report Generation", description = "AI-powered daily report generation using GPT-5-mini")
+@Tag(name = "AI日報生成", description = "GPT-5-miniを使用したAI駆動の日報生成")
 @RequiredArgsConstructor
 public class ReportGenerationController {
     
@@ -32,13 +32,13 @@ public class ReportGenerationController {
     
     @PostMapping("/generate")
     @Operation(
-        summary = "Generate daily report", 
-        description = "Generate a new daily report using AI based on GitHub, Toggl, and Notion data"
+        summary = "日報生成", 
+        description = "GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成"
     )
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "201", 
-            description = "Report generated successfully",
+            description = "日報の生成に成功",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
@@ -46,7 +46,7 @@ public class ReportGenerationController {
         ),
         @ApiResponse(
             responseCode = "400", 
-            description = "Invalid request data or report already exists for the date",
+            description = "リクエストデータが不正または指定日の日報が既に存在",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
@@ -54,7 +54,7 @@ public class ReportGenerationController {
         ),
         @ApiResponse(
             responseCode = "500", 
-            description = "Internal server error or AI generation failure",
+            description = "サーバー内部エラーまたはAI生成失敗",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
@@ -62,7 +62,7 @@ public class ReportGenerationController {
         )
     })
     public ResponseEntity<ReportGenerationResponseDto> generateReport(
-            @Parameter(description = "Report generation request", required = true)
+            @Parameter(description = "日報生成リクエスト", required = true)
             @RequestBody ReportGenerationRequestDto request
     ) {
         ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(request);
@@ -81,13 +81,13 @@ public class ReportGenerationController {
     
     @PostMapping("/{id}/regenerate")
     @Operation(
-        summary = "Regenerate daily report", 
-        description = "Regenerate an existing daily report with user feedback and additional information"
+        summary = "日報再生成", 
+        description = "ユーザーフィードバックと追加情報で既存の日報を再生成"
     )
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", 
-            description = "Report regenerated successfully",
+            description = "日報の再生成に成功",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
@@ -95,7 +95,7 @@ public class ReportGenerationController {
         ),
         @ApiResponse(
             responseCode = "400", 
-            description = "Invalid request data",
+            description = "リクエストデータが不正",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
@@ -103,7 +103,7 @@ public class ReportGenerationController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Report not found",
+            description = "日報が見つからない",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
@@ -111,7 +111,7 @@ public class ReportGenerationController {
         ),
         @ApiResponse(
             responseCode = "500", 
-            description = "Internal server error or AI regeneration failure",
+            description = "サーバー内部エラーまたはAI再生成失敗",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
@@ -119,10 +119,10 @@ public class ReportGenerationController {
         )
     })
     public ResponseEntity<ReportGenerationResponseDto> regenerateReport(
-            @Parameter(description = "Report ID", required = true)
+            @Parameter(description = "日報ID", required = true)
             @PathVariable UUID id,
             
-            @Parameter(description = "Report regeneration request", required = true)
+            @Parameter(description = "日報再生成リクエスト", required = true)
             @RequestBody ReportRegenerationRequestDto request
     ) {
         // リクエストにreportIdを設定（パスパラメータから）

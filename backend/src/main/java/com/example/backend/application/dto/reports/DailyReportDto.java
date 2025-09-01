@@ -26,31 +26,5 @@ public class DailyReportDto {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     
-    /**
-     * 表示用コンテンツを取得
-     * 優先順位: finalContent > editedContent > generatedContent
-     * 
-     * @return 表示すべきコンテンツ
-     */
-    public String getDisplayContent() {
-        if (finalContent != null && !finalContent.trim().isEmpty()) {
-            return finalContent;
-        }
-        if (editedContent != null && !editedContent.trim().isEmpty()) {
-            return editedContent;
-        }
-        if (generatedContent != null && !generatedContent.trim().isEmpty()) {
-            return generatedContent;
-        }
-        return "";
-    }
     
-    /**
-     * コンテンツが存在するかチェック
-     * 
-     * @return 何らかのコンテンツが存在する場合true
-     */
-    public boolean hasContent() {
-        return !getDisplayContent().isEmpty();
-    }
 }

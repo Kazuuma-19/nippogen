@@ -39,21 +39,9 @@ public class NotionCredential {
         return dateProperty != null && !dateProperty.trim().isEmpty();
     }
     
-    public boolean hasFilterConditions() {
-        return filterConditions != null && !filterConditions.isEmpty();
-    }
     
-    public String getEffectiveTitleProperty() {
-        return hasTitleProperty() ? titleProperty : "Name";
-    }
     
-    public String getEffectiveStatusProperty() {
-        return hasStatusProperty() ? statusProperty : "Status";
-    }
     
-    public String getEffectiveDateProperty() {
-        return hasDateProperty() ? dateProperty : "Date";
-    }
     
     public boolean isValid() {
         return apiKey != null && !apiKey.trim().isEmpty() && userId != null;

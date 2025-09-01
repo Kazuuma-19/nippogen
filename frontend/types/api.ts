@@ -7,34 +7,27 @@
 export interface paths {
   "/api/reports/{id}": {
     /**
-     * Update daily report
-     * @description Update an existing daily report content
+     * 日報更新
+     * @description 既存の日報内容を更新
      */
     put: operations["updateReport"];
     /**
-     * Delete daily report
-     * @description Delete a daily report
+     * 日報削除
+     * @description 日報を削除
      */
     delete: operations["deleteReport"];
   };
   "/api/reports/{id}/regenerate": {
     /**
-     * Regenerate daily report
-     * @description Regenerate an existing daily report with user feedback and additional information
+     * 日報再生成
+     * @description ユーザーフィードバックと追加情報で既存の日報を再生成
      */
     post: operations["regenerateReport"];
   };
-  "/api/reports/{id}/approve": {
-    /**
-     * Approve daily report
-     * @description Approve a daily report, finalizing its content
-     */
-    post: operations["approveReport"];
-  };
   "/api/reports/generate": {
     /**
-     * Generate daily report
-     * @description Generate a new daily report using AI based on GitHub, Toggl, and Notion data
+     * 日報生成
+     * @description GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成
      */
     post: operations["generateReport"];
   };
@@ -61,15 +54,15 @@ export interface paths {
   };
   "/api/reports": {
     /**
-     * Get daily reports list
-     * @description Retrieve daily reports with optional filtering by date range and status
+     * 日報一覧取得
+     * @description 日付範囲とステータスによる任意フィルタリングで日報一覧を取得
      */
     get: operations["getReports"];
   };
   "/api/reports/{date}": {
     /**
-     * Get daily report by date
-     * @description Retrieve a specific daily report for the given date
+     * 日付指定日報取得
+     * @description 指定された日付の日報を取得
      */
     get: operations["getReportByDate"];
   };
@@ -142,7 +135,7 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /** @description Report update request */
+    /** @description 日報更新リクエスト */
     DailyReportUpdateRequestDto: {
       editedContent?: string;
       additionalNotes?: string;
@@ -165,9 +158,8 @@ export interface components {
       createdAt?: string;
       /** Format: date-time */
       updatedAt?: string;
-      displayContent?: string;
     };
-    /** @description Report regeneration request */
+    /** @description 日報再生成リクエスト */
     ReportRegenerationRequestDto: {
       /** Format: uuid */
       reportId?: string;
@@ -191,7 +183,7 @@ export interface components {
       success?: boolean;
       errorMessage?: string;
     };
-    /** @description Report generation request */
+    /** @description 日報生成リクエスト */
     ReportGenerationRequestDto: {
       /** Format: uuid */
       userId?: string;
@@ -510,8 +502,6 @@ export interface components {
       /** Format: int32 */
       totalCount?: number;
       dateRange?: string;
-      /** Format: int32 */
-      actualCount?: number;
     };
   };
   responses: never;
@@ -528,13 +518,13 @@ export type external = Record<string, never>;
 export interface operations {
 
   /**
-   * Update daily report
-   * @description Update an existing daily report content
+   * 日報更新
+   * @description 既存の日報内容を更新
    */
   updateReport: {
     parameters: {
       path: {
-        /** @description Report ID */
+        /** @description 日報ID */
         id: string;
       };
     };
@@ -544,25 +534,25 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Report updated successfully */
+      /** @description 日報の更新に成功 */
       200: {
         content: {
           "application/json": components["schemas"]["DailyReportDto"];
         };
       };
-      /** @description Invalid request data or report not editable */
+      /** @description リクエストデータが不正または編集不可 */
       400: {
         content: {
           "application/json": unknown;
         };
       };
-      /** @description Report not found */
+      /** @description 日報が見つからない */
       404: {
         content: {
           "application/json": unknown;
         };
       };
-      /** @description Internal server error */
+      /** @description サーバー内部エラー */
       500: {
         content: {
           "application/json": unknown;
@@ -571,26 +561,26 @@ export interface operations {
     };
   };
   /**
-   * Delete daily report
-   * @description Delete a daily report
+   * 日報削除
+   * @description 日報を削除
    */
   deleteReport: {
     parameters: {
       path: {
-        /** @description Report ID */
+        /** @description 日報ID */
         id: string;
       };
     };
     responses: {
-      /** @description Report deleted successfully */
+      /** @description 日報の削除に成功 */
       204: {
         content: never;
       };
-      /** @description Report not found */
+      /** @description 日報が見つからない */
       404: {
         content: never;
       };
-      /** @description Internal server error */
+      /** @description サーバー内部エラー */
       500: {
         content: {
           "application/json": unknown;
@@ -599,13 +589,13 @@ export interface operations {
     };
   };
   /**
-   * Regenerate daily report
-   * @description Regenerate an existing daily report with user feedback and additional information
+   * 日報再生成
+   * @description ユーザーフィードバックと追加情報で既存の日報を再生成
    */
   regenerateReport: {
     parameters: {
       path: {
-        /** @description Report ID */
+        /** @description 日報ID */
         id: string;
       };
     };
@@ -615,25 +605,25 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Report regenerated successfully */
+      /** @description 日報の再生成に成功 */
       200: {
         content: {
           "application/json": components["schemas"]["ReportGenerationResponseDto"];
         };
       };
-      /** @description Invalid request data */
+      /** @description リクエストデータが不正 */
       400: {
         content: {
           "application/json": components["schemas"]["ReportGenerationResponseDto"];
         };
       };
-      /** @description Report not found */
+      /** @description 日報が見つからない */
       404: {
         content: {
           "application/json": components["schemas"]["ReportGenerationResponseDto"];
         };
       };
-      /** @description Internal server error or AI regeneration failure */
+      /** @description サーバー内部エラーまたはAI再生成失敗 */
       500: {
         content: {
           "application/json": components["schemas"]["ReportGenerationResponseDto"];
@@ -642,40 +632,8 @@ export interface operations {
     };
   };
   /**
-   * Approve daily report
-   * @description Approve a daily report, finalizing its content
-   */
-  approveReport: {
-    parameters: {
-      path: {
-        /** @description Report ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description Report approved successfully */
-      200: {
-        content: {
-          "application/json": components["schemas"]["DailyReportDto"];
-        };
-      };
-      /** @description Report not found */
-      404: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Generate daily report
-   * @description Generate a new daily report using AI based on GitHub, Toggl, and Notion data
+   * 日報生成
+   * @description GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成
    */
   generateReport: {
     requestBody: {
@@ -684,19 +642,19 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Report generated successfully */
+      /** @description 日報の生成に成功 */
       201: {
         content: {
           "application/json": components["schemas"]["ReportGenerationResponseDto"];
         };
       };
-      /** @description Invalid request data or report already exists for the date */
+      /** @description リクエストデータが不正または指定日の日報が既に存在 */
       400: {
         content: {
           "application/json": components["schemas"]["ReportGenerationResponseDto"];
         };
       };
-      /** @description Internal server error or AI generation failure */
+      /** @description サーバー内部エラーまたはAI生成失敗 */
       500: {
         content: {
           "application/json": components["schemas"]["ReportGenerationResponseDto"];
@@ -816,40 +774,40 @@ export interface operations {
     };
   };
   /**
-   * Get daily reports list
-   * @description Retrieve daily reports with optional filtering by date range and status
+   * 日報一覧取得
+   * @description 日付範囲とステータスによる任意フィルタリングで日報一覧を取得
    */
   getReports: {
     parameters: {
       query: {
-        /** @description User ID */
+        /** @description ユーザーID */
         userId: string;
         /**
-         * @description Start date for filtering (YYYY-MM-DD format)
+         * @description フィルタリング開始日 (YYYY-MM-DD形式)
          * @example 2024-01-01
          */
         startDate?: string;
         /**
-         * @description End date for filtering (YYYY-MM-DD format)
+         * @description フィルタリング終了日 (YYYY-MM-DD形式)
          * @example 2024-12-31
          */
         endDate?: string;
       };
     };
     responses: {
-      /** @description Reports retrieved successfully */
+      /** @description 日報の取得に成功 */
       200: {
         content: {
           "application/json": components["schemas"]["DailyReportListResponseDto"];
         };
       };
-      /** @description Invalid request parameters */
+      /** @description リクエストパラメータが不正 */
       400: {
         content: {
           "application/json": unknown;
         };
       };
-      /** @description Internal server error */
+      /** @description サーバー内部エラー */
       500: {
         content: {
           "application/json": unknown;
@@ -858,43 +816,43 @@ export interface operations {
     };
   };
   /**
-   * Get daily report by date
-   * @description Retrieve a specific daily report for the given date
+   * 日付指定日報取得
+   * @description 指定された日付の日報を取得
    */
   getReportByDate: {
     parameters: {
       query: {
-        /** @description User ID */
+        /** @description ユーザーID */
         userId: string;
       };
       path: {
         /**
-         * @description Report date in YYYY-MM-DD format
+         * @description 日報日付 (YYYY-MM-DD形式)
          * @example 2024-01-15
          */
         date: string;
       };
     };
     responses: {
-      /** @description Report retrieved successfully */
+      /** @description 日報の取得に成功 */
       200: {
         content: {
           "application/json": components["schemas"]["DailyReportDto"];
         };
       };
-      /** @description Invalid date format */
+      /** @description 日付形式が不正 */
       400: {
         content: {
           "application/json": unknown;
         };
       };
-      /** @description Report not found for the specified date */
+      /** @description 指定された日付の日報が見つからない */
       404: {
         content: {
           "application/json": unknown;
         };
       };
-      /** @description Internal server error */
+      /** @description サーバー内部エラー */
       500: {
         content: {
           "application/json": unknown;
