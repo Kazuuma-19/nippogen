@@ -1,7 +1,6 @@
 package com.example.backend.presentation.controllers.reports;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
-import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.application.usecases.reports.ReportUseCase;
 import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
 import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
@@ -199,55 +198,6 @@ public class ReportController {
         try {
             DailyReportDto approvedReport = reportUseCase.approveReport(id);
             return ResponseEntity.ok(approvedReport);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    
-    @GetMapping("/{id}/export")
-    @Operation(
-        summary = "Export report as Markdown", 
-        description = "Export a daily report in Markdown format for download"
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", 
-            description = "Markdown export successful",
-            content = @Content(
-                mediaType = "text/markdown",
-                schema = @Schema(type = "string", format = "binary")
-            )
-        ),
-        @ApiResponse(
-            responseCode = "404", 
-            description = "Report not found",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "Internal server error",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        )
-    })
-    public ResponseEntity<String> exportReport(
-            @Parameter(description = "Report ID", required = true)
-            @PathVariable UUID id,
-            
-            @Parameter(description = "User name for the export header")
-            @RequestParam(required = false) String userName
-    ) {
-        try {
-            MarkdownExportDto exportData = reportUseCase.exportToMarkdown(id, userName);
-            String markdownContent = exportData.getFullMarkdownContent();
-            String fileName = exportData.getDefaultFileName();
-            
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType("text/markdown"));
-            headers.setContentDispositionFormData("attachment", fileName);
-            
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(markdownContent);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }

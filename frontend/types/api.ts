@@ -66,13 +66,6 @@ export interface paths {
      */
     get: operations["getReports"];
   };
-  "/api/reports/{id}/export": {
-    /**
-     * Export report as Markdown
-     * @description Export a daily report in Markdown format for download
-     */
-    get: operations["exportReport"];
-  };
   "/api/reports/{date}": {
     /**
      * Get daily report by date
@@ -852,42 +845,6 @@ export interface operations {
       };
       /** @description Invalid request parameters */
       400: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Export report as Markdown
-   * @description Export a daily report in Markdown format for download
-   */
-  exportReport: {
-    parameters: {
-      query?: {
-        /** @description User name for the export header */
-        userName?: string;
-      };
-      path: {
-        /** @description Report ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description Markdown export successful */
-      200: {
-        content: {
-          "text/markdown": unknown;
-        };
-      };
-      /** @description Report not found */
-      404: {
         content: {
           "application/json": unknown;
         };
