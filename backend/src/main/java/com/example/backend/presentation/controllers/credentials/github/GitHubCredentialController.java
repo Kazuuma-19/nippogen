@@ -4,7 +4,6 @@ import com.example.backend.application.dto.credentials.github.GitHubCredentialCr
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialUpdateRequestDto;
 import com.example.backend.application.usecases.credentials.github.GitHubCredentialUseCase;
-import com.example.backend.application.usecases.external.github.GitHubUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +26,6 @@ import java.util.UUID;
 public class GitHubCredentialController {
     
     private final GitHubCredentialUseCase gitHubCredentialUseCase;
-    private final GitHubUseCase gitHubUseCase;
     
     @PostMapping
     @Operation(summary = "GitHub認証情報作成", description = "新しいGitHub認証情報を作成します")
@@ -125,19 +123,6 @@ public class GitHubCredentialController {
         }
     }
     
-    @GetMapping("/exists")
-    @Operation(summary = "GitHub認証情報存在確認", description = "指定されたユーザーにGitHub認証情報が存在するかチェックします")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "存在確認の結果を返却"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<Boolean> exists(
-            @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
-        
-        boolean exists = gitHubCredentialUseCase.existsByUserId(userId);
-        return ResponseEntity.ok(exists);
-    }
-    
     @GetMapping("/test")
     @Operation(summary = "GitHub接続テスト", description = "GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します")
     @ApiResponses({
@@ -151,7 +136,7 @@ public class GitHubCredentialController {
             @Parameter(description = "リポジトリ名", example = "Hello-World", required = true) 
             @RequestParam String repo) {
         
-        boolean isConnected = gitHubUseCase.testConnection(owner, repo);
+        boolean isConnected = gitHubCredentialUseCase.testConnection(owner, repo);
         return ResponseEntity.ok(isConnected);
     }
 }
