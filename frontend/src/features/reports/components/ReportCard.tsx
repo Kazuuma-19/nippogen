@@ -9,38 +9,6 @@ interface ReportCardProps {
   report: DailyReportDto;
 }
 
-const getStatusConfig = (status?: string) => {
-  switch (status) {
-    case "DRAFT":
-      return {
-        label: "下書き",
-        bgColor: "bg-yellow-100",
-        textColor: "text-yellow-800",
-        iconColor: "#D97706",
-      };
-    case "EDITED":
-      return {
-        label: "編集済み",
-        bgColor: "bg-blue-100",
-        textColor: "text-blue-800",
-        iconColor: "#2563EB",
-      };
-    case "APPROVED":
-      return {
-        label: "承認済み",
-        bgColor: "bg-green-100",
-        textColor: "text-green-800",
-        iconColor: "#16A34A",
-      };
-    default:
-      return {
-        label: "不明",
-        bgColor: "bg-gray-100",
-        textColor: "text-gray-800",
-        iconColor: "#6B7280",
-      };
-  }
-};
 
 const formatDate = (dateString?: string) => {
   if (!dateString) return "日付不明";
@@ -75,7 +43,6 @@ const formatDateTime = (dateString?: string) => {
 };
 
 export default function ReportCard({ report }: ReportCardProps) {
-  const statusConfig = getStatusConfig(report.status);
   
   const handlePress = () => {
     if (report.reportDate) {
@@ -94,11 +61,6 @@ export default function ReportCard({ report }: ReportCardProps) {
         <Text className="text-lg font-bold text-gray-800">
           {formatDate(report.reportDate)}
         </Text>
-        <View className={`px-3 py-1 rounded-full ${statusConfig.bgColor}`}>
-          <Text className={`text-sm font-semibold ${statusConfig.textColor}`}>
-            {statusConfig.label}
-          </Text>
-        </View>
       </View>
 
       {/* Content Preview */}
