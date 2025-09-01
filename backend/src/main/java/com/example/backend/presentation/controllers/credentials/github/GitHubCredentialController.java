@@ -2,7 +2,6 @@ package com.example.backend.presentation.controllers.credentials.github;
 
 import com.example.backend.application.dto.credentials.github.GitHubCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
-import com.example.backend.application.dto.credentials.github.GitHubCredentialUpdateRequestDto;
 import com.example.backend.application.usecases.credentials.github.GitHubCredentialUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,35 +41,6 @@ public class GitHubCredentialController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
-    @GetMapping("/{id}")
-    @Operation(summary = "GitHub認証情報取得", description = "指定されたIDのGitHub認証情報を取得します")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "認証情報の取得に成功"),
-        @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<GitHubCredentialResponseDto> findById(
-            @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
-        
-        return gitHubCredentialUseCase.findById(id)
-                .map(credential -> ResponseEntity.ok(credential))
-                .orElse(ResponseEntity.notFound().build());
-    }
-    
-    @GetMapping
-    @Operation(summary = "ユーザーのGitHub認証情報取得", description = "指定されたユーザーのアクティブなGitHub認証情報を取得します")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "認証情報の取得に成功"),
-        @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<GitHubCredentialResponseDto> findByUserId(
-            @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
-        
-        return gitHubCredentialUseCase.findByUserId(userId)
-                .map(credential -> ResponseEntity.ok(credential))
-                .orElse(ResponseEntity.notFound().build());
-    }
     
     @GetMapping("/all")
     @Operation(summary = "ユーザーの全GitHub認証情報取得", description = "指定されたユーザーの全GitHub認証情報を取得します")
@@ -83,26 +53,6 @@ public class GitHubCredentialController {
         
         List<GitHubCredentialResponseDto> credentials = gitHubCredentialUseCase.findAllByUserId(userId);
         return ResponseEntity.ok(credentials);
-    }
-    
-    @PutMapping("/{id}")
-    @Operation(summary = "GitHub認証情報更新", description = "指定されたIDのGitHub認証情報を更新します")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "認証情報の更新に成功"),
-        @ApiResponse(responseCode = "400", description = "リクエストデータが不正"),
-        @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
-    })
-    public ResponseEntity<GitHubCredentialResponseDto> update(
-            @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id,
-            @RequestBody GitHubCredentialUpdateRequestDto request) {
-        
-        try {
-            GitHubCredentialResponseDto response = gitHubCredentialUseCase.update(id, request);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
     
     @DeleteMapping("/{id}")

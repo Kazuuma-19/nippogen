@@ -17,57 +17,6 @@ export interface paths {
      */
     delete: operations["deleteReport"];
   };
-  "/api/credentials/toggl/{id}": {
-    /**
-     * Toggl認証情報取得
-     * @description 指定されたIDのToggl認証情報を取得します
-     */
-    get: operations["findById"];
-    /**
-     * Toggl認証情報更新
-     * @description 指定されたIDのToggl認証情報を更新します
-     */
-    put: operations["update"];
-    /**
-     * Toggl認証情報削除
-     * @description 指定されたIDのToggl認証情報を削除します
-     */
-    delete: operations["delete"];
-  };
-  "/api/credentials/notion/{id}": {
-    /**
-     * Notion認証情報取得
-     * @description 指定されたIDのNotion認証情報を取得します
-     */
-    get: operations["findById_1"];
-    /**
-     * Notion認証情報更新
-     * @description 指定されたIDのNotion認証情報を更新します
-     */
-    put: operations["update_1"];
-    /**
-     * Notion認証情報削除
-     * @description 指定されたIDのNotion認証情報を削除します
-     */
-    delete: operations["delete_1"];
-  };
-  "/api/credentials/github/{id}": {
-    /**
-     * GitHub認証情報取得
-     * @description 指定されたIDのGitHub認証情報を取得します
-     */
-    get: operations["findById_2"];
-    /**
-     * GitHub認証情報更新
-     * @description 指定されたIDのGitHub認証情報を更新します
-     */
-    put: operations["update_2"];
-    /**
-     * GitHub認証情報削除
-     * @description 指定されたIDのGitHub認証情報を削除します
-     */
-    delete: operations["delete_2"];
-  };
   "/api/reports/{id}/regenerate": {
     /**
      * Regenerate daily report
@@ -91,11 +40,6 @@ export interface paths {
   };
   "/api/credentials/toggl": {
     /**
-     * ユーザーのToggl認証情報取得
-     * @description 指定されたユーザーのアクティブなToggl認証情報を取得します
-     */
-    get: operations["findByUserId"];
-    /**
      * Toggl認証情報作成
      * @description 新しいToggl認証情報を作成します
      */
@@ -103,22 +47,12 @@ export interface paths {
   };
   "/api/credentials/notion": {
     /**
-     * ユーザーのNotion認証情報取得
-     * @description 指定されたユーザーのアクティブなNotion認証情報を取得します
-     */
-    get: operations["findByUserId_1"];
-    /**
      * Notion認証情報作成
      * @description 新しいNotion認証情報を作成します
      */
     post: operations["create_1"];
   };
   "/api/credentials/github": {
-    /**
-     * ユーザーのGitHub認証情報取得
-     * @description 指定されたユーザーのアクティブなGitHub認証情報を取得します
-     */
-    get: operations["findByUserId_2"];
     /**
      * GitHub認証情報作成
      * @description 新しいGitHub認証情報を作成します
@@ -131,13 +65,6 @@ export interface paths {
      * @description Retrieve daily reports with optional filtering by date range and status
      */
     get: operations["getReports"];
-  };
-  "/api/reports/{id}/export": {
-    /**
-     * Export report as Markdown
-     * @description Export a daily report in Markdown format for download
-     */
-    get: operations["exportReport"];
   };
   "/api/reports/{date}": {
     /**
@@ -188,6 +115,27 @@ export interface paths {
      */
     get: operations["findAllByUserId_2"];
   };
+  "/api/credentials/toggl/{id}": {
+    /**
+     * Toggl認証情報削除
+     * @description 指定されたIDのToggl認証情報を削除します
+     */
+    delete: operations["delete"];
+  };
+  "/api/credentials/notion/{id}": {
+    /**
+     * Notion認証情報削除
+     * @description 指定されたIDのNotion認証情報を削除します
+     */
+    delete: operations["delete_1"];
+  };
+  "/api/credentials/github/{id}": {
+    /**
+     * GitHub認証情報削除
+     * @description 指定されたIDのGitHub認証情報を削除します
+     */
+    delete: operations["delete_2"];
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -219,13 +167,46 @@ export interface components {
       updatedAt?: string;
       displayContent?: string;
     };
-    /** @description Toggl Track認証情報更新リクエスト */
-    TogglCredentialUpdateRequestDto: {
+    /** @description Report regeneration request */
+    ReportRegenerationRequestDto: {
+      /** Format: uuid */
+      reportId?: string;
+      userFeedback?: string;
+      additionalNotes?: string;
+      valid?: boolean;
+    };
+    ReportGenerationResponseDto: {
+      /** Format: uuid */
+      reportId?: string;
+      /** Format: uuid */
+      userId?: string;
+      /** Format: date */
+      reportDate?: string;
+      generatedContent?: string;
+      status?: string;
+      /** Format: int32 */
+      generationCount?: number;
+      /** Format: date-time */
+      generatedAt?: string;
+      success?: boolean;
+      errorMessage?: string;
+    };
+    /** @description Report generation request */
+    ReportGenerationRequestDto: {
+      /** Format: uuid */
+      userId?: string;
+      /** Format: date */
+      reportDate?: string;
+      additionalNotes?: string;
+      valid?: boolean;
+    };
+    /** @description Toggl Track認証情報作成リクエスト */
+    TogglCredentialCreateRequestDto: {
       /**
        * @description Toggl Track APIキー
        * @example 1234567890abcdef
        */
-      apiKey?: string;
+      apiKey: string;
       /**
        * Format: int64
        * @description ワークスペースID
@@ -250,19 +231,16 @@ export interface components {
       defaultTags?: string[];
       /**
        * @description タイムゾーン
+       * @default UTC
        * @example Asia/Tokyo
        */
       timeZone?: string;
       /**
        * @description 週末を含むかどうか
+       * @default false
        * @example false
        */
       includeWeekends?: boolean;
-      /**
-       * @description アクティブ状態
-       * @example true
-       */
-      isActive?: boolean;
     };
     /** @description Toggl Track認証情報レスポンス */
     TogglCredentialResponseDto: {
@@ -341,13 +319,13 @@ export interface components {
       updatedAt?: string;
       active?: boolean;
     };
-    /** @description Notion認証情報更新リクエスト */
-    NotionCredentialUpdateRequestDto: {
+    /** @description Notion認証情報作成リクエスト */
+    NotionCredentialCreateRequestDto: {
       /**
        * @description Notion APIキー
        * @example secret_xxxxxxxxxxxxxxxxxxxx
        */
-      apiKey?: string;
+      apiKey: string;
       /**
        * @description データベースID
        * @example 123e4567-e89b-12d3-a456-426614174000
@@ -355,16 +333,19 @@ export interface components {
       databaseId?: string;
       /**
        * @description タイトルプロパティ名
+       * @default Name
        * @example Name
        */
       titleProperty?: string;
       /**
        * @description ステータスプロパティ名
+       * @default Status
        * @example Status
        */
       statusProperty?: string;
       /**
        * @description 日付プロパティ名
+       * @default Date
        * @example Date
        */
       dateProperty?: string;
@@ -380,11 +361,6 @@ export interface components {
       filterConditions?: {
         [key: string]: unknown;
       };
-      /**
-       * @description アクティブ状態
-       * @example true
-       */
-      isActive?: boolean;
     };
     /** @description Notion認証情報レスポンス */
     NotionCredentialResponseDto: {
@@ -452,15 +428,16 @@ export interface components {
       active?: boolean;
       fullyConfigured?: boolean;
     };
-    /** @description GitHub認証情報更新リクエスト */
-    GitHubCredentialUpdateRequestDto: {
+    /** @description GitHub認証情報作成リクエスト */
+    GitHubCredentialCreateRequestDto: {
       /**
        * @description GitHub APIキー
        * @example ghp_xxxxxxxxxxxxxxxxxxxx
        */
-      apiKey?: string;
+      apiKey: string;
       /**
        * @description GitHub APIベースURL
+       * @default https://api.github.com
        * @example https://api.github.com
        */
       baseUrl?: string;
@@ -474,11 +451,6 @@ export interface components {
        * @example Hello-World
        */
       repo?: string;
-      /**
-       * @description アクティブ状態
-       * @example true
-       */
-      isActive?: boolean;
     };
     /** @description GitHub認証情報レスポンス */
     GitHubCredentialResponseDto: {
@@ -532,148 +504,6 @@ export interface components {
        */
       updatedAt?: string;
       active?: boolean;
-    };
-    /** @description Report regeneration request */
-    ReportRegenerationRequestDto: {
-      /** Format: uuid */
-      reportId?: string;
-      userFeedback?: string;
-      additionalNotes?: string;
-      valid?: boolean;
-    };
-    ReportGenerationResponseDto: {
-      /** Format: uuid */
-      reportId?: string;
-      /** Format: uuid */
-      userId?: string;
-      /** Format: date */
-      reportDate?: string;
-      generatedContent?: string;
-      status?: string;
-      /** Format: int32 */
-      generationCount?: number;
-      /** Format: date-time */
-      generatedAt?: string;
-      success?: boolean;
-      errorMessage?: string;
-    };
-    /** @description Report generation request */
-    ReportGenerationRequestDto: {
-      /** Format: uuid */
-      userId?: string;
-      /** Format: date */
-      reportDate?: string;
-      additionalNotes?: string;
-      valid?: boolean;
-    };
-    /** @description Toggl Track認証情報作成リクエスト */
-    TogglCredentialCreateRequestDto: {
-      /**
-       * @description Toggl Track APIキー
-       * @example 1234567890abcdef
-       */
-      apiKey: string;
-      /**
-       * Format: int64
-       * @description ワークスペースID
-       * @example 12345
-       */
-      workspaceId?: number;
-      /**
-       * @description プロジェクトID一覧
-       * @example [
-       *   12345,
-       *   67890
-       * ]
-       */
-      projectIds?: number[];
-      /**
-       * @description デフォルトタグ一覧
-       * @example [
-       *   "development",
-       *   "backend"
-       * ]
-       */
-      defaultTags?: string[];
-      /**
-       * @description タイムゾーン
-       * @default UTC
-       * @example Asia/Tokyo
-       */
-      timeZone?: string;
-      /**
-       * @description 週末を含むかどうか
-       * @default false
-       * @example false
-       */
-      includeWeekends?: boolean;
-    };
-    /** @description Notion認証情報作成リクエスト */
-    NotionCredentialCreateRequestDto: {
-      /**
-       * @description Notion APIキー
-       * @example secret_xxxxxxxxxxxxxxxxxxxx
-       */
-      apiKey: string;
-      /**
-       * @description データベースID
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      databaseId?: string;
-      /**
-       * @description タイトルプロパティ名
-       * @default Name
-       * @example Name
-       */
-      titleProperty?: string;
-      /**
-       * @description ステータスプロパティ名
-       * @default Status
-       * @example Status
-       */
-      statusProperty?: string;
-      /**
-       * @description 日付プロパティ名
-       * @default Date
-       * @example Date
-       */
-      dateProperty?: string;
-      /**
-       * @description フィルター条件
-       * @example {
-       *   "status": [
-       *     "In Progress",
-       *     "Done"
-       *   ]
-       * }
-       */
-      filterConditions?: {
-        [key: string]: unknown;
-      };
-    };
-    /** @description GitHub認証情報作成リクエスト */
-    GitHubCredentialCreateRequestDto: {
-      /**
-       * @description GitHub APIキー
-       * @example ghp_xxxxxxxxxxxxxxxxxxxx
-       */
-      apiKey: string;
-      /**
-       * @description GitHub APIベースURL
-       * @default https://api.github.com
-       * @example https://api.github.com
-       */
-      baseUrl?: string;
-      /**
-       * @description リポジトリオーナー
-       * @example octocat
-       */
-      owner?: string;
-      /**
-       * @description リポジトリ名
-       * @example Hello-World
-       */
-      repo?: string;
     };
     DailyReportListResponseDto: {
       reports?: components["schemas"]["DailyReportDto"][];
@@ -765,309 +595,6 @@ export interface operations {
         content: {
           "application/json": unknown;
         };
-      };
-    };
-  };
-  /**
-   * Toggl認証情報取得
-   * @description 指定されたIDのToggl認証情報を取得します
-   */
-  findById: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の取得に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
-   * Toggl認証情報更新
-   * @description 指定されたIDのToggl認証情報を更新します
-   */
-  update: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TogglCredentialUpdateRequestDto"];
-      };
-    };
-    responses: {
-      /** @description 認証情報の更新に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-      /** @description リクエストデータが不正 */
-      400: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
-   * Toggl認証情報削除
-   * @description 指定されたIDのToggl認証情報を削除します
-   */
-  delete: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の削除に成功 */
-      204: {
-        content: never;
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: never;
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: never;
-      };
-    };
-  };
-  /**
-   * Notion認証情報取得
-   * @description 指定されたIDのNotion認証情報を取得します
-   */
-  findById_1: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の取得に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
-   * Notion認証情報更新
-   * @description 指定されたIDのNotion認証情報を更新します
-   */
-  update_1: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["NotionCredentialUpdateRequestDto"];
-      };
-    };
-    responses: {
-      /** @description 認証情報の更新に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-      /** @description リクエストデータが不正 */
-      400: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
-   * Notion認証情報削除
-   * @description 指定されたIDのNotion認証情報を削除します
-   */
-  delete_1: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の削除に成功 */
-      204: {
-        content: never;
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: never;
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: never;
-      };
-    };
-  };
-  /**
-   * GitHub認証情報取得
-   * @description 指定されたIDのGitHub認証情報を取得します
-   */
-  findById_2: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の取得に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
-   * GitHub認証情報更新
-   * @description 指定されたIDのGitHub認証情報を更新します
-   */
-  update_2: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GitHubCredentialUpdateRequestDto"];
-      };
-    };
-    responses: {
-      /** @description 認証情報の更新に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-      /** @description リクエストデータが不正 */
-      400: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
-   * GitHub認証情報削除
-   * @description 指定されたIDのGitHub認証情報を削除します
-   */
-  delete_2: {
-    parameters: {
-      path: {
-        /** @description 認証情報ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の削除に成功 */
-      204: {
-        content: never;
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: never;
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: never;
       };
     };
   };
@@ -1178,38 +705,6 @@ export interface operations {
     };
   };
   /**
-   * ユーザーのToggl認証情報取得
-   * @description 指定されたユーザーのアクティブなToggl認証情報を取得します
-   */
-  findByUserId: {
-    parameters: {
-      header: {
-        /** @description ユーザーID */
-        "X-User-Id": string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の取得に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
    * Toggl認証情報作成
    * @description 新しいToggl認証情報を作成します
    */
@@ -1247,38 +742,6 @@ export interface operations {
     };
   };
   /**
-   * ユーザーのNotion認証情報取得
-   * @description 指定されたユーザーのアクティブなNotion認証情報を取得します
-   */
-  findByUserId_1: {
-    parameters: {
-      header: {
-        /** @description ユーザーID */
-        "X-User-Id": string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の取得に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
    * Notion認証情報作成
    * @description 新しいNotion認証情報を作成します
    */
@@ -1311,38 +774,6 @@ export interface operations {
       500: {
         content: {
           "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
-      };
-    };
-  };
-  /**
-   * ユーザーのGitHub認証情報取得
-   * @description 指定されたユーザーのアクティブなGitHub認証情報を取得します
-   */
-  findByUserId_2: {
-    parameters: {
-      header: {
-        /** @description ユーザーID */
-        "X-User-Id": string;
-      };
-    };
-    responses: {
-      /** @description 認証情報の取得に成功 */
-      200: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-      /** @description 認証情報が見つからない */
-      404: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
-      };
-      /** @description サーバーエラー */
-      500: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
         };
       };
     };
@@ -1414,42 +845,6 @@ export interface operations {
       };
       /** @description Invalid request parameters */
       400: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  /**
-   * Export report as Markdown
-   * @description Export a daily report in Markdown format for download
-   */
-  exportReport: {
-    parameters: {
-      query?: {
-        /** @description User name for the export header */
-        userName?: string;
-      };
-      path: {
-        /** @description Report ID */
-        id: string;
-      };
-    };
-    responses: {
-      /** @description Markdown export successful */
-      200: {
-        content: {
-          "text/markdown": unknown;
-        };
-      };
-      /** @description Report not found */
-      404: {
         content: {
           "application/json": unknown;
         };
@@ -1662,6 +1057,84 @@ export interface operations {
         content: {
           "*/*": components["schemas"]["GitHubCredentialResponseDto"][];
         };
+      };
+    };
+  };
+  /**
+   * Toggl認証情報削除
+   * @description 指定されたIDのToggl認証情報を削除します
+   */
+  delete: {
+    parameters: {
+      path: {
+        /** @description 認証情報ID */
+        id: string;
+      };
+    };
+    responses: {
+      /** @description 認証情報の削除に成功 */
+      204: {
+        content: never;
+      };
+      /** @description 認証情報が見つからない */
+      404: {
+        content: never;
+      };
+      /** @description サーバーエラー */
+      500: {
+        content: never;
+      };
+    };
+  };
+  /**
+   * Notion認証情報削除
+   * @description 指定されたIDのNotion認証情報を削除します
+   */
+  delete_1: {
+    parameters: {
+      path: {
+        /** @description 認証情報ID */
+        id: string;
+      };
+    };
+    responses: {
+      /** @description 認証情報の削除に成功 */
+      204: {
+        content: never;
+      };
+      /** @description 認証情報が見つからない */
+      404: {
+        content: never;
+      };
+      /** @description サーバーエラー */
+      500: {
+        content: never;
+      };
+    };
+  };
+  /**
+   * GitHub認証情報削除
+   * @description 指定されたIDのGitHub認証情報を削除します
+   */
+  delete_2: {
+    parameters: {
+      path: {
+        /** @description 認証情報ID */
+        id: string;
+      };
+    };
+    responses: {
+      /** @description 認証情報の削除に成功 */
+      204: {
+        content: never;
+      };
+      /** @description 認証情報が見つからない */
+      404: {
+        content: never;
+      };
+      /** @description サーバーエラー */
+      500: {
+        content: never;
       };
     };
   };

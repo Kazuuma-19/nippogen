@@ -2,7 +2,6 @@ package com.example.backend.application.usecases.credentials.github;
 
 import com.example.backend.application.dto.credentials.github.GitHubCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
-import com.example.backend.application.dto.credentials.github.GitHubCredentialUpdateRequestDto;
 import com.example.backend.domain.credentials.github.GitHubCredential;
 import com.example.backend.domain.credentials.github.IGitHubCredentialRepository;
 
@@ -24,14 +23,16 @@ public class GitHubCredentialUseCase {
 
     public GitHubCredentialResponseDto create(UUID userId, GitHubCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
-        gitHubCredentialRepository.findByUserId(userId)
-            .ifPresent(existing -> {
+        List<GitHubCredential> existingCredentials = gitHubCredentialRepository.findAllByUserId(userId);
+        for (GitHubCredential existing : existingCredentials) {
+            if (existing.isActive()) {
                 GitHubCredential updated = existing.toBuilder()
                     .isActive(false)
                     .updatedAt(LocalDateTime.now())
                     .build();
                 gitHubCredentialRepository.save(updated);
-            });
+            }
+        }
         
         GitHubCredential credential = GitHubCredential.builder()
                 .id(UUID.randomUUID())
@@ -49,17 +50,6 @@ public class GitHubCredentialUseCase {
         return GitHubCredentialResponseDto.from(saved);
     }
     
-    @Transactional(readOnly = true)
-    public Optional<GitHubCredentialResponseDto> findById(UUID id) {
-        return gitHubCredentialRepository.findById(id)
-                .map(GitHubCredentialResponseDto::from);
-    }
-    
-    @Transactional(readOnly = true)
-    public Optional<GitHubCredentialResponseDto> findByUserId(UUID userId) {
-        return gitHubCredentialRepository.findByUserId(userId)
-                .map(GitHubCredentialResponseDto::from);
-    }
     
     @Transactional(readOnly = true)
     public List<GitHubCredentialResponseDto> findAllByUserId(UUID userId) {
@@ -75,32 +65,6 @@ public class GitHubCredentialUseCase {
                 .toList();
     }
     
-    public GitHubCredentialResponseDto update(UUID id, GitHubCredentialUpdateRequestDto request) {
-        GitHubCredential existing = gitHubCredentialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("GitHub認証情報が見つかりません: " + id));
-        
-        GitHubCredential.GitHubCredentialBuilder builder = existing.toBuilder()
-                .updatedAt(LocalDateTime.now());
-        
-        if (request.getApiKey() != null) {
-            builder.apiKey(request.getApiKey());
-        }
-        if (request.getBaseUrl() != null) {
-            builder.baseUrl(request.getBaseUrl());
-        }
-        if (request.getOwner() != null) {
-            builder.owner(request.getOwner());
-        }
-        if (request.getRepo() != null) {
-            builder.repo(request.getRepo());
-        }
-        if (request.getIsActive() != null) {
-            builder.isActive(request.getIsActive());
-        }
-        
-        GitHubCredential updated = gitHubCredentialRepository.save(builder.build());
-        return GitHubCredentialResponseDto.from(updated);
-    }
     
     public void deleteById(UUID id) {
         if (!gitHubCredentialRepository.existsById(id)) {

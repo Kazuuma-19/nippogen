@@ -2,7 +2,6 @@ package com.example.backend.application.usecases.credentials.toggl;
 
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialResponseDto;
-import com.example.backend.application.dto.credentials.toggl.TogglCredentialUpdateRequestDto;
 import com.example.backend.domain.credentials.toggl.TogglCredential;
 import com.example.backend.domain.credentials.toggl.ITogglCredentialRepository;
 
@@ -24,14 +23,16 @@ public class TogglCredentialUseCase {
     
     public TogglCredentialResponseDto create(UUID userId, TogglCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
-        togglCredentialRepository.findByUserId(userId)
-            .ifPresent(existing -> {
+        List<TogglCredential> existingCredentials = togglCredentialRepository.findAllByUserId(userId);
+        for (TogglCredential existing : existingCredentials) {
+            if (existing.isActive()) {
                 TogglCredential updated = existing.toBuilder()
                     .isActive(false)
                     .updatedAt(LocalDateTime.now())
                     .build();
                 togglCredentialRepository.save(updated);
-            });
+            }
+        }
         
         TogglCredential credential = TogglCredential.builder()
                 .id(UUID.randomUUID())
@@ -51,17 +52,6 @@ public class TogglCredentialUseCase {
         return TogglCredentialResponseDto.from(saved);
     }
     
-    @Transactional(readOnly = true)
-    public Optional<TogglCredentialResponseDto> findById(UUID id) {
-        return togglCredentialRepository.findById(id)
-                .map(TogglCredentialResponseDto::from);
-    }
-    
-    @Transactional(readOnly = true)
-    public Optional<TogglCredentialResponseDto> findByUserId(UUID userId) {
-        return togglCredentialRepository.findByUserId(userId)
-                .map(TogglCredentialResponseDto::from);
-    }
     
     @Transactional(readOnly = true)
     public List<TogglCredentialResponseDto> findAllByUserId(UUID userId) {
@@ -77,38 +67,6 @@ public class TogglCredentialUseCase {
                 .toList();
     }
     
-    public TogglCredentialResponseDto update(UUID id, TogglCredentialUpdateRequestDto request) {
-        TogglCredential existing = togglCredentialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Toggl認証情報が見つかりません: " + id));
-        
-        TogglCredential.TogglCredentialBuilder builder = existing.toBuilder()
-                .updatedAt(LocalDateTime.now());
-        
-        if (request.getApiKey() != null) {
-            builder.apiKey(request.getApiKey());
-        }
-        if (request.getWorkspaceId() != null) {
-            builder.workspaceId(request.getWorkspaceId());
-        }
-        if (request.getProjectIds() != null) {
-            builder.projectIds(request.getProjectIds());
-        }
-        if (request.getDefaultTags() != null) {
-            builder.defaultTags(request.getDefaultTags());
-        }
-        if (request.getTimeZone() != null) {
-            builder.timeZone(request.getTimeZone());
-        }
-        if (request.getIncludeWeekends() != null) {
-            builder.includeWeekends(request.getIncludeWeekends());
-        }
-        if (request.getIsActive() != null) {
-            builder.isActive(request.getIsActive());
-        }
-        
-        TogglCredential updated = togglCredentialRepository.save(builder.build());
-        return TogglCredentialResponseDto.from(updated);
-    }
     
     public void deleteById(UUID id) {
         if (!togglCredentialRepository.existsById(id)) {

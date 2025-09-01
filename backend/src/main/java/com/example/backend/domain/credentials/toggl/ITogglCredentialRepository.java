@@ -8,9 +8,6 @@ public interface ITogglCredentialRepository {
     
     TogglCredential save(TogglCredential credential);
     
-    Optional<TogglCredential> findById(UUID id);
-    
-    Optional<TogglCredential> findByUserId(UUID userId);
     
     List<TogglCredential> findAllByUserId(UUID userId);
     

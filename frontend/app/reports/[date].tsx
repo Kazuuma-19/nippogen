@@ -118,16 +118,6 @@ export default function ReportDetailScreen() {
     );
   };
 
-  const handleExport = async () => {
-    if (!report) return;
-
-    try {
-      // Mock export - later implement actual download functionality
-      Alert.alert("エクスポート", "Markdownファイルとしてエクスポートする機能は準備中です");
-    } catch {
-      Alert.alert("エラー", "エクスポートに失敗しました");
-    }
-  };
 
   if (isLoading) {
     return (
@@ -197,13 +187,6 @@ export default function ReportDetailScreen() {
               className="bg-orange-500 px-4 py-2 rounded-lg"
             >
               <Text className="text-white font-semibold">再生成</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              onPress={handleExport}
-              className="bg-blue-500 px-4 py-2 rounded-lg"
-            >
-              <Text className="text-white font-semibold">エクスポート</Text>
             </TouchableOpacity>
           </View>
         </View>

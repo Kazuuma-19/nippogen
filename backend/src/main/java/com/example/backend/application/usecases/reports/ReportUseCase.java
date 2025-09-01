@@ -1,7 +1,6 @@
 package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
-import com.example.backend.application.dto.reports.MarkdownExportDto;
 import com.example.backend.domain.reports.DailyReport;
 import com.example.backend.domain.reports.IDailyReportRepository;
 import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
@@ -144,30 +143,6 @@ public class ReportUseCase {
                 .map(this::convertToDto);
     }
     
-    /**
-     * 日報をMarkdown形式でエクスポート
-     * 
-     * @param reportId 日報ID
-     * @param userName ユーザー名（オプション）
-     * @return Markdownエクスポート用DTO
-     * @throws IllegalArgumentException 日報が見つからない場合
-     */
-    @Transactional(readOnly = true)
-    public MarkdownExportDto exportToMarkdown(UUID reportId, String userName) {
-        Optional<DailyReport> optionalReport = dailyReportRepository.findById(reportId);
-        if (optionalReport.isEmpty()) {
-            throw new IllegalArgumentException("Report not found: " + reportId);
-        }
-        
-        DailyReport report = optionalReport.get();
-        String content = report.getDisplayContent();
-        
-        return MarkdownExportDto.builder()
-                .content(content)
-                .reportDate(report.getReportDate())
-                .userName(userName)
-                .build();
-    }
     
     /**
      * 日報を削除

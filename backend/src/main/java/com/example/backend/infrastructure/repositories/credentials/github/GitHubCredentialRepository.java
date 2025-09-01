@@ -34,22 +34,6 @@ public class GitHubCredentialRepository implements IGitHubCredentialRepository {
         }
     }
 
-    @Override
-    public Optional<GitHubCredential> findById(UUID id) {
-        return dsl.selectFrom(GITHUB_CREDENTIALS)
-                .where(GITHUB_CREDENTIALS.ID.eq(id))
-                .fetchOptional()
-                .map(this::mapToEntity);
-    }
-
-    @Override
-    public Optional<GitHubCredential> findByUserId(UUID userId) {
-        return dsl.selectFrom(GITHUB_CREDENTIALS)
-                .where(GITHUB_CREDENTIALS.USER_ID.eq(userId)
-                       .and(GITHUB_CREDENTIALS.IS_ACTIVE.eq(true)))
-                .fetchOptional()
-                .map(this::mapToEntity);
-    }
 
     @Override
     public List<GitHubCredential> findAllByUserId(UUID userId) {
