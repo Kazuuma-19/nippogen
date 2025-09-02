@@ -60,30 +60,13 @@ public class NotionCredentialUseCase {
                 .toList();
     }
     
-    @Transactional(readOnly = true)
-    public List<NotionCredentialResponseDto> findActiveByUserId(UUID userId) {
-        return notionCredentialRepository.findActiveByUserId(userId).stream()
-                .map(NotionCredentialResponseDto::from)
-                .toList();
-    }
-    
-    
     public void deleteById(UUID id) {
         if (!notionCredentialRepository.existsById(id)) {
             throw new RuntimeException("Notion認証情報が見つかりません: " + id);
         }
         notionCredentialRepository.deleteById(id);
     }
-    
-    public void deleteByUserId(UUID userId) {
-        notionCredentialRepository.deleteByUserId(userId);
-    }
-    
-    @Transactional(readOnly = true)
-    public boolean existsByUserId(UUID userId) {
-        return notionCredentialRepository.existsByUserId(userId);
-    }
-    
+
     @Transactional(readOnly = true)
     public long countByUserId(UUID userId) {
         return notionCredentialRepository.countByUserId(userId);

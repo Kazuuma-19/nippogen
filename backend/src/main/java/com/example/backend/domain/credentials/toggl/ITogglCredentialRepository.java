@@ -1,7 +1,6 @@
 package com.example.backend.domain.credentials.toggl;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface ITogglCredentialRepository {

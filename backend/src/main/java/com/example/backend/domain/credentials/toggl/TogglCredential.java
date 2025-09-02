@@ -23,7 +23,6 @@ public class TogglCredential {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     
-    
     public boolean hasProjects() {
         return projectIds != null && !projectIds.isEmpty();
     }
@@ -31,12 +30,7 @@ public class TogglCredential {
     public boolean hasDefaultTags() {
         return defaultTags != null && !defaultTags.isEmpty();
     }
-    
-    
-    public boolean isValid() {
-        return apiKey != null && !apiKey.trim().isEmpty() && userId != null;
-    }
-    
+
     public int getProjectCount() {
         return hasProjects() ? projectIds.size() : 0;
     }

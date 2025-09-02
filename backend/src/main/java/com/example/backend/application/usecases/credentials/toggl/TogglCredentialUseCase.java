@@ -60,30 +60,13 @@ public class TogglCredentialUseCase {
                 .toList();
     }
     
-    @Transactional(readOnly = true)
-    public List<TogglCredentialResponseDto> findActiveByUserId(UUID userId) {
-        return togglCredentialRepository.findActiveByUserId(userId).stream()
-                .map(TogglCredentialResponseDto::from)
-                .toList();
-    }
-    
-    
     public void deleteById(UUID id) {
         if (!togglCredentialRepository.existsById(id)) {
             throw new RuntimeException("Toggl認証情報が見つかりません: " + id);
         }
         togglCredentialRepository.deleteById(id);
     }
-    
-    public void deleteByUserId(UUID userId) {
-        togglCredentialRepository.deleteByUserId(userId);
-    }
-    
-    @Transactional(readOnly = true)
-    public boolean existsByUserId(UUID userId) {
-        return togglCredentialRepository.existsByUserId(userId);
-    }
-    
+
     @Transactional(readOnly = true)
     public long countByUserId(UUID userId) {
         return togglCredentialRepository.countByUserId(userId);

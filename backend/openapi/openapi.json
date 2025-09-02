@@ -52,6 +52,12 @@
           "required" : true
         },
         "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正または編集不可",
+            "content" : {
+              "application/json" : { }
+            }
+          },
           "404" : {
             "description" : "日報が見つからない",
             "content" : {
@@ -70,12 +76,6 @@
           },
           "500" : {
             "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "400" : {
-            "description" : "リクエストデータが不正または編集不可",
             "content" : {
               "application/json" : { }
             }
@@ -101,14 +101,14 @@
           "204" : {
             "description" : "日報の削除に成功"
           },
+          "404" : {
+            "description" : "日報が見つからない"
+          },
           "500" : {
             "description" : "サーバー内部エラー",
             "content" : {
               "application/json" : { }
             }
-          },
-          "404" : {
-            "description" : "日報が見つからない"
           }
         }
       }
@@ -140,16 +140,6 @@
           "required" : true
         },
         "responses" : {
-          "200" : {
-            "description" : "日報の再生成に成功",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
-            }
-          },
           "500" : {
             "description" : "サーバー内部エラーまたはAI再生成失敗",
             "content" : {
@@ -162,6 +152,16 @@
           },
           "400" : {
             "description" : "リクエストデータが不正",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "日報の再生成に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -200,8 +200,8 @@
           "required" : true
         },
         "responses" : {
-          "201" : {
-            "description" : "日報の生成に成功",
+          "500" : {
+            "description" : "サーバー内部エラーまたはAI生成失敗",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -210,8 +210,8 @@
               }
             }
           },
-          "500" : {
-            "description" : "サーバー内部エラーまたはAI生成失敗",
+          "201" : {
+            "description" : "日報の生成に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -450,6 +450,16 @@
           "example" : "2024-12-31"
         } ],
         "responses" : {
+          "200" : {
+            "description" : "日報の取得に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DailyReportListResponseDto"
+                }
+              }
+            }
+          },
           "400" : {
             "description" : "リクエストパラメータが不正",
             "content" : {
@@ -460,16 +470,6 @@
             "description" : "サーバー内部エラー",
             "content" : {
               "application/json" : { }
-            }
-          },
-          "200" : {
-            "description" : "日報の取得に成功",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DailyReportListResponseDto"
-                }
-              }
             }
           }
         }
@@ -502,6 +502,18 @@
           }
         } ],
         "responses" : {
+          "400" : {
+            "description" : "日付形式が不正",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "404" : {
+            "description" : "指定された日付の日報が見つからない",
+            "content" : {
+              "application/json" : { }
+            }
+          },
           "200" : {
             "description" : "日報の取得に成功",
             "content" : {
@@ -512,20 +524,8 @@
               }
             }
           },
-          "400" : {
-            "description" : "日付形式が不正",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "500" : {
             "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "404" : {
-            "description" : "指定された日付の日報が見つからない",
             "content" : {
               "application/json" : { }
             }

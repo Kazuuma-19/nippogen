@@ -24,6 +24,4 @@ public class ReportRegenerationRequestDto {
     public boolean isValid() {
         return reportId != null;
     }
-    
-    
 }
