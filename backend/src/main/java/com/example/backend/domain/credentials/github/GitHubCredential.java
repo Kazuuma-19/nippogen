@@ -38,9 +38,4 @@ public class GitHubCredential {
         }
         return "";
     }
-    
-    
-    public boolean isValid() {
-        return apiKey != null && !apiKey.trim().isEmpty() && userId != null;
-    }
 }

@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -72,16 +71,7 @@ public class GitHubCredentialUseCase {
         }
         gitHubCredentialRepository.deleteById(id);
     }
-    
-    public void deleteByUserId(UUID userId) {
-        gitHubCredentialRepository.deleteByUserId(userId);
-    }
-    
-    @Transactional(readOnly = true)
-    public boolean existsByUserId(UUID userId) {
-        return gitHubCredentialRepository.existsByUserId(userId);
-    }
-    
+
     @Transactional(readOnly = true)
     public long countByUserId(UUID userId) {
         return gitHubCredentialRepository.countByUserId(userId);

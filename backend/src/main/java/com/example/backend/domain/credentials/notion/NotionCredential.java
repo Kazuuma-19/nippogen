@@ -31,18 +31,6 @@ public class NotionCredential {
         return titleProperty != null && !titleProperty.trim().isEmpty();
     }
     
-    public boolean hasStatusProperty() {
-        return statusProperty != null && !statusProperty.trim().isEmpty();
-    }
-    
-    public boolean hasDateProperty() {
-        return dateProperty != null && !dateProperty.trim().isEmpty();
-    }
-    
-    
-    
-    
-    
     public boolean isValid() {
         return apiKey != null && !apiKey.trim().isEmpty() && userId != null;
     }
