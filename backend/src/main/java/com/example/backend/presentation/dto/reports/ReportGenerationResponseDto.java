@@ -19,7 +19,6 @@ public class ReportGenerationResponseDto {
     private final LocalDate reportDate;
     private final String finalContent;
     private final String status;
-    private final Integer generationCount;
     private final LocalDateTime generatedAt;
     private final boolean success;
     private final String errorMessage;
@@ -31,15 +30,13 @@ public class ReportGenerationResponseDto {
      * @param userId ユーザーID
      * @param reportDate 日報対象日
      * @param finalContent 最終コンテンツ
-     * @param generationCount 生成回数
      * @return 成功レスポンス
      */
     public static ReportGenerationResponseDto success(
         UUID reportId,
         UUID userId, 
         LocalDate reportDate,
-        String finalContent,
-        Integer generationCount
+        String finalContent
     ) {
         return ReportGenerationResponseDto.builder()
             .reportId(reportId)
@@ -47,7 +44,6 @@ public class ReportGenerationResponseDto {
             .reportDate(reportDate)
             .finalContent(finalContent)
             .status("DRAFT")
-            .generationCount(generationCount)
             .generatedAt(LocalDateTime.now())
             .success(true)
             .build();

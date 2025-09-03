@@ -6,7 +6,6 @@ package com.example.backend.jooq;
 
 import com.example.backend.jooq.tables.JDailyReports;
 import com.example.backend.jooq.tables.JFlywaySchemaHistory;
-import com.example.backend.jooq.tables.JGenerationLogs;
 import com.example.backend.jooq.tables.JGithubCredentials;
 import com.example.backend.jooq.tables.JNotionCredentials;
 import com.example.backend.jooq.tables.JReportTemplates;
@@ -33,7 +32,6 @@ public class Indexes {
     public static final Index IDX_DAILY_REPORTS_REPORT_DATE = Internal.createIndex(DSL.name("idx_daily_reports_report_date"), JDailyReports.DAILY_REPORTS, new OrderField[] { JDailyReports.DAILY_REPORTS.REPORT_DATE }, false);
     public static final Index IDX_DAILY_REPORTS_USER_DATE = Internal.createIndex(DSL.name("idx_daily_reports_user_date"), JDailyReports.DAILY_REPORTS, new OrderField[] { JDailyReports.DAILY_REPORTS.USER_ID, JDailyReports.DAILY_REPORTS.REPORT_DATE }, true);
     public static final Index IDX_DAILY_REPORTS_USER_ID = Internal.createIndex(DSL.name("idx_daily_reports_user_id"), JDailyReports.DAILY_REPORTS, new OrderField[] { JDailyReports.DAILY_REPORTS.USER_ID }, false);
-    public static final Index IDX_GENERATION_LOGS_REPORT_ID = Internal.createIndex(DSL.name("idx_generation_logs_report_id"), JGenerationLogs.GENERATION_LOGS, new OrderField[] { JGenerationLogs.GENERATION_LOGS.REPORT_ID }, false);
     public static final Index IDX_GITHUB_CREDENTIALS_USER_ID = Internal.createIndex(DSL.name("idx_github_credentials_user_id"), JGithubCredentials.GITHUB_CREDENTIALS, new OrderField[] { JGithubCredentials.GITHUB_CREDENTIALS.USER_ID }, false);
     public static final Index IDX_GITHUB_CREDENTIALS_USER_UNIQUE = Internal.createIndex(DSL.name("idx_github_credentials_user_unique"), JGithubCredentials.GITHUB_CREDENTIALS, new OrderField[] { JGithubCredentials.GITHUB_CREDENTIALS.USER_ID }, true);
     public static final Index IDX_NOTION_CREDENTIALS_USER_ID = Internal.createIndex(DSL.name("idx_notion_credentials_user_id"), JNotionCredentials.NOTION_CREDENTIALS, new OrderField[] { JNotionCredentials.NOTION_CREDENTIALS.USER_ID }, false);

@@ -19,7 +19,6 @@ public class DailyReport {
     private final LocalDate reportDate;
     private final String rawData;
     private final String finalContent;
-    private final Integer generationCount;
     private final String additionalNotes;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;

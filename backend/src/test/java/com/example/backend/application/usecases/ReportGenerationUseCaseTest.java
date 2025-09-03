@@ -75,7 +75,6 @@ class ReportGenerationUseCaseTest {
             .userId(userId)
             .reportDate(reportDate)
             .finalContent("生成された日報コンテンツ")
-            .generationCount(1)
             .additionalNotes("テスト用追加メモ")
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
@@ -93,7 +92,6 @@ class ReportGenerationUseCaseTest {
         assertThat(response.getUserId()).isEqualTo(userId);
         assertThat(response.getReportDate()).isEqualTo(reportDate);
         assertThat(response.getFinalContent()).isEqualTo("生成された日報コンテンツ");
-        assertThat(response.getGenerationCount()).isEqualTo(1);
         
         // Verify
         verify(reportGenerationService, times(1)).generateReport(
