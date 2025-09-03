@@ -1,6 +1,7 @@
 package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
+import com.example.backend.common.exceptions.ReportNotFoundException;
 import com.example.backend.common.util.DailyReportMapper;
 import com.example.backend.domain.reports.DailyReport;
 import com.example.backend.domain.reports.IDailyReportRepository;
@@ -35,14 +36,13 @@ public class ReportUseCase {
      * @param reportId 日報ID
      * @param request 更新リクエスト
      * @return 更新された日報DTO
-     * @throws IllegalArgumentException 日報が見つからない場合
-     * @throws IllegalStateException 編集不可能な状態の場合
+     * @throws ReportNotFoundException 日報が見つからない場合
      */
     @Transactional
     public DailyReportDto updateReport(UUID reportId, DailyReportUpdateRequestDto request) {
         Optional<DailyReport> optionalReport = dailyReportRepository.findById(reportId);
         if (optionalReport.isEmpty()) {
-            throw new IllegalArgumentException("Report not found: " + reportId);
+            throw new ReportNotFoundException("Report not found: " + reportId);
         }
         
         DailyReport existingReport = optionalReport.get();

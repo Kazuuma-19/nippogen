@@ -19,14 +19,14 @@ export interface paths {
   };
   "/api/reports/{id}/regenerate": {
     /**
-     * 日報再生成
+     * AI日報再生成
      * @description ユーザーフィードバックと追加情報で既存の日報を再生成
      */
     post: operations["regenerateReport"];
   };
   "/api/reports/generate": {
     /**
-     * 日報生成
+     * AI日報生成
      * @description GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成
      */
     post: operations["generateReport"];
@@ -583,7 +583,7 @@ export interface operations {
     };
   };
   /**
-   * 日報再生成
+   * AI日報再生成
    * @description ユーザーフィードバックと追加情報で既存の日報を再生成
    */
   regenerateReport: {
@@ -608,25 +608,25 @@ export interface operations {
       /** @description リクエストデータが不正 */
       400: {
         content: {
-          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+          "application/json": unknown;
         };
       };
       /** @description 日報が見つからない */
       404: {
         content: {
-          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+          "application/json": unknown;
         };
       };
       /** @description サーバー内部エラーまたはAI再生成失敗 */
       500: {
         content: {
-          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+          "application/json": unknown;
         };
       };
     };
   };
   /**
-   * 日報生成
+   * AI日報生成
    * @description GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成
    */
   generateReport: {
@@ -645,13 +645,13 @@ export interface operations {
       /** @description リクエストデータが不正または指定日の日報が既に存在 */
       400: {
         content: {
-          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+          "application/json": unknown;
         };
       };
       /** @description サーバー内部エラーまたはAI生成失敗 */
       500: {
         content: {
-          "application/json": components["schemas"]["ReportGenerationResponseDto"];
+          "application/json": unknown;
         };
       };
     };
