@@ -3,6 +3,7 @@ package com.example.backend.presentation.controllers.credentials.github;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
 import com.example.backend.application.usecases.credentials.github.GitHubCredentialUseCase;
+import com.example.backend.common.util.CommonApiResponses;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,10 +30,9 @@ public class GitHubCredentialController {
     @PostMapping
     @Operation(summary = "GitHub認証情報作成", description = "新しいGitHub認証情報を作成します")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "認証情報の作成に成功"),
-        @ApiResponse(responseCode = "400", description = "リクエストデータが不正"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
+        @ApiResponse(responseCode = "201", description = "認証情報の作成に成功")
     })
+    @CommonApiResponses.CredentialErrorResponses
     public ResponseEntity<GitHubCredentialResponseDto> create(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId,
             @Valid @RequestBody GitHubCredentialCreateRequestDto request) {
@@ -45,9 +45,9 @@ public class GitHubCredentialController {
     @GetMapping("/all")
     @Operation(summary = "ユーザーの全GitHub認証情報取得", description = "指定されたユーザーの全GitHub認証情報を取得します")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "認証情報の取得に成功"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
+        @ApiResponse(responseCode = "200", description = "認証情報の取得に成功")
     })
+    @CommonApiResponses.CredentialErrorResponses
     public ResponseEntity<List<GitHubCredentialResponseDto>> findAllByUserId(
             @Parameter(description = "ユーザーID", required = true) @RequestHeader("X-User-Id") UUID userId) {
         
@@ -58,10 +58,9 @@ public class GitHubCredentialController {
     @DeleteMapping("/{id}")
     @Operation(summary = "GitHub認証情報削除", description = "指定されたIDのGitHub認証情報を削除します")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "認証情報の削除に成功"),
-        @ApiResponse(responseCode = "404", description = "認証情報が見つからない"),
-        @ApiResponse(responseCode = "500", description = "サーバーエラー")
+        @ApiResponse(responseCode = "204", description = "認証情報の削除に成功")
     })
+    @CommonApiResponses.CredentialDeleteErrorResponses
     public ResponseEntity<Void> delete(
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
@@ -76,10 +75,9 @@ public class GitHubCredentialController {
     @GetMapping("/test")
     @Operation(summary = "GitHub接続テスト", description = "GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "接続テストが正常に完了"),
-        @ApiResponse(responseCode = "400", description = "リクエストパラメータが無効（owner または repo が不足）"),
-        @ApiResponse(responseCode = "500", description = "内部サーバーエラーまたは接続失敗")
+        @ApiResponse(responseCode = "200", description = "接続テストが正常に完了")
     })
+    @CommonApiResponses.CredentialErrorResponses
     public ResponseEntity<Boolean> testConnection(
             @Parameter(description = "リポジトリオーナー/組織名", example = "octocat", required = true) 
             @RequestParam String owner,

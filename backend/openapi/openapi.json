@@ -49,17 +49,8 @@
           "required" : true
         },
         "responses" : {
-          "404" : {
-            "description" : "日報が見つからない",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "500" : {
-            "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
-            }
+          "400" : {
+            "description" : "リクエストデータが不正"
           },
           "200" : {
             "description" : "日報の更新に成功",
@@ -71,11 +62,11 @@
               }
             }
           },
-          "400" : {
-            "description" : "リクエストデータが不正または編集不可",
-            "content" : {
-              "application/json" : { }
-            }
+          "500" : {
+            "description" : "サーバー内部エラー"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
           }
         }
       },
@@ -98,14 +89,14 @@
           "204" : {
             "description" : "日報の削除に成功"
           },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
           "500" : {
-            "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
-            }
+            "description" : "サーバー内部エラー"
           },
           "404" : {
-            "description" : "日報が見つからない"
+            "description" : "リソースが見つからない"
           }
         }
       }
@@ -137,23 +128,8 @@
           "required" : true
         },
         "responses" : {
-          "404" : {
-            "description" : "日報が見つからない",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "400" : {
-            "description" : "リクエストデータが不正",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "500" : {
-            "description" : "サーバー内部エラーまたはAI再生成失敗",
-            "content" : {
-              "application/json" : { }
-            }
+            "description" : "リクエストデータが不正"
           },
           "200" : {
             "description" : "日報の再生成に成功",
@@ -164,6 +140,12 @@
                 }
               }
             }
+          },
+          "500" : {
+            "description" : "サーバー内部エラー"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
           }
         }
       }
@@ -185,6 +167,9 @@
           "required" : true
         },
         "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
           "201" : {
             "description" : "日報の生成に成功",
             "content" : {
@@ -195,17 +180,8 @@
               }
             }
           },
-          "400" : {
-            "description" : "リクエストデータが不正または指定日の日報が既に存在",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "500" : {
-            "description" : "サーバー内部エラーまたはAI生成失敗",
-            "content" : {
-              "application/json" : { }
-            }
+            "description" : "サーバー内部エラー"
           }
         }
       }
@@ -237,25 +213,11 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバーエラー",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/TogglCredentialResponseDto"
-                }
-              }
-            }
-          },
           "400" : {
-            "description" : "リクエストデータが不正",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/TogglCredentialResponseDto"
-                }
-              }
-            }
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           },
           "201" : {
             "description" : "認証情報の作成に成功",
@@ -297,25 +259,11 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバーエラー",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/NotionCredentialResponseDto"
-                }
-              }
-            }
-          },
           "400" : {
-            "description" : "リクエストデータが不正",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/NotionCredentialResponseDto"
-                }
-              }
-            }
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           },
           "201" : {
             "description" : "認証情報の作成に成功",
@@ -357,25 +305,11 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバーエラー",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GitHubCredentialResponseDto"
-                }
-              }
-            }
-          },
           "400" : {
-            "description" : "リクエストデータが不正",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GitHubCredentialResponseDto"
-                }
-              }
-            }
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           },
           "201" : {
             "description" : "認証情報の作成に成功",
@@ -428,10 +362,7 @@
         } ],
         "responses" : {
           "400" : {
-            "description" : "リクエストパラメータが不正",
-            "content" : {
-              "application/json" : { }
-            }
+            "description" : "リクエストデータが不正"
           },
           "200" : {
             "description" : "日報の取得に成功",
@@ -444,10 +375,7 @@
             }
           },
           "500" : {
-            "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
-            }
+            "description" : "サーバー内部エラー"
           }
         }
       }
@@ -479,6 +407,9 @@
           }
         } ],
         "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
           "200" : {
             "description" : "日報の取得に成功",
             "content" : {
@@ -490,22 +421,10 @@
             }
           },
           "500" : {
-            "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "400" : {
-            "description" : "日付形式が不正",
-            "content" : {
-              "application/json" : { }
-            }
+            "description" : "サーバー内部エラー"
           },
           "404" : {
-            "description" : "指定された日付の日報が見つからない",
-            "content" : {
-              "application/json" : { }
-            }
+            "description" : "リソースが見つからない"
           }
         }
       }
@@ -517,6 +436,9 @@
         "description" : "ToggleTrack API接続をテストして、アクセス権限を確認します",
         "operationId" : "testConnection",
         "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
           "200" : {
             "description" : "接続テストが正常に完了",
             "content" : {
@@ -528,14 +450,7 @@
             }
           },
           "500" : {
-            "description" : "内部サーバーエラーまたはToggleTrack API接続失敗",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "boolean"
-                }
-              }
-            }
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -570,18 +485,11 @@
               }
             }
           },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
           "500" : {
-            "description" : "サーバーエラー",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/TogglCredentialResponseDto"
-                  }
-                }
-              }
-            }
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -593,15 +501,8 @@
         "description" : "Notion API接続をテストして、アクセス権限を確認します",
         "operationId" : "testConnection_1",
         "responses" : {
-          "500" : {
-            "description" : "内部サーバーエラーまたはNotion API接続失敗",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "boolean"
-                }
-              }
-            }
+          "400" : {
+            "description" : "リクエストデータが不正"
           },
           "200" : {
             "description" : "接続テストが正常に完了",
@@ -612,6 +513,9 @@
                 }
               }
             }
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -646,18 +550,11 @@
               }
             }
           },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
           "500" : {
-            "description" : "サーバーエラー",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/NotionCredentialResponseDto"
-                  }
-                }
-              }
-            }
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -689,14 +586,7 @@
         } ],
         "responses" : {
           "400" : {
-            "description" : "リクエストパラメータが無効（owner または repo が不足）",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "boolean"
-                }
-              }
-            }
+            "description" : "リクエストデータが不正"
           },
           "200" : {
             "description" : "接続テストが正常に完了",
@@ -709,14 +599,7 @@
             }
           },
           "500" : {
-            "description" : "内部サーバーエラーまたは接続失敗",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "boolean"
-                }
-              }
-            }
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -751,18 +634,11 @@
               }
             }
           },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
           "500" : {
-            "description" : "サーバーエラー",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/GitHubCredentialResponseDto"
-                  }
-                }
-              }
-            }
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -787,11 +663,11 @@
           "404" : {
             "description" : "認証情報が見つからない"
           },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "204" : {
             "description" : "認証情報の削除に成功"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -816,11 +692,11 @@
           "404" : {
             "description" : "認証情報が見つからない"
           },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "204" : {
             "description" : "認証情報の削除に成功"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -845,11 +721,11 @@
           "404" : {
             "description" : "認証情報が見つからない"
           },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "204" : {
             "description" : "認証情報の削除に成功"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           }
         }
       }

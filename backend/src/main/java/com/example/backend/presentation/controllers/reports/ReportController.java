@@ -4,6 +4,7 @@ import com.example.backend.application.dto.reports.DailyReportDto;
 import com.example.backend.application.usecases.reports.ReportUseCase;
 import com.example.backend.application.usecases.reports.ReportGenerationUseCase;
 import com.example.backend.common.exceptions.ReportNotFoundException;
+import com.example.backend.common.util.CommonApiResponses;
 import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
 import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
@@ -54,18 +55,9 @@ public class ReportController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = DailyReportListResponseDto.class)
             )
-        ),
-        @ApiResponse(
-            responseCode = "400", 
-            description = "リクエストパラメータが不正",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "サーバー内部エラー",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         )
     })
+    @CommonApiResponses.StandardErrorResponses
     public ResponseEntity<DailyReportListResponseDto> getReports(
             @Parameter(description = "ユーザーID", required = true)
             @RequestParam UUID userId,
@@ -95,23 +87,9 @@ public class ReportController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = DailyReportDto.class)
             )
-        ),
-        @ApiResponse(
-            responseCode = "404", 
-            description = "指定された日付の日報が見つからない",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "400", 
-            description = "日付形式が不正",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "サーバー内部エラー",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         )
     })
+    @CommonApiResponses.WithNotFound
     public ResponseEntity<DailyReportDto> getReportByDate(
             @Parameter(description = "日報日付 (YYYY-MM-DD形式)", example = "2024-01-15", required = true)
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -138,23 +116,9 @@ public class ReportController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = DailyReportDto.class)
             )
-        ),
-        @ApiResponse(
-            responseCode = "400", 
-            description = "リクエストデータが不正または編集不可",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "404", 
-            description = "日報が見つからない",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "サーバー内部エラー",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         )
     })
+    @CommonApiResponses.WithNotFound
     public ResponseEntity<DailyReportDto> updateReport(
             @Parameter(description = "日報ID", required = true)
             @PathVariable UUID id,
@@ -176,17 +140,9 @@ public class ReportController {
         @ApiResponse(
             responseCode = "204", 
             description = "日報の削除に成功"
-        ),
-        @ApiResponse(
-            responseCode = "404", 
-            description = "日報が見つからない"
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "サーバー内部エラー",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         )
     })
+    @CommonApiResponses.WithNotFound
     public ResponseEntity<Void> deleteReport(
             @Parameter(description = "日報ID", required = true)
             @PathVariable UUID id
@@ -211,18 +167,9 @@ public class ReportController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
             )
-        ),
-        @ApiResponse(
-            responseCode = "400", 
-            description = "リクエストデータが不正または指定日の日報が既に存在",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "サーバー内部エラーまたはAI生成失敗",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         )
     })
+    @CommonApiResponses.StandardErrorResponses
     public ResponseEntity<ReportGenerationResponseDto> generateReport(
             @Parameter(description = "日報生成リクエスト", required = true)
             @RequestBody ReportGenerationRequestDto request
@@ -254,23 +201,9 @@ public class ReportController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ReportGenerationResponseDto.class)
             )
-        ),
-        @ApiResponse(
-            responseCode = "400", 
-            description = "リクエストデータが不正",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "404", 
-            description = "日報が見つからない",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-        ),
-        @ApiResponse(
-            responseCode = "500", 
-            description = "サーバー内部エラーまたはAI再生成失敗",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         )
     })
+    @CommonApiResponses.WithNotFound
     public ResponseEntity<ReportGenerationResponseDto> regenerateReport(
             @Parameter(description = "日報ID", required = true)
             @PathVariable UUID id,
