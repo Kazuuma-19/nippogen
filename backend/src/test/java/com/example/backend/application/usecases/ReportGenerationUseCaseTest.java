@@ -1,9 +1,6 @@
 package com.example.backend.application.usecases;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
-import com.example.backend.application.usecases.external.github.GitHubUseCase;
-import com.example.backend.application.usecases.external.notion.NotionUseCase;
-import com.example.backend.application.usecases.external.toggle.ToggleTrackUseCase;
 import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
 import com.example.backend.application.usecases.reports.ReportGenerationUseCase;
@@ -33,14 +30,6 @@ class ReportGenerationUseCaseTest {
     @Mock
     private IReportGenerationService reportGenerationService;
     
-    @Mock
-    private GitHubUseCase gitHubUseCase;
-    
-    @Mock
-    private ToggleTrackUseCase toggleTrackUseCase;
-    
-    @Mock
-    private NotionUseCase notionUseCase;
     
     @Mock
     private ReportUseCase reportUseCase;
@@ -54,9 +43,6 @@ class ReportGenerationUseCaseTest {
     void setUp() {
         reportGenerationUseCase = new ReportGenerationUseCase(
             reportGenerationService,
-            gitHubUseCase,
-            toggleTrackUseCase, 
-            notionUseCase,
             reportUseCase,
             dailyReportRepository
         );
@@ -88,7 +74,7 @@ class ReportGenerationUseCaseTest {
             .id(reportId)
             .userId(userId)
             .reportDate(reportDate)
-            .generatedContent("生成された日報コンテンツ")
+            .finalContent("生成された日報コンテンツ")
             .generationCount(1)
             .additionalNotes("テスト用追加メモ")
             .createdAt(LocalDateTime.now())
@@ -106,7 +92,7 @@ class ReportGenerationUseCaseTest {
         assertThat(response.getReportId()).isEqualTo(reportId);
         assertThat(response.getUserId()).isEqualTo(userId);
         assertThat(response.getReportDate()).isEqualTo(reportDate);
-        assertThat(response.getGeneratedContent()).isEqualTo("生成された日報コンテンツ");
+        assertThat(response.getFinalContent()).isEqualTo("生成された日報コンテンツ");
         assertThat(response.getGenerationCount()).isEqualTo(1);
         
         // Verify

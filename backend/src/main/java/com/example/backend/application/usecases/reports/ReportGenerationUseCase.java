@@ -76,7 +76,7 @@ public class ReportGenerationUseCase {
                     .id(UUID.randomUUID())
                     .userId(request.getUserId())
                     .reportDate(request.getReportDate())
-                    .generatedContent(generatedContent)
+                    .finalContent(generatedContent)
                     .generationCount(1)
                     .additionalNotes(request.getAdditionalNotes())
                     .createdAt(LocalDateTime.now())
@@ -91,7 +91,7 @@ public class ReportGenerationUseCase {
                 createdReport.getId(),
                 createdReport.getUserId(),
                 createdReport.getReportDate(),
-                createdReport.getGeneratedContent(),
+                createdReport.getFinalContent(),
                 createdReport.getGenerationCount()
             );
             
@@ -145,14 +145,14 @@ public class ReportGenerationUseCase {
                 githubData,
                 togglData,
                 notionData,
-                existingReport.getGeneratedContent(),
+                existingReport.getFinalContent(),
                 request.getUserFeedback(),
                 request.getAdditionalNotes()
             );
             
             // 再生成された日報を更新
             DailyReportUpdateRequestDto updateRequest = DailyReportUpdateRequestDto.builder()
-                .editedContent(regeneratedContent)
+                .finalContent(regeneratedContent)
                 .additionalNotes(request.getAdditionalNotes())
                 .build();
                 
@@ -163,7 +163,7 @@ public class ReportGenerationUseCase {
                 updatedReport.getId(),
                 updatedReport.getUserId(),
                 updatedReport.getReportDate(),
-                updatedReport.getEditedContent(),
+                updatedReport.getFinalContent(),
                 updatedReport.getGenerationCount()
             );
             
@@ -227,8 +227,6 @@ public class ReportGenerationUseCase {
                 .userId(report.getUserId())
                 .reportDate(report.getReportDate())
                 .rawData(report.getRawData())
-                .generatedContent(report.getGeneratedContent())
-                .editedContent(report.getEditedContent())
                 .finalContent(report.getFinalContent())
                 .generationCount(report.getGenerationCount())
                 .additionalNotes(report.getAdditionalNotes())

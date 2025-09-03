@@ -137,7 +137,7 @@ export interface components {
   schemas: {
     /** @description 日報更新リクエスト */
     DailyReportUpdateRequestDto: {
-      editedContent?: string;
+      finalContent?: string;
       additionalNotes?: string;
     };
     DailyReportDto: {
@@ -148,8 +148,6 @@ export interface components {
       /** Format: date */
       reportDate?: string;
       rawData?: string;
-      generatedContent?: string;
-      editedContent?: string;
       finalContent?: string;
       /** Format: int32 */
       generationCount?: number;
@@ -174,7 +172,7 @@ export interface components {
       userId?: string;
       /** Format: date */
       reportDate?: string;
-      generatedContent?: string;
+      finalContent?: string;
       status?: string;
       /** Format: int32 */
       generationCount?: number;
