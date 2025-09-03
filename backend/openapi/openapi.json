@@ -12,17 +12,14 @@
     "name" : "GitHub認証情報",
     "description" : "GitHub API認証情報の管理"
   }, {
-    "name" : "AI日報生成",
-    "description" : "GPT-5-miniを使用したAI駆動の日報生成"
-  }, {
-    "name" : "日報管理",
-    "description" : "日報の作成・読取・更新・削除操作"
-  }, {
     "name" : "Toggl認証情報",
     "description" : "Toggl Track API認証情報の管理"
   }, {
     "name" : "Notion認証情報",
     "description" : "Notion API認証情報の管理"
+  }, {
+    "name" : "日報管理",
+    "description" : "日報のCRUD操作とAI生成機能"
   } ],
   "paths" : {
     "/api/reports/{id}" : {
@@ -52,14 +49,8 @@
           "required" : true
         },
         "responses" : {
-          "404" : {
-            "description" : "日報が見つからない",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "500" : {
-            "description" : "サーバー内部エラー",
+          "400" : {
+            "description" : "リクエストデータが不正または編集不可",
             "content" : {
               "application/json" : { }
             }
@@ -74,8 +65,14 @@
               }
             }
           },
-          "400" : {
-            "description" : "リクエストデータが不正または編集不可",
+          "404" : {
+            "description" : "日報が見つからない",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "500" : {
+            "description" : "サーバー内部エラー",
             "content" : {
               "application/json" : { }
             }
@@ -115,8 +112,8 @@
     },
     "/api/reports/{id}/regenerate" : {
       "post" : {
-        "tags" : [ "AI日報生成" ],
-        "summary" : "日報再生成",
+        "tags" : [ "日報管理" ],
+        "summary" : "AI日報再生成",
         "description" : "ユーザーフィードバックと追加情報で既存の日報を再生成",
         "operationId" : "regenerateReport",
         "parameters" : [ {
@@ -140,38 +137,26 @@
           "required" : true
         },
         "responses" : {
-          "404" : {
-            "description" : "日報が見つからない",
+          "500" : {
+            "description" : "サーバー内部エラーまたはAI再生成失敗",
             "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
+              "application/json" : { }
             }
           },
           "400" : {
             "description" : "リクエストデータが不正",
             "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
+              "application/json" : { }
+            }
+          },
+          "404" : {
+            "description" : "日報が見つからない",
+            "content" : {
+              "application/json" : { }
             }
           },
           "200" : {
             "description" : "日報の再生成に成功",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "サーバー内部エラーまたはAI再生成失敗",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -185,8 +170,8 @@
     },
     "/api/reports/generate" : {
       "post" : {
-        "tags" : [ "AI日報生成" ],
-        "summary" : "日報生成",
+        "tags" : [ "日報管理" ],
+        "summary" : "AI日報生成",
         "description" : "GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成",
         "operationId" : "generateReport",
         "requestBody" : {
@@ -200,28 +185,20 @@
           "required" : true
         },
         "responses" : {
-          "201" : {
-            "description" : "日報の生成に成功",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
-            }
-          },
           "400" : {
             "description" : "リクエストデータが不正または指定日の日報が既に存在",
             "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
+              "application/json" : { }
             }
           },
           "500" : {
             "description" : "サーバー内部エラーまたはAI生成失敗",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "201" : {
+            "description" : "日報の生成に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -460,14 +437,14 @@
               }
             }
           },
-          "400" : {
-            "description" : "リクエストパラメータが不正",
+          "500" : {
+            "description" : "サーバー内部エラー",
             "content" : {
               "application/json" : { }
             }
           },
-          "500" : {
-            "description" : "サーバー内部エラー",
+          "400" : {
+            "description" : "リクエストパラメータが不正",
             "content" : {
               "application/json" : { }
             }
@@ -502,20 +479,14 @@
           }
         } ],
         "responses" : {
-          "400" : {
-            "description" : "日付形式が不正",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "500" : {
-            "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "404" : {
             "description" : "指定された日付の日報が見つからない",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "400" : {
+            "description" : "日付形式が不正",
             "content" : {
               "application/json" : { }
             }
@@ -528,6 +499,12 @@
                   "$ref" : "#/components/schemas/DailyReportDto"
                 }
               }
+            }
+          },
+          "500" : {
+            "description" : "サーバー内部エラー",
+            "content" : {
+              "application/json" : { }
             }
           }
         }

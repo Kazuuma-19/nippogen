@@ -2,8 +2,13 @@ package com.example.backend.presentation.controllers.reports;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
 import com.example.backend.application.usecases.reports.ReportUseCase;
+import com.example.backend.application.usecases.reports.ReportGenerationUseCase;
+import com.example.backend.common.exceptions.ReportNotFoundException;
 import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
 import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
+import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
+import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
+import com.example.backend.presentation.dto.reports.ReportRegenerationRequestDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,15 +30,16 @@ import java.util.UUID;
 
 /**
  * 日報管理REST APIコントローラー
- * 日報のCRUD操作およびエクスポート機能を提供
+ * 日報のCRUD操作およびAI生成機能を提供
  */
 @RestController
 @RequestMapping("/api/reports")
-@Tag(name = "日報管理", description = "日報の作成・読取・更新・削除操作")
+@Tag(name = "日報管理", description = "日報のCRUD操作とAI生成機能")
 @RequiredArgsConstructor
 public class ReportController {
     
     private final ReportUseCase reportUseCase;
+    private final ReportGenerationUseCase reportGenerationUseCase;
     
     @GetMapping
     @Operation(
@@ -156,14 +162,8 @@ public class ReportController {
             @Parameter(description = "日報更新リクエスト", required = true)
             @RequestBody DailyReportUpdateRequestDto request
     ) {
-        try {
-            DailyReportDto updatedReport = reportUseCase.updateReport(id, request);
-            return ResponseEntity.ok(updatedReport);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        DailyReportDto updatedReport = reportUseCase.updateReport(id, request);
+        return ResponseEntity.ok(updatedReport);
     }
     
     
@@ -192,6 +192,114 @@ public class ReportController {
             @PathVariable UUID id
     ) {
         boolean deleted = reportUseCase.deleteReport(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        if (!deleted) {
+            throw new ReportNotFoundException("Report not found for deletion: " + id);
+        }
+        return ResponseEntity.noContent().build();
+    }
+    
+    @PostMapping("/generate")
+    @Operation(
+        summary = "AI日報生成", 
+        description = "GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201", 
+            description = "日報の生成に成功",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ReportGenerationResponseDto.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", 
+            description = "リクエストデータが不正または指定日の日報が既に存在",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = "500", 
+            description = "サーバー内部エラーまたはAI生成失敗",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        )
+    })
+    public ResponseEntity<ReportGenerationResponseDto> generateReport(
+            @Parameter(description = "日報生成リクエスト", required = true)
+            @RequestBody ReportGenerationRequestDto request
+    ) {
+        ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(request);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.status(201).body(response);
+        } else {
+            // エラーメッセージに応じて適切なHTTPステータスを返す
+            if (response.getErrorMessage() != null && 
+                response.getErrorMessage().contains("既に存在")) {
+                return ResponseEntity.badRequest().body(response);
+            }
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+    
+    @PostMapping("/{id}/regenerate")
+    @Operation(
+        summary = "AI日報再生成", 
+        description = "ユーザーフィードバックと追加情報で既存の日報を再生成"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "日報の再生成に成功",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ReportGenerationResponseDto.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", 
+            description = "リクエストデータが不正",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "日報が見つからない",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = "500", 
+            description = "サーバー内部エラーまたはAI再生成失敗",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        )
+    })
+    public ResponseEntity<ReportGenerationResponseDto> regenerateReport(
+            @Parameter(description = "日報ID", required = true)
+            @PathVariable UUID id,
+            
+            @Parameter(description = "日報再生成リクエスト", required = true)
+            @RequestBody ReportRegenerationRequestDto request
+    ) {
+        // リクエストにreportIdを設定（パスパラメータから）
+        ReportRegenerationRequestDto requestWithId = ReportRegenerationRequestDto.builder()
+            .reportId(id)
+            .userFeedback(request.getUserFeedback())
+            .additionalNotes(request.getAdditionalNotes())
+            .build();
+        
+        ReportGenerationResponseDto response = reportGenerationUseCase.regenerateReport(requestWithId);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            // エラーメッセージに応じて適切なHTTPステータスを返す
+            if (response.getErrorMessage() != null && 
+                response.getErrorMessage().contains("見つかりません")) {
+                return ResponseEntity.notFound().build();
+            }
+            if (response.getErrorMessage() != null && 
+                response.getErrorMessage().contains("必須項目")) {
+                return ResponseEntity.badRequest().body(response);
+            }
+            return ResponseEntity.internalServerError().body(response);
+        }
     }
 }

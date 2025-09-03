@@ -13,6 +13,39 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
+    @ExceptionHandler(ReportNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleReportNotFound(ReportNotFoundException e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", "REPORT_NOT_FOUND");
+        errorResponse.put("message", e.getMessage());
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", 404);
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    
+    @ExceptionHandler(ReportValidationException.class)
+    public ResponseEntity<Map<String, Object>> handleReportValidation(ReportValidationException e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", "REPORT_VALIDATION_ERROR");
+        errorResponse.put("message", e.getMessage());
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", 400);
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    
+    @ExceptionHandler(ReportGenerationException.class)
+    public ResponseEntity<Map<String, Object>> handleReportGeneration(ReportGenerationException e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", "REPORT_GENERATION_ERROR");
+        errorResponse.put("message", e.getMessage());
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", 500);
+        
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+    
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
         
