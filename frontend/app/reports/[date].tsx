@@ -44,8 +44,6 @@ export default function ReportDetailScreen() {
 
 ## 所感
 今日は効率的に作業を進めることができました。特に新しいTypeScriptの機能を学ぶことができて有意義でした。`,
-        editedContent: undefined,
-        generationCount: 1,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         displayContent: undefined

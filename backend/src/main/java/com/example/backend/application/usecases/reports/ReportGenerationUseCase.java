@@ -77,7 +77,6 @@ public class ReportGenerationUseCase {
                     .userId(request.getUserId())
                     .reportDate(request.getReportDate())
                     .finalContent(generatedContent)
-                    .generationCount(1)
                     .additionalNotes(request.getAdditionalNotes())
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
@@ -91,8 +90,7 @@ public class ReportGenerationUseCase {
                 createdReport.getId(),
                 createdReport.getUserId(),
                 createdReport.getReportDate(),
-                createdReport.getFinalContent(),
-                createdReport.getGenerationCount()
+                createdReport.getFinalContent()
             );
             
         } catch (Exception e) {
@@ -163,8 +161,7 @@ public class ReportGenerationUseCase {
                 updatedReport.getId(),
                 updatedReport.getUserId(),
                 updatedReport.getReportDate(),
-                updatedReport.getFinalContent(),
-                updatedReport.getGenerationCount()
+                updatedReport.getFinalContent()
             );
             
         } catch (Exception e) {
@@ -228,7 +225,6 @@ public class ReportGenerationUseCase {
                 .reportDate(report.getReportDate())
                 .rawData(report.getRawData())
                 .finalContent(report.getFinalContent())
-                .generationCount(report.getGenerationCount())
                 .additionalNotes(report.getAdditionalNotes())
                 .createdAt(report.getCreatedAt())
                 .updatedAt(report.getUpdatedAt())

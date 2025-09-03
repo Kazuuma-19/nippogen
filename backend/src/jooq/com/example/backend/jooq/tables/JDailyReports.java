@@ -7,7 +7,6 @@ package com.example.backend.jooq.tables;
 import com.example.backend.jooq.Indexes;
 import com.example.backend.jooq.JPublic;
 import com.example.backend.jooq.Keys;
-import com.example.backend.jooq.tables.JGenerationLogs.JGenerationLogsPath;
 import com.example.backend.jooq.tables.JUsers.JUsersPath;
 import com.example.backend.jooq.tables.records.JDailyReportsRecord;
 
@@ -22,7 +21,7 @@ import java.util.function.Function;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function9;
+import org.jooq.Function8;
 import org.jooq.Index;
 import org.jooq.InverseForeignKey;
 import org.jooq.JSONB;
@@ -32,7 +31,7 @@ import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row9;
+import org.jooq.Row8;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Select;
@@ -92,11 +91,6 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
      * The column <code>public.daily_reports.final_content</code>.
      */
     public final TableField<JDailyReportsRecord, String> FINAL_CONTENT = createField(DSL.name("final_content"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.daily_reports.generation_count</code>.
-     */
-    public final TableField<JDailyReportsRecord, Integer> GENERATION_COUNT = createField(DSL.name("generation_count"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.daily_reports.additional_notes</code>.
@@ -205,19 +199,6 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
             _users = new JUsersPath(this, Keys.DAILY_REPORTS__DAILY_REPORTS_USER_ID_FKEY, null);
 
         return _users;
-    }
-
-    private transient JGenerationLogsPath _generationLogs;
-
-    /**
-     * Get the implicit to-many join path to the
-     * <code>public.generation_logs</code> table
-     */
-    public JGenerationLogsPath generationLogs() {
-        if (_generationLogs == null)
-            _generationLogs = new JGenerationLogsPath(this, null, Keys.GENERATION_LOGS__GENERATION_LOGS_REPORT_ID_FKEY.getInverseKey());
-
-        return _generationLogs;
     }
 
     @Override
@@ -344,18 +325,18 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<UUID, UUID, LocalDate, JSONB, String, Integer, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row8<UUID, UUID, LocalDate, JSONB, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function9<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function8<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -363,7 +344,7 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

@@ -6,7 +6,6 @@ package com.example.backend.jooq;
 
 import com.example.backend.jooq.tables.JDailyReports;
 import com.example.backend.jooq.tables.JFlywaySchemaHistory;
-import com.example.backend.jooq.tables.JGenerationLogs;
 import com.example.backend.jooq.tables.JGithubCredentials;
 import com.example.backend.jooq.tables.JNotionCredentials;
 import com.example.backend.jooq.tables.JReportTemplates;
@@ -43,11 +42,6 @@ public class JPublic extends SchemaImpl {
      * The table <code>public.flyway_schema_history</code>.
      */
     public final JFlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = JFlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
-
-    /**
-     * The table <code>public.generation_logs</code>.
-     */
-    public final JGenerationLogs GENERATION_LOGS = JGenerationLogs.GENERATION_LOGS;
 
     /**
      * The table <code>public.github_credentials</code>.
@@ -92,7 +86,6 @@ public class JPublic extends SchemaImpl {
         return Arrays.asList(
             JDailyReports.DAILY_REPORTS,
             JFlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
-            JGenerationLogs.GENERATION_LOGS,
             JGithubCredentials.GITHUB_CREDENTIALS,
             JNotionCredentials.NOTION_CREDENTIALS,
             JReportTemplates.REPORT_TEMPLATES,

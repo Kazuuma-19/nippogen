@@ -73,13 +73,6 @@ export default function ReportCard({ report }: ReportCardProps) {
       {/* Meta Information */}
       <View className="flex-row justify-between items-center">
         <View className="flex-row items-center space-x-4">
-          {/* Generation Count */}
-          <View className="flex-row items-center">
-            <Ionicons name="refresh" size={16} color="#6B7280" />
-            <Text className="text-gray-500 text-xs ml-1">
-              {report.generationCount || 0}回生成
-            </Text>
-          </View>
           
           {/* Last Updated */}
           <View className="flex-row items-center">

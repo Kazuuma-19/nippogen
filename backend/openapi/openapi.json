@@ -52,12 +52,6 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "400" : {
             "description" : "リクエストデータが不正または編集不可",
             "content" : {
@@ -78,6 +72,12 @@
                   "$ref" : "#/components/schemas/DailyReportDto"
                 }
               }
+            }
+          },
+          "500" : {
+            "description" : "サーバー内部エラー",
+            "content" : {
+              "application/json" : { }
             }
           }
         }
@@ -150,8 +150,8 @@
               }
             }
           },
-          "500" : {
-            "description" : "サーバー内部エラーまたはAI再生成失敗",
+          "404" : {
+            "description" : "日報が見つからない",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -170,8 +170,8 @@
               }
             }
           },
-          "404" : {
-            "description" : "日報が見つからない",
+          "500" : {
+            "description" : "サーバー内部エラーまたはAI再生成失敗",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -200,16 +200,6 @@
           "required" : true
         },
         "responses" : {
-          "201" : {
-            "description" : "日報の生成に成功",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
-                }
-              }
-            }
-          },
           "500" : {
             "description" : "サーバー内部エラーまたはAI生成失敗",
             "content" : {
@@ -222,6 +212,16 @@
           },
           "400" : {
             "description" : "リクエストデータが不正または指定日の日報が既に存在",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "日報の生成に成功",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -450,6 +450,16 @@
           "example" : "2024-12-31"
         } ],
         "responses" : {
+          "200" : {
+            "description" : "日報の取得に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DailyReportListResponseDto"
+                }
+              }
+            }
+          },
           "500" : {
             "description" : "サーバー内部エラー",
             "content" : {
@@ -460,16 +470,6 @@
             "description" : "リクエストパラメータが不正",
             "content" : {
               "application/json" : { }
-            }
-          },
-          "200" : {
-            "description" : "日報の取得に成功",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DailyReportListResponseDto"
-                }
-              }
             }
           }
         }
@@ -502,20 +502,14 @@
           }
         } ],
         "responses" : {
-          "404" : {
-            "description" : "指定された日付の日報が見つからない",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "400" : {
             "description" : "日付形式が不正",
             "content" : {
               "application/json" : { }
             }
           },
-          "500" : {
-            "description" : "サーバー内部エラー",
+          "404" : {
+            "description" : "指定された日付の日報が見つからない",
             "content" : {
               "application/json" : { }
             }
@@ -528,6 +522,12 @@
                   "$ref" : "#/components/schemas/DailyReportDto"
                 }
               }
+            }
+          },
+          "500" : {
+            "description" : "サーバー内部エラー",
+            "content" : {
+              "application/json" : { }
             }
           }
         }
@@ -913,10 +913,6 @@
           "finalContent" : {
             "type" : "string"
           },
-          "generationCount" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
           "additionalNotes" : {
             "type" : "string"
           },
@@ -969,10 +965,6 @@
           },
           "status" : {
             "type" : "string"
-          },
-          "generationCount" : {
-            "type" : "integer",
-            "format" : "int32"
           },
           "generatedAt" : {
             "type" : "string",

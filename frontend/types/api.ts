@@ -149,8 +149,6 @@ export interface components {
       reportDate?: string;
       rawData?: string;
       finalContent?: string;
-      /** Format: int32 */
-      generationCount?: number;
       additionalNotes?: string;
       /** Format: date-time */
       createdAt?: string;
@@ -174,8 +172,6 @@ export interface components {
       reportDate?: string;
       finalContent?: string;
       status?: string;
-      /** Format: int32 */
-      generationCount?: number;
       /** Format: date-time */
       generatedAt?: string;
       success?: boolean;
