@@ -8,7 +8,6 @@ import com.example.backend.jooq.tables.JDailyReports;
 import com.example.backend.jooq.tables.JFlywaySchemaHistory;
 import com.example.backend.jooq.tables.JGithubCredentials;
 import com.example.backend.jooq.tables.JNotionCredentials;
-import com.example.backend.jooq.tables.JReportTemplates;
 import com.example.backend.jooq.tables.JTogglCredentials;
 import com.example.backend.jooq.tables.JUsers;
 
@@ -36,7 +35,6 @@ public class Indexes {
     public static final Index IDX_GITHUB_CREDENTIALS_USER_UNIQUE = Internal.createIndex(DSL.name("idx_github_credentials_user_unique"), JGithubCredentials.GITHUB_CREDENTIALS, new OrderField[] { JGithubCredentials.GITHUB_CREDENTIALS.USER_ID }, true);
     public static final Index IDX_NOTION_CREDENTIALS_USER_ID = Internal.createIndex(DSL.name("idx_notion_credentials_user_id"), JNotionCredentials.NOTION_CREDENTIALS, new OrderField[] { JNotionCredentials.NOTION_CREDENTIALS.USER_ID }, false);
     public static final Index IDX_NOTION_CREDENTIALS_USER_UNIQUE = Internal.createIndex(DSL.name("idx_notion_credentials_user_unique"), JNotionCredentials.NOTION_CREDENTIALS, new OrderField[] { JNotionCredentials.NOTION_CREDENTIALS.USER_ID }, true);
-    public static final Index IDX_REPORT_TEMPLATES_USER_ID = Internal.createIndex(DSL.name("idx_report_templates_user_id"), JReportTemplates.REPORT_TEMPLATES, new OrderField[] { JReportTemplates.REPORT_TEMPLATES.USER_ID }, false);
     public static final Index IDX_TOGGL_CREDENTIALS_USER_ID = Internal.createIndex(DSL.name("idx_toggl_credentials_user_id"), JTogglCredentials.TOGGL_CREDENTIALS, new OrderField[] { JTogglCredentials.TOGGL_CREDENTIALS.USER_ID }, false);
     public static final Index IDX_TOGGL_CREDENTIALS_USER_UNIQUE = Internal.createIndex(DSL.name("idx_toggl_credentials_user_unique"), JTogglCredentials.TOGGL_CREDENTIALS, new OrderField[] { JTogglCredentials.TOGGL_CREDENTIALS.USER_ID }, true);
     public static final Index IDX_USERS_EMAIL = Internal.createIndex(DSL.name("idx_users_email"), JUsers.USERS, new OrderField[] { JUsers.USERS.EMAIL }, false);

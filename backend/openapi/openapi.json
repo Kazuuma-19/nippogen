@@ -58,12 +58,6 @@
               "application/json" : { }
             }
           },
-          "404" : {
-            "description" : "日報が見つからない",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "200" : {
             "description" : "日報の更新に成功",
             "content" : {
@@ -72,6 +66,12 @@
                   "$ref" : "#/components/schemas/DailyReportDto"
                 }
               }
+            }
+          },
+          "404" : {
+            "description" : "日報が見つからない",
+            "content" : {
+              "application/json" : { }
             }
           },
           "500" : {
@@ -140,8 +140,8 @@
           "required" : true
         },
         "responses" : {
-          "400" : {
-            "description" : "リクエストデータが不正",
+          "404" : {
+            "description" : "日報が見つからない",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -150,8 +150,8 @@
               }
             }
           },
-          "404" : {
-            "description" : "日報が見つからない",
+          "500" : {
+            "description" : "サーバー内部エラーまたはAI再生成失敗",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -170,8 +170,8 @@
               }
             }
           },
-          "500" : {
-            "description" : "サーバー内部エラーまたはAI再生成失敗",
+          "400" : {
+            "description" : "リクエストデータが不正",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -200,8 +200,8 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバー内部エラーまたはAI生成失敗",
+          "400" : {
+            "description" : "リクエストデータが不正または指定日の日報が既に存在",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -210,8 +210,8 @@
               }
             }
           },
-          "400" : {
-            "description" : "リクエストデータが不正または指定日の日報が既に存在",
+          "500" : {
+            "description" : "サーバー内部エラーまたはAI生成失敗",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -450,6 +450,12 @@
           "example" : "2024-12-31"
         } ],
         "responses" : {
+          "500" : {
+            "description" : "サーバー内部エラー",
+            "content" : {
+              "application/json" : { }
+            }
+          },
           "200" : {
             "description" : "日報の取得に成功",
             "content" : {
@@ -458,12 +464,6 @@
                   "$ref" : "#/components/schemas/DailyReportListResponseDto"
                 }
               }
-            }
-          },
-          "500" : {
-            "description" : "サーバー内部エラー",
-            "content" : {
-              "application/json" : { }
             }
           },
           "400" : {
@@ -502,18 +502,6 @@
           }
         } ],
         "responses" : {
-          "400" : {
-            "description" : "日付形式が不正",
-            "content" : {
-              "application/json" : { }
-            }
-          },
-          "404" : {
-            "description" : "指定された日付の日報が見つからない",
-            "content" : {
-              "application/json" : { }
-            }
-          },
           "200" : {
             "description" : "日報の取得に成功",
             "content" : {
@@ -522,6 +510,18 @@
                   "$ref" : "#/components/schemas/DailyReportDto"
                 }
               }
+            }
+          },
+          "404" : {
+            "description" : "指定された日付の日報が見つからない",
+            "content" : {
+              "application/json" : { }
+            }
+          },
+          "400" : {
+            "description" : "日付形式が不正",
+            "content" : {
+              "application/json" : { }
             }
           },
           "500" : {

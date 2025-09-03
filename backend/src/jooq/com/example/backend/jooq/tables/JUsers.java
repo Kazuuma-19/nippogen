@@ -10,7 +10,6 @@ import com.example.backend.jooq.Keys;
 import com.example.backend.jooq.tables.JDailyReports.JDailyReportsPath;
 import com.example.backend.jooq.tables.JGithubCredentials.JGithubCredentialsPath;
 import com.example.backend.jooq.tables.JNotionCredentials.JNotionCredentialsPath;
-import com.example.backend.jooq.tables.JReportTemplates.JReportTemplatesPath;
 import com.example.backend.jooq.tables.JTogglCredentials.JTogglCredentialsPath;
 import com.example.backend.jooq.tables.records.JUsersRecord;
 
@@ -218,19 +217,6 @@ public class JUsers extends TableImpl<JUsersRecord> {
             _notionCredentials = new JNotionCredentialsPath(this, null, Keys.NOTION_CREDENTIALS__NOTION_CREDENTIALS_USER_ID_FKEY.getInverseKey());
 
         return _notionCredentials;
-    }
-
-    private transient JReportTemplatesPath _reportTemplates;
-
-    /**
-     * Get the implicit to-many join path to the
-     * <code>public.report_templates</code> table
-     */
-    public JReportTemplatesPath reportTemplates() {
-        if (_reportTemplates == null)
-            _reportTemplates = new JReportTemplatesPath(this, null, Keys.REPORT_TEMPLATES__REPORT_TEMPLATES_USER_ID_FKEY.getInverseKey());
-
-        return _reportTemplates;
     }
 
     private transient JTogglCredentialsPath _togglCredentials;
