@@ -8,7 +8,6 @@ import com.example.backend.jooq.tables.JDailyReports;
 import com.example.backend.jooq.tables.JFlywaySchemaHistory;
 import com.example.backend.jooq.tables.JGithubCredentials;
 import com.example.backend.jooq.tables.JNotionCredentials;
-import com.example.backend.jooq.tables.JReportTemplates;
 import com.example.backend.jooq.tables.JTogglCredentials;
 import com.example.backend.jooq.tables.JUsers;
 
@@ -38,11 +37,6 @@ public class Tables {
      * The table <code>public.notion_credentials</code>.
      */
     public static final JNotionCredentials NOTION_CREDENTIALS = JNotionCredentials.NOTION_CREDENTIALS;
-
-    /**
-     * The table <code>public.report_templates</code>.
-     */
-    public static final JReportTemplates REPORT_TEMPLATES = JReportTemplates.REPORT_TEMPLATES;
 
     /**
      * The table <code>public.toggl_credentials</code>.

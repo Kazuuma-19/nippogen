@@ -36,16 +36,6 @@
 | created_at | TIMESTAMP | NOT NULL | 作成日時 |
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
-### 4. report_templates (日報テンプレート)
-| カラム名 | 型 | 制約 | 説明 |
-|---------|-----|------|------|
-| id | UUID | PRIMARY KEY | テンプレートID |
-| user_id | UUID | FOREIGN KEY | ユーザーID |
-| name | VARCHAR(100) | NOT NULL | テンプレート名 |
-| format_structure | JSONB | NOT NULL | フォーマット構造 |
-| is_default | BOOLEAN | DEFAULT false | デフォルトフラグ |
-| created_at | TIMESTAMP | NOT NULL | 作成日時 |
-| updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
 
 ## インデックス
@@ -64,8 +54,6 @@ CREATE INDEX idx_daily_reports_user_id ON daily_reports(user_id);
 CREATE INDEX idx_daily_reports_report_date ON daily_reports(report_date);
 CREATE UNIQUE INDEX idx_daily_reports_user_date ON daily_reports(user_id, report_date);
 
--- report_templates
-CREATE INDEX idx_report_templates_user_id ON report_templates(user_id);
 
 ```
 

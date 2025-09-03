@@ -60,7 +60,7 @@ cd frontend && npm run start
 # または make コマンド使用
 make front
 
-# バックエンドをDockerでビルド・開始
+# バックエンドをDockerでビルド・開始（Spring Boot + PostgreSQL）
 make back
 
 # バックエンドビルドのみ
@@ -155,6 +155,22 @@ make db-setup
 - **Database**: nippogen
 - **User**: postgres
 - **Password**: postgres
+
+## コンテナ起動
+
+### バックエンド + データベース一括起動
+
+```bash
+make back
+```
+
+このコマンドで以下が同時に起動されます：
+- **Spring Boot アプリケーション** (ポート: 8080)
+- **PostgreSQL データベース** (ポート: 5432)
+
+起動後にアクセスできるURL：
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/api-docs
 
 ## API ドキュメント
 
