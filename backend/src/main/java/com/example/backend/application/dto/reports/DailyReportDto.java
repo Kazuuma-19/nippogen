@@ -18,8 +18,6 @@ public class DailyReportDto {
     private final UUID userId;
     private final LocalDate reportDate;
     private final String rawData;
-    private final String generatedContent;
-    private final String editedContent;
     private final String finalContent;
     private final Integer generationCount;
     private final String additionalNotes;

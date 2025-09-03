@@ -22,7 +22,7 @@ import java.util.function.Function;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function11;
+import org.jooq.Function9;
 import org.jooq.Index;
 import org.jooq.InverseForeignKey;
 import org.jooq.JSONB;
@@ -32,7 +32,7 @@ import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row11;
+import org.jooq.Row9;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Select;
@@ -87,16 +87,6 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
      * The column <code>public.daily_reports.raw_data</code>.
      */
     public final TableField<JDailyReportsRecord, JSONB> RAW_DATA = createField(DSL.name("raw_data"), SQLDataType.JSONB, this, "");
-
-    /**
-     * The column <code>public.daily_reports.generated_content</code>.
-     */
-    public final TableField<JDailyReportsRecord, String> GENERATED_CONTENT = createField(DSL.name("generated_content"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.daily_reports.edited_content</code>.
-     */
-    public final TableField<JDailyReportsRecord, String> EDITED_CONTENT = createField(DSL.name("edited_content"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.daily_reports.final_content</code>.
@@ -354,18 +344,18 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<UUID, UUID, LocalDate, JSONB, String, String, String, Integer, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row9<UUID, UUID, LocalDate, JSONB, String, Integer, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function11<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super String, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function9<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -373,7 +363,7 @@ public class JDailyReports extends TableImpl<JDailyReportsRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function11<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super String, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super UUID, ? super UUID, ? super LocalDate, ? super JSONB, ? super String, ? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

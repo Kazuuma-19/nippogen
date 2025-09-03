@@ -10,6 +10,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class DailyReportUpdateRequestDto {
-    private final String editedContent;
+    private final String finalContent;
     private final String additionalNotes;
 }
