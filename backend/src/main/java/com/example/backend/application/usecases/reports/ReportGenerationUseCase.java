@@ -1,6 +1,7 @@
 package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
+import com.example.backend.common.util.DailyReportMapper;
 import com.example.backend.presentation.dto.reports.DailyReportUpdateRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
@@ -28,6 +29,7 @@ public class ReportGenerationUseCase {
     private final IReportGenerationService reportGenerationService;
     private final ReportUseCase reportUseCase;
     private final IDailyReportRepository dailyReportRepository;
+    private final DailyReportMapper dailyReportMapper;
     
     /**
      * 新規日報を生成する
@@ -83,7 +85,7 @@ public class ReportGenerationUseCase {
                     .build();
             
             DailyReport savedReport = dailyReportRepository.save(report);
-            DailyReportDto createdReport = convertToDto(savedReport);
+            DailyReportDto createdReport = dailyReportMapper.toDto(savedReport);
             
             
             return ReportGenerationResponseDto.success(
@@ -212,22 +214,4 @@ public class ReportGenerationUseCase {
         }
     }
     
-    /**
-     * DailyReportエンティティをDTOに変換
-     * 
-     * @param report 日報エンティティ
-     * @return 日報DTO
-     */
-    private DailyReportDto convertToDto(DailyReport report) {
-        return DailyReportDto.builder()
-                .id(report.getId())
-                .userId(report.getUserId())
-                .reportDate(report.getReportDate())
-                .rawData(report.getRawData())
-                .finalContent(report.getFinalContent())
-                .additionalNotes(report.getAdditionalNotes())
-                .createdAt(report.getCreatedAt())
-                .updatedAt(report.getUpdatedAt())
-                .build();
-    }
 }

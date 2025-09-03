@@ -1,6 +1,7 @@
 package com.example.backend.application.usecases;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
+import com.example.backend.common.util.DailyReportMapper;
 import com.example.backend.presentation.dto.reports.ReportGenerationRequestDto;
 import com.example.backend.presentation.dto.reports.ReportGenerationResponseDto;
 import com.example.backend.application.usecases.reports.ReportGenerationUseCase;
@@ -37,6 +38,9 @@ class ReportGenerationUseCaseTest {
     @Mock
     private IDailyReportRepository dailyReportRepository;
     
+    @Mock
+    private DailyReportMapper dailyReportMapper;
+    
     private ReportGenerationUseCase reportGenerationUseCase;
     
     @BeforeEach
@@ -44,7 +48,8 @@ class ReportGenerationUseCaseTest {
         reportGenerationUseCase = new ReportGenerationUseCase(
             reportGenerationService,
             reportUseCase,
-            dailyReportRepository
+            dailyReportRepository,
+            dailyReportMapper
         );
     }
     
@@ -82,6 +87,19 @@ class ReportGenerationUseCaseTest {
             
         when(dailyReportRepository.save(any(DailyReport.class)))
             .thenReturn(savedReport);
+        
+        DailyReportDto reportDto = DailyReportDto.builder()
+            .id(reportId)
+            .userId(userId)
+            .reportDate(reportDate)
+            .finalContent("生成された日報コンテンツ")
+            .additionalNotes("テスト用追加メモ")
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .build();
+            
+        when(dailyReportMapper.toDto(savedReport))
+            .thenReturn(reportDto);
         
         // When
         ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(request);

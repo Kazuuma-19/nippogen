@@ -1,6 +1,7 @@
 package com.example.backend.application.usecases.reports;
 
 import com.example.backend.application.dto.reports.DailyReportDto;
+import com.example.backend.common.util.DailyReportMapper;
 import com.example.backend.domain.reports.DailyReport;
 import com.example.backend.domain.reports.IDailyReportRepository;
 import com.example.backend.presentation.dto.reports.DailyReportListResponseDto;
@@ -15,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * 日報ユースケース
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class ReportUseCase {
     
     private final IDailyReportRepository dailyReportRepository;
+    private final DailyReportMapper dailyReportMapper;
     
     
     /**
@@ -58,7 +59,7 @@ public class ReportUseCase {
                 .build();
         
         DailyReport saved = dailyReportRepository.save(updatedReport);
-        return convertToDto(saved);
+        return dailyReportMapper.toDto(saved);
     }
     
     
@@ -80,9 +81,7 @@ public class ReportUseCase {
             reports = dailyReportRepository.findByUserId(userId);
         }
         
-        List<DailyReportDto> reportDtos = reports.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        List<DailyReportDto> reportDtos = dailyReportMapper.toDtoList(reports);
         
         String dateRange = buildDateRangeString(startDate, endDate);
         
@@ -103,7 +102,7 @@ public class ReportUseCase {
     @Transactional(readOnly = true)
     public Optional<DailyReportDto> getReportByDate(UUID userId, LocalDate date) {
         return dailyReportRepository.findByUserIdAndDate(userId, date)
-                .map(this::convertToDto);
+                .map(dailyReportMapper::toDto);
     }
     
     
@@ -118,24 +117,6 @@ public class ReportUseCase {
         return dailyReportRepository.deleteById(reportId);
     }
     
-    /**
-     * DailyReportエンティティをDTOに変換
-     * 
-     * @param report 日報エンティティ
-     * @return 日報DTO
-     */
-    private DailyReportDto convertToDto(DailyReport report) {
-        return DailyReportDto.builder()
-                .id(report.getId())
-                .userId(report.getUserId())
-                .reportDate(report.getReportDate())
-                .rawData(report.getRawData())
-                .finalContent(report.getFinalContent())
-                .additionalNotes(report.getAdditionalNotes())
-                .createdAt(report.getCreatedAt())
-                .updatedAt(report.getUpdatedAt())
-                .build();
-    }
     
     /**
      * 日付範囲文字列を構築
