@@ -4,7 +4,6 @@ import com.example.backend.domain.credentials.github.GitHubCredential;
 import com.example.backend.infrastructure.github.dto.GitHubCommitDto;
 import com.example.backend.infrastructure.github.dto.GitHubRepositoryDto;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Slf4j
 @Service
 public class GitHubApiService {
     
@@ -49,12 +47,8 @@ public class GitHubApiService {
             return repository != null;
             
         } catch (WebClientResponseException e) {
-            log.error("GitHub接続テスト失敗: owner={}, repo={}, status={}, message={}", 
-                credential.getOwner(), credential.getRepo(), e.getStatusCode(), e.getMessage());
             return false;
         } catch (Exception e) {
-            log.error("GitHub接続テスト中に予期しないエラー: owner={}, repo={}", 
-                credential.getOwner(), credential.getRepo(), e);
             return false;
         }
     }
@@ -85,30 +79,21 @@ public class GitHubApiService {
                 .collectList()
                 .block();
                 
-            log.info("GitHub APIから{}件のコミットを取得: date={}, owner={}, repo={}", 
-                commits != null ? commits.size() : 0, date, credential.getOwner(), credential.getRepo());
                 
             return commits != null ? commits : List.of();
             
         } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                log.error("GitHub API認証エラー: APIキーが無効または期限切れの可能性があります");
                 throw new RuntimeException("GitHub認証に失敗しました。APIキーを確認してください。", e);
             } else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
-                log.error("GitHub API制限エラー: レート制限または権限不足");
                 throw new RuntimeException("GitHub APIへのアクセスが制限されています。", e);
             } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                log.error("GitHub リポジトリが見つかりません: owner={}, repo={}", 
-                    credential.getOwner(), credential.getRepo());
                 throw new RuntimeException("指定されたGitHubリポジトリが見つかりません。", e);
             }
             
-            log.error("GitHub API呼び出しエラー: status={}, message={}", 
-                e.getStatusCode(), e.getMessage());
             throw new RuntimeException("GitHub APIの呼び出しに失敗しました: " + e.getMessage(), e);
             
         } catch (Exception e) {
-            log.error("GitHub API呼び出し中に予期しないエラーが発生", e);
             throw new RuntimeException("GitHubデータの取得中にエラーが発生しました。", e);
         }
     }
@@ -155,7 +140,6 @@ public class GitHubApiService {
             return new GitHubCommitStats(totalCommits, totalAdditions, totalDeletions, commits);
             
         } catch (Exception e) {
-            log.error("GitHub統計データ取得エラー", e);
             throw new RuntimeException("GitHubの統計データ取得に失敗しました。", e);
         }
     }

@@ -4,7 +4,6 @@ import com.example.backend.domain.credentials.toggl.TogglCredential;
 import com.example.backend.infrastructure.toggl.dto.TogglTimeEntryDto;
 import com.example.backend.infrastructure.toggl.dto.TogglUserDto;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 
-@Slf4j
 @Service
 public class TogglApiService {
     
@@ -49,15 +47,11 @@ public class TogglApiService {
                 .bodyToMono(TogglUserDto.class)
                 .block();
                 
-            log.info("Toggl接続テスト成功: user={}", user != null ? user.getEmail() : "unknown");
             return user != null;
             
         } catch (WebClientResponseException e) {
-            log.error("Toggl接続テスト失敗: status={}, message={}", 
-                e.getStatusCode(), e.getMessage());
             return false;
         } catch (Exception e) {
-            log.error("Toggl接続テスト中に予期しないエラー", e);
             return false;
         }
     }
@@ -88,26 +82,19 @@ public class TogglApiService {
                 .collectList()
                 .block();
                 
-            log.info("Toggl APIから{}件の時間記録を取得: date={}", 
-                timeEntries != null ? timeEntries.size() : 0, date);
                 
             return timeEntries != null ? timeEntries : List.of();
             
         } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                log.error("Toggl API認証エラー: APIトークンが無効または期限切れの可能性があります");
                 throw new RuntimeException("Toggl認証に失敗しました。APIトークンを確認してください。", e);
             } else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
-                log.error("Toggl API制限エラー: レート制限または権限不足");
                 throw new RuntimeException("Toggl APIへのアクセスが制限されています。", e);
             }
             
-            log.error("Toggl API呼び出しエラー: status={}, message={}", 
-                e.getStatusCode(), e.getMessage());
             throw new RuntimeException("Toggl APIの呼び出しに失敗しました: " + e.getMessage(), e);
             
         } catch (Exception e) {
-            log.error("Toggl API呼び出し中に予期しないエラーが発生", e);
             throw new RuntimeException("Togglデータの取得中にエラーが発生しました。", e);
         }
     }
@@ -152,7 +139,6 @@ public class TogglApiService {
             return new TogglTimeStats(totalEntries, totalDurationSeconds, totalHours, timeEntries);
             
         } catch (Exception e) {
-            log.error("Toggl統計データ取得エラー", e);
             throw new RuntimeException("Togglの統計データ取得に失敗しました。", e);
         }
     }

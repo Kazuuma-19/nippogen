@@ -6,7 +6,6 @@ import com.example.backend.infrastructure.notion.dto.NotionDatabaseDto;
 import com.example.backend.infrastructure.notion.dto.NotionSearchResultDto;
 import com.example.backend.infrastructure.notion.dto.NotionUserDto;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
 public class NotionApiService {
     
@@ -52,15 +50,11 @@ public class NotionApiService {
                 .bodyToMono(NotionUserDto.class)
                 .block();
                 
-            log.info("Notion接続テスト成功: user={}", user != null ? user.getName() : "unknown");
             return user != null;
             
         } catch (WebClientResponseException e) {
-            log.error("Notion接続テスト失敗: status={}, message={}", 
-                e.getStatusCode(), e.getMessage());
             return false;
         } catch (Exception e) {
-            log.error("Notion接続テスト中に予期しないエラー", e);
             return false;
         }
     }
@@ -110,8 +104,6 @@ public class NotionApiService {
                 .block();
                 
             if (result != null && result.getResults() != null) {
-                log.info("Notion APIから{}件のページを取得: database={}, date={}", 
-                    result.getResults().size(), databaseId, date);
                 return result.getResults();
             }
                 
@@ -119,22 +111,16 @@ public class NotionApiService {
             
         } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                log.error("Notion API認証エラー: Integration Tokenが無効または期限切れの可能性があります");
                 throw new RuntimeException("Notion認証に失敗しました。Integration Tokenを確認してください。", e);
             } else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
-                log.error("Notion API権限エラー: データベースへのアクセス権限がありません");
                 throw new RuntimeException("Notionデータベースへのアクセス権限がありません。", e);
             } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                log.error("Notion データベースが見つかりません: database_id={}", databaseId);
                 throw new RuntimeException("指定されたNotionデータベースが見つかりません。", e);
             }
             
-            log.error("Notion API呼び出しエラー: status={}, message={}", 
-                e.getStatusCode(), e.getMessage());
             throw new RuntimeException("Notion APIの呼び出しに失敗しました: " + e.getMessage(), e);
             
         } catch (Exception e) {
-            log.error("Notion API呼び出し中に予期しないエラーが発生", e);
             throw new RuntimeException("Notionデータの取得中にエラーが発生しました。", e);
         }
     }
@@ -169,15 +155,12 @@ public class NotionApiService {
                 .block();
                 
             if (result != null && result.getResults() != null) {
-                log.info("Notion検索で{}件のページを取得: query={}", 
-                    result.getResults().size(), query);
                 return result.getResults();
             }
                 
             return List.of();
             
         } catch (Exception e) {
-            log.error("Notion検索エラー", e);
             throw new RuntimeException("Notionの検索中にエラーが発生しました。", e);
         }
     }
@@ -201,21 +184,16 @@ public class NotionApiService {
                 .bodyToMono(NotionPageDto.class)
                 .block();
                 
-            log.info("Notionページ詳細を取得: page_id={}", pageId);
             return page;
             
         } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                log.error("Notionページが見つかりません: page_id={}", pageId);
                 throw new RuntimeException("指定されたNotionページが見つかりません。", e);
             }
             
-            log.error("Notionページ取得エラー: status={}, message={}", 
-                e.getStatusCode(), e.getMessage());
             throw new RuntimeException("Notionページの取得に失敗しました: " + e.getMessage(), e);
             
         } catch (Exception e) {
-            log.error("Notionページ取得中に予期しないエラー", e);
             throw new RuntimeException("Notionページの取得中にエラーが発生しました。", e);
         }
     }
