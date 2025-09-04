@@ -60,7 +60,7 @@ public class ReportController {
     @CommonApiResponses.StandardErrorResponses
     public ResponseEntity<DailyReportListResponseDto> getReports(
             @Parameter(description = "ユーザーID", required = true)
-            @RequestParam UUID userId,
+            @RequestHeader("X-User-Id") UUID userId,
             
             @Parameter(description = "フィルタリング開始日 (YYYY-MM-DD形式)", example = "2024-01-01")
             @RequestParam(required = false) 
@@ -95,7 +95,7 @@ public class ReportController {
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             
             @Parameter(description = "ユーザーID", required = true)
-            @RequestParam UUID userId
+            @RequestHeader("X-User-Id") UUID userId
     ) {
         Optional<DailyReportDto> report = reportUseCase.getReportByDate(userId, date);
         return report.map(ResponseEntity::ok)
@@ -171,10 +171,12 @@ public class ReportController {
     })
     @CommonApiResponses.StandardErrorResponses
     public ResponseEntity<ReportGenerationResponseDto> generateReport(
+            @Parameter(description = "ユーザーID", required = true)
+            @RequestHeader("X-User-Id") UUID userId,
             @Parameter(description = "日報生成リクエスト", required = true)
             @RequestBody ReportGenerationRequestDto request
     ) {
-        ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(request);
+        ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(userId, request);
         
         if (response.isSuccess()) {
             return ResponseEntity.status(201).body(response);

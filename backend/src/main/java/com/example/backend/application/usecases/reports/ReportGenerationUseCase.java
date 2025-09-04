@@ -34,38 +34,39 @@ public class ReportGenerationUseCase {
     /**
      * 新規日報を生成する
      * 
+     * @param userId ユーザーID（HTTPヘッダーから取得）
      * @param request 日報生成リクエスト
      * @return 生成結果レスポンス
      */
     @Transactional
-    public ReportGenerationResponseDto generateReport(ReportGenerationRequestDto request) {
+    public ReportGenerationResponseDto generateReport(UUID userId, ReportGenerationRequestDto request) {
         try {
             
             if (!request.isValid()) {
                 return ReportGenerationResponseDto.failure(
-                    request.getUserId(),
+                    userId,
                     request.getReportDate(),
                     "必須項目が不足しています"
                 );
             }
             
             // 既存日報の重複チェック
-            if (dailyReportRepository.existsByUserIdAndDate(request.getUserId(), request.getReportDate())) {
+            if (dailyReportRepository.existsByUserIdAndDate(userId, request.getReportDate())) {
                 return ReportGenerationResponseDto.failure(
-                    request.getUserId(),
+                    userId,
                     request.getReportDate(),
                     "指定された日付の日報が既に存在しています"
                 );
             }
             
             // 3サービスからデータを統合取得
-            String githubData = collectGitHubData(request.getUserId(), request.getReportDate());
-            String togglData = collectTogglData(request.getUserId(), request.getReportDate());  
-            String notionData = collectNotionData(request.getUserId(), request.getReportDate());
+            String githubData = collectGitHubData(userId, request.getReportDate());
+            String togglData = collectTogglData(userId, request.getReportDate());  
+            String notionData = collectNotionData(userId, request.getReportDate());
             
             // AI日報生成
             String generatedContent = reportGenerationService.generateReport(
-                request.getUserId(),
+                userId,
                 request.getReportDate(),
                 githubData,
                 togglData,
@@ -76,7 +77,7 @@ public class ReportGenerationUseCase {
             // 生成された日報をDBに直接保存
             DailyReport report = DailyReport.builder()
                     .id(UUID.randomUUID())
-                    .userId(request.getUserId())
+                    .userId(userId)
                     .reportDate(request.getReportDate())
                     .finalContent(generatedContent)
                     .additionalNotes(request.getAdditionalNotes())
@@ -98,7 +99,7 @@ public class ReportGenerationUseCase {
         } catch (Exception e) {
             
             return ReportGenerationResponseDto.failure(
-                request.getUserId(),
+                userId,
                 request.getReportDate(),
                 "日報生成中にエラーが発生しました: " + e.getMessage()
             );
