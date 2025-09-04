@@ -279,9 +279,9 @@ public class ReportGenerationUseCase {
             // Notion APIから指定日のページ情報を取得
             // データベースIDが設定されている場合はそのデータベースから取得
             List<NotionPageDto> pages;
-            if (credential.getDatabaseIds() != null && !credential.getDatabaseIds().isEmpty()) {
+            if (credential.getDatabaseId() != null && !credential.getDatabaseId().trim().isEmpty()) {
                 // 設定されたデータベースから取得
-                String databaseId = credential.getDatabaseIds().get(0);
+                String databaseId = credential.getDatabaseId();
                 pages = notionApiService.getPagesByDatabase(credential, databaseId, date);
             } else {
                 // 全体検索で日付に関連するページを取得
@@ -293,8 +293,7 @@ public class ReportGenerationUseCase {
             var notionData = Map.of(
                 "source", "Notion",
                 "date", date.toString(),
-                "workspaceId", credential.getWorkspaceId() != null ? credential.getWorkspaceId() : "",
-                "databaseIds", credential.getDatabaseIds() != null ? credential.getDatabaseIds() : List.of(),
+                "databaseId", credential.getDatabaseId() != null ? credential.getDatabaseId() : "",
                 "pages", pages.stream().map(page -> Map.of(
                     "id", page.getId() != null ? page.getId() : "",
                     "title", page.getTitle() != null ? page.getTitle() : "",

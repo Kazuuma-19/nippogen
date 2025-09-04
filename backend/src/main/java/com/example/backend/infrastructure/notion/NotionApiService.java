@@ -40,7 +40,7 @@ public class NotionApiService {
      */
     public boolean testConnection(NotionCredential credential) {
         try {
-            String authHeader = "Bearer " + credential.getIntegrationToken();
+            String authHeader = "Bearer " + credential.getApiKey();
             
             NotionUserDto user = webClient
                 .get()
@@ -69,7 +69,7 @@ public class NotionApiService {
      */
     public List<NotionPageDto> getPagesByDatabase(NotionCredential credential, String databaseId, LocalDate date) {
         try {
-            String authHeader = "Bearer " + credential.getIntegrationToken();
+            String authHeader = "Bearer " + credential.getApiKey();
             
             // フィルタ条件を構築
             Map<String, Object> filter = null;
@@ -134,7 +134,7 @@ public class NotionApiService {
      */
     public List<NotionPageDto> searchPages(NotionCredential credential, String query) {
         try {
-            String authHeader = "Bearer " + credential.getIntegrationToken();
+            String authHeader = "Bearer " + credential.getApiKey();
             
             Map<String, Object> requestBody = Map.of(
                 "query", query,
@@ -174,7 +174,7 @@ public class NotionApiService {
      */
     public NotionPageDto getPageById(NotionCredential credential, String pageId) {
         try {
-            String authHeader = "Bearer " + credential.getIntegrationToken();
+            String authHeader = "Bearer " + credential.getApiKey();
             
             NotionPageDto page = webClient
                 .get()

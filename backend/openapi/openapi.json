@@ -1,1302 +1,1199 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-        "title": "OpenAPI definition",
-        "version": "v0"
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "OpenAPI definition",
+    "version" : "v0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080",
+    "description" : "Generated server url"
+  } ],
+  "tags" : [ {
+    "name" : "GitHub認証情報",
+    "description" : "GitHub API認証情報の管理"
+  }, {
+    "name" : "Toggl認証情報",
+    "description" : "Toggl Track API認証情報の管理"
+  }, {
+    "name" : "Notion認証情報",
+    "description" : "Notion API認証情報の管理"
+  }, {
+    "name" : "日報管理",
+    "description" : "日報のCRUD操作とAI生成機能"
+  } ],
+  "paths" : {
+    "/api/reports/{id}" : {
+      "put" : {
+        "tags" : [ "日報管理" ],
+        "summary" : "日報更新",
+        "description" : "既存の日報内容を更新",
+        "operationId" : "updateReport",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "日報ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DailyReportUpdateRequestDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "500" : {
+            "description" : "サーバー内部エラー"
+          },
+          "200" : {
+            "description" : "日報の更新に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DailyReportDto"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "日報管理" ],
+        "summary" : "日報削除",
+        "description" : "日報を削除",
+        "operationId" : "deleteReport",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "日報ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "日報の削除に成功"
+          },
+          "500" : {
+            "description" : "サーバー内部エラー"
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
+          }
+        }
+      }
     },
-    "servers": [
-        {
-            "url": "http://localhost:8080",
-            "description": "Generated server url"
+    "/api/reports/{id}/regenerate" : {
+      "post" : {
+        "tags" : [ "日報管理" ],
+        "summary" : "AI日報再生成",
+        "description" : "ユーザーフィードバックと追加情報で既存の日報を再生成",
+        "operationId" : "regenerateReport",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "日報ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReportRegenerationRequestDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "日報の再生成に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "サーバー内部エラー"
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
+          }
         }
-    ],
-    "tags": [
-        {
-            "name": "GitHub\u8a8d\u8a3c\u60c5\u5831",
-            "description": "GitHub API\u8a8d\u8a3c\u60c5\u5831\u306e\u7ba1\u7406"
-        },
-        {
-            "name": "Toggl\u8a8d\u8a3c\u60c5\u5831",
-            "description": "Toggl Track API\u8a8d\u8a3c\u60c5\u5831\u306e\u7ba1\u7406"
-        },
-        {
-            "name": "Notion\u8a8d\u8a3c\u60c5\u5831",
-            "description": "Notion API\u8a8d\u8a3c\u60c5\u5831\u306e\u7ba1\u7406"
-        },
-        {
-            "name": "\u65e5\u5831\u7ba1\u7406",
-            "description": "\u65e5\u5831\u306eCRUD\u64cd\u4f5c\u3068AI\u751f\u6210\u6a5f\u80fd"
-        }
-    ],
-    "paths": {
-        "/api/reports/{id}": {
-            "put": {
-                "tags": [
-                    "\u65e5\u5831\u7ba1\u7406"
-                ],
-                "summary": "\u65e5\u5831\u66f4\u65b0",
-                "description": "\u65e2\u5b58\u306e\u65e5\u5831\u5185\u5bb9\u3092\u66f4\u65b0",
-                "operationId": "updateReport",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "\u65e5\u5831ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/DailyReportUpdateRequestDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u5185\u90e8\u30a8\u30e9\u30fc"
-                    },
-                    "200": {
-                        "description": "\u65e5\u5831\u306e\u66f4\u65b0\u306b\u6210\u529f",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DailyReportDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "\u30ea\u30bd\u30fc\u30b9\u304c\u898b\u3064\u304b\u3089\u306a\u3044"
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "\u65e5\u5831\u7ba1\u7406"
-                ],
-                "summary": "\u65e5\u5831\u524a\u9664",
-                "description": "\u65e5\u5831\u3092\u524a\u9664",
-                "operationId": "deleteReport",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "\u65e5\u5831ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "\u65e5\u5831\u306e\u524a\u9664\u306b\u6210\u529f"
-                    },
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u5185\u90e8\u30a8\u30e9\u30fc"
-                    },
-                    "404": {
-                        "description": "\u30ea\u30bd\u30fc\u30b9\u304c\u898b\u3064\u304b\u3089\u306a\u3044"
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/reports/{id}/regenerate": {
-            "post": {
-                "tags": [
-                    "\u65e5\u5831\u7ba1\u7406"
-                ],
-                "summary": "AI\u65e5\u5831\u518d\u751f\u6210",
-                "description": "\u30e6\u30fc\u30b6\u30fc\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u3068\u8ffd\u52a0\u60c5\u5831\u3067\u65e2\u5b58\u306e\u65e5\u5831\u3092\u518d\u751f\u6210",
-                "operationId": "regenerateReport",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "\u65e5\u5831ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ReportRegenerationRequestDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u5185\u90e8\u30a8\u30e9\u30fc"
-                    },
-                    "200": {
-                        "description": "\u65e5\u5831\u306e\u518d\u751f\u6210\u306b\u6210\u529f",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportGenerationResponseDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "\u30ea\u30bd\u30fc\u30b9\u304c\u898b\u3064\u304b\u3089\u306a\u3044"
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/reports/generate": {
-            "post": {
-                "tags": [
-                    "\u65e5\u5831\u7ba1\u7406"
-                ],
-                "summary": "AI\u65e5\u5831\u751f\u6210",
-                "description": "GitHub\u3001Toggl\u3001Notion\u30c7\u30fc\u30bf\u3092\u3082\u3068\u306bAI\u3067\u65b0\u3057\u3044\u65e5\u5831\u3092\u751f\u6210",
-                "operationId": "generateReport",
-                "parameters": [
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ReportGenerationRequestDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u5185\u90e8\u30a8\u30e9\u30fc"
-                    },
-                    "201": {
-                        "description": "\u65e5\u5831\u306e\u751f\u6210\u306b\u6210\u529f",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportGenerationResponseDto"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/toggl": {
-            "post": {
-                "tags": [
-                    "Toggl\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "Toggl\u8a8d\u8a3c\u60c5\u5831\u4f5c\u6210",
-                "description": "\u65b0\u3057\u3044Toggl\u8a8d\u8a3c\u60c5\u5831\u3092\u4f5c\u6210\u3057\u307e\u3059",
-                "operationId": "create",
-                "parameters": [
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TogglCredentialCreateRequestDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "201": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u4f5c\u6210\u306b\u6210\u529f",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/TogglCredentialResponseDto"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/notion": {
-            "post": {
-                "tags": [
-                    "Notion\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "Notion\u8a8d\u8a3c\u60c5\u5831\u4f5c\u6210",
-                "description": "\u65b0\u3057\u3044Notion\u8a8d\u8a3c\u60c5\u5831\u3092\u4f5c\u6210\u3057\u307e\u3059",
-                "operationId": "create_1",
-                "parameters": [
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/NotionCredentialCreateRequestDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "201": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u4f5c\u6210\u306b\u6210\u529f",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/NotionCredentialResponseDto"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/github": {
-            "post": {
-                "tags": [
-                    "GitHub\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "GitHub\u8a8d\u8a3c\u60c5\u5831\u4f5c\u6210",
-                "description": "\u65b0\u3057\u3044GitHub\u8a8d\u8a3c\u60c5\u5831\u3092\u4f5c\u6210\u3057\u307e\u3059",
-                "operationId": "create_2",
-                "parameters": [
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GitHubCredentialCreateRequestDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "201": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u4f5c\u6210\u306b\u6210\u529f",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GitHubCredentialResponseDto"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/reports": {
-            "get": {
-                "tags": [
-                    "\u65e5\u5831\u7ba1\u7406"
-                ],
-                "summary": "\u65e5\u5831\u4e00\u89a7\u53d6\u5f97",
-                "description": "\u65e5\u4ed8\u7bc4\u56f2\u3068\u30b9\u30c6\u30fc\u30bf\u30b9\u306b\u3088\u308b\u4efb\u610f\u30d5\u30a3\u30eb\u30bf\u30ea\u30f3\u30b0\u3067\u65e5\u5831\u4e00\u89a7\u3092\u53d6\u5f97",
-                "operationId": "getReports",
-                "parameters": [
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    },
-                    {
-                        "name": "startDate",
-                        "in": "query",
-                        "description": "\u30d5\u30a3\u30eb\u30bf\u30ea\u30f3\u30b0\u958b\u59cb\u65e5 (YYYY-MM-DD\u5f62\u5f0f)",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        },
-                        "example": "2024-01-01"
-                    },
-                    {
-                        "name": "endDate",
-                        "in": "query",
-                        "description": "\u30d5\u30a3\u30eb\u30bf\u30ea\u30f3\u30b0\u7d42\u4e86\u65e5 (YYYY-MM-DD\u5f62\u5f0f)",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        },
-                        "example": "2024-12-31"
-                    }
-                ],
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u5185\u90e8\u30a8\u30e9\u30fc"
-                    },
-                    "200": {
-                        "description": "\u65e5\u5831\u306e\u53d6\u5f97\u306b\u6210\u529f",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DailyReportListResponseDto"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/reports/{date}": {
-            "get": {
-                "tags": [
-                    "\u65e5\u5831\u7ba1\u7406"
-                ],
-                "summary": "\u65e5\u4ed8\u6307\u5b9a\u65e5\u5831\u53d6\u5f97",
-                "description": "\u6307\u5b9a\u3055\u308c\u305f\u65e5\u4ed8\u306e\u65e5\u5831\u3092\u53d6\u5f97",
-                "operationId": "getReportByDate",
-                "parameters": [
-                    {
-                        "name": "date",
-                        "in": "path",
-                        "description": "\u65e5\u5831\u65e5\u4ed8 (YYYY-MM-DD\u5f62\u5f0f)",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        },
-                        "example": "2024-01-15"
-                    },
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u5185\u90e8\u30a8\u30e9\u30fc"
-                    },
-                    "200": {
-                        "description": "\u65e5\u5831\u306e\u53d6\u5f97\u306b\u6210\u529f",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DailyReportDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "\u30ea\u30bd\u30fc\u30b9\u304c\u898b\u3064\u304b\u3089\u306a\u3044"
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/toggl/test": {
-            "get": {
-                "tags": [
-                    "Toggl\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "ToggleTrack\u63a5\u7d9a\u30c6\u30b9\u30c8",
-                "description": "ToggleTrack API\u63a5\u7d9a\u3092\u30c6\u30b9\u30c8\u3057\u3066\u3001\u30a2\u30af\u30bb\u30b9\u6a29\u9650\u3092\u78ba\u8a8d\u3057\u307e\u3059",
-                "operationId": "testConnection",
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "200": {
-                        "description": "\u63a5\u7d9a\u30c6\u30b9\u30c8\u304c\u6b63\u5e38\u306b\u5b8c\u4e86",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "boolean"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/toggl/all": {
-            "get": {
-                "tags": [
-                    "Toggl\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "\u30e6\u30fc\u30b6\u30fc\u306e\u5168Toggl\u8a8d\u8a3c\u60c5\u5831\u53d6\u5f97",
-                "description": "\u6307\u5b9a\u3055\u308c\u305f\u30e6\u30fc\u30b6\u30fc\u306e\u5168Toggl\u8a8d\u8a3c\u60c5\u5831\u3092\u53d6\u5f97\u3057\u307e\u3059",
-                "operationId": "findAllByUserId",
-                "parameters": [
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u53d6\u5f97\u306b\u6210\u529f",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/TogglCredentialResponseDto"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/notion/test": {
-            "get": {
-                "tags": [
-                    "Notion\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "Notion\u63a5\u7d9a\u30c6\u30b9\u30c8",
-                "description": "Notion API\u63a5\u7d9a\u3092\u30c6\u30b9\u30c8\u3057\u3066\u3001\u30a2\u30af\u30bb\u30b9\u6a29\u9650\u3092\u78ba\u8a8d\u3057\u307e\u3059",
-                "operationId": "testConnection_1",
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "200": {
-                        "description": "\u63a5\u7d9a\u30c6\u30b9\u30c8\u304c\u6b63\u5e38\u306b\u5b8c\u4e86",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "boolean"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/notion/all": {
-            "get": {
-                "tags": [
-                    "Notion\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "\u30e6\u30fc\u30b6\u30fc\u306e\u5168Notion\u8a8d\u8a3c\u60c5\u5831\u53d6\u5f97",
-                "description": "\u6307\u5b9a\u3055\u308c\u305f\u30e6\u30fc\u30b6\u30fc\u306e\u5168Notion\u8a8d\u8a3c\u60c5\u5831\u3092\u53d6\u5f97\u3057\u307e\u3059",
-                "operationId": "findAllByUserId_1",
-                "parameters": [
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u53d6\u5f97\u306b\u6210\u529f",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/NotionCredentialResponseDto"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/github/test": {
-            "get": {
-                "tags": [
-                    "GitHub\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "GitHub\u63a5\u7d9a\u30c6\u30b9\u30c8\uff08\u7c21\u6613\u7248\uff09",
-                "description": "GitHub \u30ea\u30dd\u30b8\u30c8\u30ea\u63a5\u7d9a\u3092\u30c6\u30b9\u30c8\u3057\u3066\u3001\u30a2\u30af\u30bb\u30b9\u6a29\u9650\u3068\u30ea\u30dd\u30b8\u30c8\u30ea\u306e\u5b58\u5728\u3092\u78ba\u8a8d\u3057\u307e\u3059",
-                "operationId": "testConnection_2",
-                "parameters": [
-                    {
-                        "name": "owner",
-                        "in": "query",
-                        "description": "\u30ea\u30dd\u30b8\u30c8\u30ea\u30aa\u30fc\u30ca\u30fc/\u7d44\u7e54\u540d",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "octocat"
-                    },
-                    {
-                        "name": "repo",
-                        "in": "query",
-                        "description": "\u30ea\u30dd\u30b8\u30c8\u30ea\u540d",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "Hello-World"
-                    }
-                ],
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "200": {
-                        "description": "\u63a5\u7d9a\u30c6\u30b9\u30c8\u304c\u6b63\u5e38\u306b\u5b8c\u4e86",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "boolean"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/github/all": {
-            "get": {
-                "tags": [
-                    "GitHub\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "\u30e6\u30fc\u30b6\u30fc\u306e\u5168GitHub\u8a8d\u8a3c\u60c5\u5831\u53d6\u5f97",
-                "description": "\u6307\u5b9a\u3055\u308c\u305f\u30e6\u30fc\u30b6\u30fc\u306e\u5168GitHub\u8a8d\u8a3c\u60c5\u5831\u3092\u53d6\u5f97\u3057\u307e\u3059",
-                "operationId": "findAllByUserId_2",
-                "parameters": [
-                    {
-                        "name": "X-User-Id",
-                        "in": "header",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u53d6\u5f97\u306b\u6210\u529f",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/GitHubCredentialResponseDto"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "400": {
-                        "description": "\u30ea\u30af\u30a8\u30b9\u30c8\u30c7\u30fc\u30bf\u304c\u4e0d\u6b63"
-                    }
-                }
-            }
-        },
-        "/api/credentials/toggl/{id}": {
-            "delete": {
-                "tags": [
-                    "Toggl\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "Toggl\u8a8d\u8a3c\u60c5\u5831\u524a\u9664",
-                "description": "\u6307\u5b9a\u3055\u308c\u305fID\u306eToggl\u8a8d\u8a3c\u60c5\u5831\u3092\u524a\u9664\u3057\u307e\u3059",
-                "operationId": "delete",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "\u8a8d\u8a3c\u60c5\u5831ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "404": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u304c\u898b\u3064\u304b\u3089\u306a\u3044"
-                    },
-                    "204": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u524a\u9664\u306b\u6210\u529f"
-                    }
-                }
-            }
-        },
-        "/api/credentials/notion/{id}": {
-            "delete": {
-                "tags": [
-                    "Notion\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "Notion\u8a8d\u8a3c\u60c5\u5831\u524a\u9664",
-                "description": "\u6307\u5b9a\u3055\u308c\u305fID\u306eNotion\u8a8d\u8a3c\u60c5\u5831\u3092\u524a\u9664\u3057\u307e\u3059",
-                "operationId": "delete_1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "\u8a8d\u8a3c\u60c5\u5831ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "404": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u304c\u898b\u3064\u304b\u3089\u306a\u3044"
-                    },
-                    "204": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u524a\u9664\u306b\u6210\u529f"
-                    }
-                }
-            }
-        },
-        "/api/credentials/github/{id}": {
-            "delete": {
-                "tags": [
-                    "GitHub\u8a8d\u8a3c\u60c5\u5831"
-                ],
-                "summary": "GitHub\u8a8d\u8a3c\u60c5\u5831\u524a\u9664",
-                "description": "\u6307\u5b9a\u3055\u308c\u305fID\u306eGitHub\u8a8d\u8a3c\u60c5\u5831\u3092\u524a\u9664\u3057\u307e\u3059",
-                "operationId": "delete_2",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "\u8a8d\u8a3c\u60c5\u5831ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "500": {
-                        "description": "\u30b5\u30fc\u30d0\u30fc\u30a8\u30e9\u30fc"
-                    },
-                    "404": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u304c\u898b\u3064\u304b\u3089\u306a\u3044"
-                    },
-                    "204": {
-                        "description": "\u8a8d\u8a3c\u60c5\u5831\u306e\u524a\u9664\u306b\u6210\u529f"
-                    }
-                }
-            }
-        }
+      }
     },
-    "components": {
-        "schemas": {
-            "DailyReportUpdateRequestDto": {
-                "type": "object",
-                "description": "\u65e5\u5831\u66f4\u65b0\u30ea\u30af\u30a8\u30b9\u30c8",
-                "properties": {
-                    "finalContent": {
-                        "type": "string"
-                    },
-                    "additionalNotes": {
-                        "type": "string"
-                    }
-                }
-            },
-            "DailyReportDto": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "reportDate": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "rawData": {
-                        "type": "string"
-                    },
-                    "finalContent": {
-                        "type": "string"
-                    },
-                    "additionalNotes": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "ReportRegenerationRequestDto": {
-                "type": "object",
-                "description": "\u65e5\u5831\u518d\u751f\u6210\u30ea\u30af\u30a8\u30b9\u30c8",
-                "properties": {
-                    "reportId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "userFeedback": {
-                        "type": "string"
-                    },
-                    "additionalNotes": {
-                        "type": "string"
-                    },
-                    "valid": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "ReportGenerationResponseDto": {
-                "type": "object",
-                "properties": {
-                    "reportId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "reportDate": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "finalContent": {
-                        "type": "string"
-                    },
-                    "generatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "ReportGenerationRequestDto": {
-                "type": "object",
-                "description": "\u65e5\u5831\u751f\u6210\u30ea\u30af\u30a8\u30b9\u30c8",
-                "properties": {
-                    "reportDate": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "additionalNotes": {
-                        "type": "string"
-                    },
-                    "valid": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "TogglCredentialCreateRequestDto": {
-                "type": "object",
-                "description": "Toggl Track\u8a8d\u8a3c\u60c5\u5831\u4f5c\u6210\u30ea\u30af\u30a8\u30b9\u30c8",
-                "properties": {
-                    "apiKey": {
-                        "type": "string",
-                        "description": "Toggl Track API\u30ad\u30fc",
-                        "example": "1234567890abcdef"
-                    },
-                    "workspaceId": {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "\u30ef\u30fc\u30af\u30b9\u30da\u30fc\u30b9ID",
-                        "example": 12345
-                    },
-                    "projectIds": {
-                        "type": "array",
-                        "description": "\u30d7\u30ed\u30b8\u30a7\u30af\u30c8ID\u4e00\u89a7",
-                        "example": [
-                            12345,
-                            67890
-                        ],
-                        "items": {
-                            "type": "integer",
-                            "format": "int32"
-                        }
-                    },
-                    "defaultTags": {
-                        "type": "array",
-                        "description": "\u30c7\u30d5\u30a9\u30eb\u30c8\u30bf\u30b0\u4e00\u89a7",
-                        "example": [
-                            "development",
-                            "backend"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "timeZone": {
-                        "type": "string",
-                        "default": "UTC",
-                        "description": "\u30bf\u30a4\u30e0\u30be\u30fc\u30f3",
-                        "example": "Asia/Tokyo"
-                    },
-                    "includeWeekends": {
-                        "type": "boolean",
-                        "default": "false",
-                        "description": "\u9031\u672b\u3092\u542b\u3080\u304b\u3069\u3046\u304b",
-                        "example": false
-                    }
-                },
-                "required": [
-                    "apiKey"
-                ]
-            },
-            "TogglCredentialResponseDto": {
-                "type": "object",
-                "description": "Toggl Track\u8a8d\u8a3c\u60c5\u5831\u30ec\u30b9\u30dd\u30f3\u30b9",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "\u8a8d\u8a3c\u60c5\u5831ID",
-                        "example": "123e4567-e89b-12d3-a456-426614174000"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "example": "123e4567-e89b-12d3-a456-426614174000"
-                    },
-                    "maskedApiKey": {
-                        "type": "string",
-                        "description": "\u30de\u30b9\u30af\u3055\u308c\u305fAPI\u30ad\u30fc",
-                        "example": "1234****cdef"
-                    },
-                    "workspaceId": {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "\u30ef\u30fc\u30af\u30b9\u30da\u30fc\u30b9ID",
-                        "example": 12345
-                    },
-                    "projectIds": {
-                        "type": "array",
-                        "description": "\u30d7\u30ed\u30b8\u30a7\u30af\u30c8ID\u4e00\u89a7",
-                        "example": [
-                            12345,
-                            67890
-                        ],
-                        "items": {
-                            "type": "integer",
-                            "format": "int32"
-                        }
-                    },
-                    "defaultTags": {
-                        "type": "array",
-                        "description": "\u30c7\u30d5\u30a9\u30eb\u30c8\u30bf\u30b0\u4e00\u89a7",
-                        "example": [
-                            "development",
-                            "backend"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "timeZone": {
-                        "type": "string",
-                        "description": "\u30bf\u30a4\u30e0\u30be\u30fc\u30f3",
-                        "example": "Asia/Tokyo"
-                    },
-                    "includeWeekends": {
-                        "type": "boolean",
-                        "description": "\u9031\u672b\u3092\u542b\u3080\u304b\u3069\u3046\u304b",
-                        "example": false
-                    },
-                    "projectCount": {
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u6570",
-                        "example": 2
-                    },
-                    "tagCount": {
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "\u30bf\u30b0\u6570",
-                        "example": 2
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "\u4f5c\u6210\u65e5\u6642",
-                        "example": "2023-01-01T00:00:00"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "\u66f4\u65b0\u65e5\u6642",
-                        "example": "2023-01-01T00:00:00"
-                    },
-                    "active": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "NotionCredentialCreateRequestDto": {
-                "type": "object",
-                "description": "Notion\u8a8d\u8a3c\u60c5\u5831\u4f5c\u6210\u30ea\u30af\u30a8\u30b9\u30c8",
-                "properties": {
-                    "apiKey": {
-                        "type": "string",
-                        "description": "Notion API\u30ad\u30fc",
-                        "example": "secret_xxxxxxxxxxxxxxxxxxxx"
-                    },
-                    "databaseId": {
-                        "type": "string",
-                        "description": "\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9ID",
-                        "example": "123e4567-e89b-12d3-a456-426614174000"
-                    },
-                    "titleProperty": {
-                        "type": "string",
-                        "default": "Name",
-                        "description": "\u30bf\u30a4\u30c8\u30eb\u30d7\u30ed\u30d1\u30c6\u30a3\u540d",
-                        "example": "Name"
-                    },
-                    "statusProperty": {
-                        "type": "string",
-                        "default": "Status",
-                        "description": "\u30b9\u30c6\u30fc\u30bf\u30b9\u30d7\u30ed\u30d1\u30c6\u30a3\u540d",
-                        "example": "Status"
-                    },
-                    "dateProperty": {
-                        "type": "string",
-                        "default": "Date",
-                        "description": "\u65e5\u4ed8\u30d7\u30ed\u30d1\u30c6\u30a3\u540d",
-                        "example": "Date"
-                    },
-                    "filterConditions": {
-                        "type": "object",
-                        "additionalProperties": {},
-                        "description": "\u30d5\u30a3\u30eb\u30bf\u30fc\u6761\u4ef6",
-                        "example": {
-                            "status": [
-                                "In Progress",
-                                "Done"
-                            ]
-                        }
-                    }
-                },
-                "required": [
-                    "apiKey"
-                ]
-            },
-            "NotionCredentialResponseDto": {
-                "type": "object",
-                "description": "Notion\u8a8d\u8a3c\u60c5\u5831\u30ec\u30b9\u30dd\u30f3\u30b9",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "\u8a8d\u8a3c\u60c5\u5831ID",
-                        "example": "123e4567-e89b-12d3-a456-426614174000"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "example": "123e4567-e89b-12d3-a456-426614174000"
-                    },
-                    "maskedApiKey": {
-                        "type": "string",
-                        "description": "\u30de\u30b9\u30af\u3055\u308c\u305fAPI\u30ad\u30fc",
-                        "example": "secret_**********************xx"
-                    },
-                    "databaseId": {
-                        "type": "string",
-                        "description": "\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9ID",
-                        "example": "123e4567-e89b-12d3-a456-426614174000"
-                    },
-                    "titleProperty": {
-                        "type": "string",
-                        "description": "\u30bf\u30a4\u30c8\u30eb\u30d7\u30ed\u30d1\u30c6\u30a3\u540d",
-                        "example": "Name"
-                    },
-                    "statusProperty": {
-                        "type": "string",
-                        "description": "\u30b9\u30c6\u30fc\u30bf\u30b9\u30d7\u30ed\u30d1\u30c6\u30a3\u540d",
-                        "example": "Status"
-                    },
-                    "dateProperty": {
-                        "type": "string",
-                        "description": "\u65e5\u4ed8\u30d7\u30ed\u30d1\u30c6\u30a3\u540d",
-                        "example": "Date"
-                    },
-                    "filterConditions": {
-                        "type": "object",
-                        "additionalProperties": {},
-                        "description": "\u30d5\u30a3\u30eb\u30bf\u30fc\u6761\u4ef6",
-                        "example": {
-                            "status": [
-                                "In Progress",
-                                "Done"
-                            ]
-                        }
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "\u4f5c\u6210\u65e5\u6642",
-                        "example": "2023-01-01T00:00:00"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "\u66f4\u65b0\u65e5\u6642",
-                        "example": "2023-01-01T00:00:00"
-                    },
-                    "active": {
-                        "type": "boolean"
-                    },
-                    "fullyConfigured": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "GitHubCredentialCreateRequestDto": {
-                "type": "object",
-                "description": "GitHub\u8a8d\u8a3c\u60c5\u5831\u4f5c\u6210\u30ea\u30af\u30a8\u30b9\u30c8",
-                "properties": {
-                    "apiKey": {
-                        "type": "string",
-                        "description": "GitHub API\u30ad\u30fc",
-                        "example": "ghp_xxxxxxxxxxxxxxxxxxxx"
-                    },
-                    "baseUrl": {
-                        "type": "string",
-                        "default": "https://api.github.com",
-                        "description": "GitHub API\u30d9\u30fc\u30b9URL",
-                        "example": "https://api.github.com"
-                    },
-                    "owner": {
-                        "type": "string",
-                        "description": "\u30ea\u30dd\u30b8\u30c8\u30ea\u30aa\u30fc\u30ca\u30fc",
-                        "example": "octocat"
-                    },
-                    "repo": {
-                        "type": "string",
-                        "description": "\u30ea\u30dd\u30b8\u30c8\u30ea\u540d",
-                        "example": "Hello-World"
-                    }
-                },
-                "required": [
-                    "apiKey"
-                ]
-            },
-            "GitHubCredentialResponseDto": {
-                "type": "object",
-                "description": "GitHub\u8a8d\u8a3c\u60c5\u5831\u30ec\u30b9\u30dd\u30f3\u30b9",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "\u8a8d\u8a3c\u60c5\u5831ID",
-                        "example": "123e4567-e89b-12d3-a456-426614174000"
-                    },
-                    "userId": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "\u30e6\u30fc\u30b6\u30fcID",
-                        "example": "123e4567-e89b-12d3-a456-426614174000"
-                    },
-                    "maskedApiKey": {
-                        "type": "string",
-                        "description": "\u30de\u30b9\u30af\u3055\u308c\u305fAPI\u30ad\u30fc",
-                        "example": "ghp_**********************xx"
-                    },
-                    "baseUrl": {
-                        "type": "string",
-                        "description": "GitHub API\u30d9\u30fc\u30b9URL",
-                        "example": "https://api.github.com"
-                    },
-                    "owner": {
-                        "type": "string",
-                        "description": "\u30ea\u30dd\u30b8\u30c8\u30ea\u30aa\u30fc\u30ca\u30fc",
-                        "example": "octocat"
-                    },
-                    "repo": {
-                        "type": "string",
-                        "description": "\u30ea\u30dd\u30b8\u30c8\u30ea\u540d",
-                        "example": "Hello-World"
-                    },
-                    "fullRepoName": {
-                        "type": "string",
-                        "description": "\u5b8c\u5168\u306a\u30ea\u30dd\u30b8\u30c8\u30ea\u540d",
-                        "example": "octocat/Hello-World"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "\u4f5c\u6210\u65e5\u6642",
-                        "example": "2023-01-01T00:00:00"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "\u66f4\u65b0\u65e5\u6642",
-                        "example": "2023-01-01T00:00:00"
-                    },
-                    "active": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "DailyReportListResponseDto": {
-                "type": "object",
-                "properties": {
-                    "reports": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/DailyReportDto"
-                        }
-                    },
-                    "totalCount": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "dateRange": {
-                        "type": "string"
-                    }
-                }
+    "/api/reports/generate" : {
+      "post" : {
+        "tags" : [ "日報管理" ],
+        "summary" : "AI日報生成",
+        "description" : "GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成",
+        "operationId" : "generateReport",
+        "parameters" : [ {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReportGenerationRequestDto"
+              }
             }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "500" : {
+            "description" : "サーバー内部エラー"
+          },
+          "201" : {
+            "description" : "日報の生成に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReportGenerationResponseDto"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          }
         }
+      }
+    },
+    "/api/credentials/toggl" : {
+      "post" : {
+        "tags" : [ "Toggl認証情報" ],
+        "summary" : "Toggl認証情報作成",
+        "description" : "新しいToggl認証情報を作成します",
+        "operationId" : "create",
+        "parameters" : [ {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TogglCredentialCreateRequestDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
+          "201" : {
+            "description" : "認証情報の作成に成功",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TogglCredentialResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/credentials/notion" : {
+      "post" : {
+        "tags" : [ "Notion認証情報" ],
+        "summary" : "Notion認証情報作成",
+        "description" : "新しいNotion認証情報を作成します",
+        "operationId" : "create_1",
+        "parameters" : [ {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NotionCredentialCreateRequestDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
+          "201" : {
+            "description" : "認証情報の作成に成功",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotionCredentialResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/credentials/github" : {
+      "post" : {
+        "tags" : [ "GitHub認証情報" ],
+        "summary" : "GitHub認証情報作成",
+        "description" : "新しいGitHub認証情報を作成します",
+        "operationId" : "create_2",
+        "parameters" : [ {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GitHubCredentialCreateRequestDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
+          "201" : {
+            "description" : "認証情報の作成に成功",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GitHubCredentialResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reports" : {
+      "get" : {
+        "tags" : [ "日報管理" ],
+        "summary" : "日報一覧取得",
+        "description" : "日付範囲とステータスによる任意フィルタリングで日報一覧を取得",
+        "operationId" : "getReports",
+        "parameters" : [ {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "startDate",
+          "in" : "query",
+          "description" : "フィルタリング開始日 (YYYY-MM-DD形式)",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "example" : "2024-01-01"
+        }, {
+          "name" : "endDate",
+          "in" : "query",
+          "description" : "フィルタリング終了日 (YYYY-MM-DD形式)",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "example" : "2024-12-31"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "日報の取得に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DailyReportListResponseDto"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "サーバー内部エラー"
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          }
+        }
+      }
+    },
+    "/api/reports/{date}" : {
+      "get" : {
+        "tags" : [ "日報管理" ],
+        "summary" : "日付指定日報取得",
+        "description" : "指定された日付の日報を取得",
+        "operationId" : "getReportByDate",
+        "parameters" : [ {
+          "name" : "date",
+          "in" : "path",
+          "description" : "日報日付 (YYYY-MM-DD形式)",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "example" : "2024-01-15"
+        }, {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "500" : {
+            "description" : "サーバー内部エラー"
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
+          },
+          "200" : {
+            "description" : "日報の取得に成功",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DailyReportDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/credentials/toggl/test" : {
+      "get" : {
+        "tags" : [ "Toggl認証情報" ],
+        "summary" : "ToggleTrack接続テスト",
+        "description" : "ToggleTrack API接続をテストして、アクセス権限を確認します",
+        "operationId" : "testConnection",
+        "responses" : {
+          "200" : {
+            "description" : "接続テストが正常に完了",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          }
+        }
+      }
+    },
+    "/api/credentials/toggl/all" : {
+      "get" : {
+        "tags" : [ "Toggl認証情報" ],
+        "summary" : "ユーザーの全Toggl認証情報取得",
+        "description" : "指定されたユーザーの全Toggl認証情報を取得します",
+        "operationId" : "findAllByUserId",
+        "parameters" : [ {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "認証情報の取得に成功",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TogglCredentialResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          }
+        }
+      }
+    },
+    "/api/credentials/notion/test" : {
+      "get" : {
+        "tags" : [ "Notion認証情報" ],
+        "summary" : "Notion接続テスト",
+        "description" : "Notion API接続をテストして、アクセス権限を確認します",
+        "operationId" : "testConnection_1",
+        "responses" : {
+          "200" : {
+            "description" : "接続テストが正常に完了",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          }
+        }
+      }
+    },
+    "/api/credentials/notion/all" : {
+      "get" : {
+        "tags" : [ "Notion認証情報" ],
+        "summary" : "ユーザーの全Notion認証情報取得",
+        "description" : "指定されたユーザーの全Notion認証情報を取得します",
+        "operationId" : "findAllByUserId_1",
+        "parameters" : [ {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "認証情報の取得に成功",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/NotionCredentialResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          }
+        }
+      }
+    },
+    "/api/credentials/github/test" : {
+      "get" : {
+        "tags" : [ "GitHub認証情報" ],
+        "summary" : "GitHub接続テスト（簡易版）",
+        "description" : "GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します",
+        "operationId" : "testConnection_2",
+        "parameters" : [ {
+          "name" : "owner",
+          "in" : "query",
+          "description" : "リポジトリオーナー/組織名",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "octocat"
+        }, {
+          "name" : "repo",
+          "in" : "query",
+          "description" : "リポジトリ名",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Hello-World"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "接続テストが正常に完了",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          }
+        }
+      }
+    },
+    "/api/credentials/github/all" : {
+      "get" : {
+        "tags" : [ "GitHub認証情報" ],
+        "summary" : "ユーザーの全GitHub認証情報取得",
+        "description" : "指定されたユーザーの全GitHub認証情報を取得します",
+        "operationId" : "findAllByUserId_2",
+        "parameters" : [ {
+          "name" : "X-User-Id",
+          "in" : "header",
+          "description" : "ユーザーID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "認証情報の取得に成功",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/GitHubCredentialResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          }
+        }
+      }
+    },
+    "/api/credentials/toggl/{id}" : {
+      "delete" : {
+        "tags" : [ "Toggl認証情報" ],
+        "summary" : "Toggl認証情報削除",
+        "description" : "指定されたIDのToggl認証情報を削除します",
+        "operationId" : "delete",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "認証情報ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "認証情報の削除に成功"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
+          "404" : {
+            "description" : "認証情報が見つからない"
+          }
+        }
+      }
+    },
+    "/api/credentials/notion/{id}" : {
+      "delete" : {
+        "tags" : [ "Notion認証情報" ],
+        "summary" : "Notion認証情報削除",
+        "description" : "指定されたIDのNotion認証情報を削除します",
+        "operationId" : "delete_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "認証情報ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "認証情報の削除に成功"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
+          "404" : {
+            "description" : "認証情報が見つからない"
+          }
+        }
+      }
+    },
+    "/api/credentials/github/{id}" : {
+      "delete" : {
+        "tags" : [ "GitHub認証情報" ],
+        "summary" : "GitHub認証情報削除",
+        "description" : "指定されたIDのGitHub認証情報を削除します",
+        "operationId" : "delete_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "認証情報ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "認証情報の削除に成功"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
+          "404" : {
+            "description" : "認証情報が見つからない"
+          }
+        }
+      }
     }
+  },
+  "components" : {
+    "schemas" : {
+      "DailyReportUpdateRequestDto" : {
+        "type" : "object",
+        "description" : "日報更新リクエスト",
+        "properties" : {
+          "finalContent" : {
+            "type" : "string"
+          },
+          "additionalNotes" : {
+            "type" : "string"
+          }
+        }
+      },
+      "DailyReportDto" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "userId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "reportDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "rawData" : {
+            "type" : "string"
+          },
+          "finalContent" : {
+            "type" : "string"
+          },
+          "additionalNotes" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ReportRegenerationRequestDto" : {
+        "type" : "object",
+        "description" : "日報再生成リクエスト",
+        "properties" : {
+          "reportId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "userFeedback" : {
+            "type" : "string"
+          },
+          "additionalNotes" : {
+            "type" : "string"
+          },
+          "valid" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "ReportGenerationResponseDto" : {
+        "type" : "object",
+        "properties" : {
+          "reportId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "userId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "reportDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "finalContent" : {
+            "type" : "string"
+          },
+          "generatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ReportGenerationRequestDto" : {
+        "type" : "object",
+        "description" : "日報生成リクエスト",
+        "properties" : {
+          "reportDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "additionalNotes" : {
+            "type" : "string"
+          },
+          "valid" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "TogglCredentialCreateRequestDto" : {
+        "type" : "object",
+        "description" : "Toggl Track認証情報作成リクエスト",
+        "properties" : {
+          "apiKey" : {
+            "type" : "string",
+            "description" : "Toggl Track APIキー",
+            "example" : "1234567890abcdef"
+          },
+          "workspaceId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "ワークスペースID",
+            "example" : 12345
+          },
+          "projectIds" : {
+            "type" : "array",
+            "description" : "プロジェクトID一覧",
+            "example" : [ 12345, 67890 ],
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          },
+          "defaultTags" : {
+            "type" : "array",
+            "description" : "デフォルトタグ一覧",
+            "example" : [ "development", "backend" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "timeZone" : {
+            "type" : "string",
+            "default" : "UTC",
+            "description" : "タイムゾーン",
+            "example" : "Asia/Tokyo"
+          },
+          "includeWeekends" : {
+            "type" : "boolean",
+            "default" : "false",
+            "description" : "週末を含むかどうか",
+            "example" : false
+          }
+        },
+        "required" : [ "apiKey" ]
+      },
+      "TogglCredentialResponseDto" : {
+        "type" : "object",
+        "description" : "Toggl Track認証情報レスポンス",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "認証情報ID",
+            "example" : "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "userId" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "ユーザーID",
+            "example" : "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "maskedApiKey" : {
+            "type" : "string",
+            "description" : "マスクされたAPIキー",
+            "example" : "1234****cdef"
+          },
+          "workspaceId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "ワークスペースID",
+            "example" : 12345
+          },
+          "projectIds" : {
+            "type" : "array",
+            "description" : "プロジェクトID一覧",
+            "example" : [ 12345, 67890 ],
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          },
+          "defaultTags" : {
+            "type" : "array",
+            "description" : "デフォルトタグ一覧",
+            "example" : [ "development", "backend" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "timeZone" : {
+            "type" : "string",
+            "description" : "タイムゾーン",
+            "example" : "Asia/Tokyo"
+          },
+          "includeWeekends" : {
+            "type" : "boolean",
+            "description" : "週末を含むかどうか",
+            "example" : false
+          },
+          "projectCount" : {
+            "type" : "integer",
+            "format" : "int32",
+            "description" : "プロジェクト数",
+            "example" : 2
+          },
+          "tagCount" : {
+            "type" : "integer",
+            "format" : "int32",
+            "description" : "タグ数",
+            "example" : 2
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "作成日時",
+            "example" : "2023-01-01T00:00:00"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "更新日時",
+            "example" : "2023-01-01T00:00:00"
+          },
+          "active" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "NotionCredentialCreateRequestDto" : {
+        "type" : "object",
+        "description" : "Notion認証情報作成リクエスト",
+        "properties" : {
+          "apiKey" : {
+            "type" : "string",
+            "description" : "Notion APIキー",
+            "example" : "secret_xxxxxxxxxxxxxxxxxxxx"
+          },
+          "databaseId" : {
+            "type" : "string",
+            "description" : "データベースID",
+            "example" : "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "titleProperty" : {
+            "type" : "string",
+            "default" : "Name",
+            "description" : "タイトルプロパティ名",
+            "example" : "Name"
+          },
+          "statusProperty" : {
+            "type" : "string",
+            "default" : "Status",
+            "description" : "ステータスプロパティ名",
+            "example" : "Status"
+          },
+          "dateProperty" : {
+            "type" : "string",
+            "default" : "Date",
+            "description" : "日付プロパティ名",
+            "example" : "Date"
+          },
+          "filterConditions" : {
+            "type" : "object",
+            "additionalProperties" : { },
+            "description" : "フィルター条件",
+            "example" : {
+              "status" : [ "In Progress", "Done" ]
+            }
+          }
+        },
+        "required" : [ "apiKey" ]
+      },
+      "NotionCredentialResponseDto" : {
+        "type" : "object",
+        "description" : "Notion認証情報レスポンス",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "認証情報ID",
+            "example" : "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "userId" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "ユーザーID",
+            "example" : "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "maskedApiKey" : {
+            "type" : "string",
+            "description" : "マスクされたAPIキー",
+            "example" : "secret_**********************xx"
+          },
+          "databaseId" : {
+            "type" : "string",
+            "description" : "データベースID",
+            "example" : "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "titleProperty" : {
+            "type" : "string",
+            "description" : "タイトルプロパティ名",
+            "example" : "Name"
+          },
+          "statusProperty" : {
+            "type" : "string",
+            "description" : "ステータスプロパティ名",
+            "example" : "Status"
+          },
+          "dateProperty" : {
+            "type" : "string",
+            "description" : "日付プロパティ名",
+            "example" : "Date"
+          },
+          "filterConditions" : {
+            "type" : "object",
+            "additionalProperties" : { },
+            "description" : "フィルター条件",
+            "example" : {
+              "status" : [ "In Progress", "Done" ]
+            }
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "作成日時",
+            "example" : "2023-01-01T00:00:00"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "更新日時",
+            "example" : "2023-01-01T00:00:00"
+          },
+          "active" : {
+            "type" : "boolean"
+          },
+          "fullyConfigured" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "GitHubCredentialCreateRequestDto" : {
+        "type" : "object",
+        "description" : "GitHub認証情報作成リクエスト",
+        "properties" : {
+          "apiKey" : {
+            "type" : "string",
+            "description" : "GitHub APIキー",
+            "example" : "ghp_xxxxxxxxxxxxxxxxxxxx"
+          },
+          "baseUrl" : {
+            "type" : "string",
+            "default" : "https://api.github.com",
+            "description" : "GitHub APIベースURL",
+            "example" : "https://api.github.com"
+          },
+          "owner" : {
+            "type" : "string",
+            "description" : "リポジトリオーナー",
+            "example" : "octocat"
+          },
+          "repo" : {
+            "type" : "string",
+            "description" : "リポジトリ名",
+            "example" : "Hello-World"
+          }
+        },
+        "required" : [ "apiKey" ]
+      },
+      "GitHubCredentialResponseDto" : {
+        "type" : "object",
+        "description" : "GitHub認証情報レスポンス",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "認証情報ID",
+            "example" : "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "userId" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "ユーザーID",
+            "example" : "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "maskedApiKey" : {
+            "type" : "string",
+            "description" : "マスクされたAPIキー",
+            "example" : "ghp_**********************xx"
+          },
+          "baseUrl" : {
+            "type" : "string",
+            "description" : "GitHub APIベースURL",
+            "example" : "https://api.github.com"
+          },
+          "owner" : {
+            "type" : "string",
+            "description" : "リポジトリオーナー",
+            "example" : "octocat"
+          },
+          "repo" : {
+            "type" : "string",
+            "description" : "リポジトリ名",
+            "example" : "Hello-World"
+          },
+          "fullRepoName" : {
+            "type" : "string",
+            "description" : "完全なリポジトリ名",
+            "example" : "octocat/Hello-World"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "作成日時",
+            "example" : "2023-01-01T00:00:00"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "更新日時",
+            "example" : "2023-01-01T00:00:00"
+          },
+          "active" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "DailyReportListResponseDto" : {
+        "type" : "object",
+        "properties" : {
+          "reports" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DailyReportDto"
+            }
+          },
+          "totalCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "dateRange" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
 }
