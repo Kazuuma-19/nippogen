@@ -49,8 +49,11 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバー内部エラー"
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
           },
           "200" : {
             "description" : "日報の更新に成功",
@@ -62,11 +65,8 @@
               }
             }
           },
-          "404" : {
-            "description" : "リソースが見つからない"
-          },
-          "400" : {
-            "description" : "リクエストデータが不正"
+          "500" : {
+            "description" : "サーバー内部エラー"
           }
         }
       },
@@ -86,17 +86,17 @@
           }
         } ],
         "responses" : {
-          "500" : {
-            "description" : "サーバー内部エラー"
-          },
           "204" : {
             "description" : "日報の削除に成功"
+          },
+          "400" : {
+            "description" : "リクエストデータが不正"
           },
           "404" : {
             "description" : "リソースが見つからない"
           },
-          "400" : {
-            "description" : "リクエストデータが不正"
+          "500" : {
+            "description" : "サーバー内部エラー"
           }
         }
       }
@@ -128,8 +128,11 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバー内部エラー"
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
           },
           "200" : {
             "description" : "日報の再生成に成功",
@@ -141,11 +144,8 @@
               }
             }
           },
-          "404" : {
-            "description" : "リソースが見つからない"
-          },
-          "400" : {
-            "description" : "リクエストデータが不正"
+          "500" : {
+            "description" : "サーバー内部エラー"
           }
         }
       }
@@ -167,8 +167,8 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバー内部エラー"
+          "400" : {
+            "description" : "リクエストデータが不正"
           },
           "201" : {
             "description" : "日報の生成に成功",
@@ -180,8 +180,8 @@
               }
             }
           },
-          "400" : {
-            "description" : "リクエストデータが不正"
+          "500" : {
+            "description" : "サーバー内部エラー"
           }
         }
       }
@@ -213,11 +213,11 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "400" : {
             "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           },
           "201" : {
             "description" : "認証情報の作成に成功",
@@ -259,11 +259,11 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "400" : {
             "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           },
           "201" : {
             "description" : "認証情報の作成に成功",
@@ -305,11 +305,11 @@
           "required" : true
         },
         "responses" : {
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "400" : {
             "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           },
           "201" : {
             "description" : "認証情報の作成に成功",
@@ -361,9 +361,6 @@
           "example" : "2024-12-31"
         } ],
         "responses" : {
-          "500" : {
-            "description" : "サーバー内部エラー"
-          },
           "200" : {
             "description" : "日報の取得に成功",
             "content" : {
@@ -376,6 +373,9 @@
           },
           "400" : {
             "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバー内部エラー"
           }
         }
       }
@@ -407,12 +407,6 @@
           }
         } ],
         "responses" : {
-          "500" : {
-            "description" : "サーバー内部エラー"
-          },
-          "404" : {
-            "description" : "リソースが見つからない"
-          },
           "200" : {
             "description" : "日報の取得に成功",
             "content" : {
@@ -425,6 +419,12 @@
           },
           "400" : {
             "description" : "リクエストデータが不正"
+          },
+          "404" : {
+            "description" : "リソースが見つからない"
+          },
+          "500" : {
+            "description" : "サーバー内部エラー"
           }
         }
       }
@@ -436,6 +436,12 @@
         "description" : "ToggleTrack API接続をテストして、アクセス権限を確認します",
         "operationId" : "testConnection",
         "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
           "200" : {
             "description" : "接続テストが正常に完了",
             "content" : {
@@ -445,12 +451,6 @@
                 }
               }
             }
-          },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
-          "400" : {
-            "description" : "リクエストデータが不正"
           }
         }
       }
@@ -485,11 +485,11 @@
               }
             }
           },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "400" : {
             "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -501,6 +501,12 @@
         "description" : "Notion API接続をテストして、アクセス権限を確認します",
         "operationId" : "testConnection_1",
         "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
           "200" : {
             "description" : "接続テストが正常に完了",
             "content" : {
@@ -510,12 +516,6 @@
                 }
               }
             }
-          },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
-          "400" : {
-            "description" : "リクエストデータが不正"
           }
         }
       }
@@ -550,11 +550,11 @@
               }
             }
           },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "400" : {
             "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -585,6 +585,12 @@
           "example" : "Hello-World"
         } ],
         "responses" : {
+          "400" : {
+            "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
+          },
           "200" : {
             "description" : "接続テストが正常に完了",
             "content" : {
@@ -594,12 +600,6 @@
                 }
               }
             }
-          },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
-          "400" : {
-            "description" : "リクエストデータが不正"
           }
         }
       }
@@ -634,11 +634,11 @@
               }
             }
           },
-          "500" : {
-            "description" : "サーバーエラー"
-          },
           "400" : {
             "description" : "リクエストデータが不正"
+          },
+          "500" : {
+            "description" : "サーバーエラー"
           }
         }
       }
@@ -660,11 +660,11 @@
           }
         } ],
         "responses" : {
-          "404" : {
-            "description" : "認証情報が見つからない"
-          },
           "500" : {
             "description" : "サーバーエラー"
+          },
+          "404" : {
+            "description" : "認証情報が見つからない"
           },
           "204" : {
             "description" : "認証情報の削除に成功"
@@ -689,11 +689,11 @@
           }
         } ],
         "responses" : {
-          "404" : {
-            "description" : "認証情報が見つからない"
-          },
           "500" : {
             "description" : "サーバーエラー"
+          },
+          "404" : {
+            "description" : "認証情報が見つからない"
           },
           "204" : {
             "description" : "認証情報の削除に成功"
@@ -718,11 +718,11 @@
           }
         } ],
         "responses" : {
-          "404" : {
-            "description" : "認証情報が見つからない"
-          },
           "500" : {
             "description" : "サーバーエラー"
+          },
+          "404" : {
+            "description" : "認証情報が見つからない"
           },
           "204" : {
             "description" : "認証情報の削除に成功"
@@ -816,18 +816,9 @@
           "finalContent" : {
             "type" : "string"
           },
-          "status" : {
-            "type" : "string"
-          },
           "generatedAt" : {
             "type" : "string",
             "format" : "date-time"
-          },
-          "success" : {
-            "type" : "boolean"
-          },
-          "errorMessage" : {
-            "type" : "string"
           }
         }
       },
