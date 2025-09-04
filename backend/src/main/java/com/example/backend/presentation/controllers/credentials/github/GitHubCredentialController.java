@@ -64,12 +64,8 @@ public class GitHubCredentialController {
     public ResponseEntity<Void> delete(
             @Parameter(description = "認証情報ID", required = true) @PathVariable UUID id) {
         
-        try {
-            gitHubCredentialUseCase.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        gitHubCredentialUseCase.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
     
     @GetMapping("/test")

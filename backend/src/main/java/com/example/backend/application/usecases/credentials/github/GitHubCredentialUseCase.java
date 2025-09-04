@@ -2,6 +2,7 @@ package com.example.backend.application.usecases.credentials.github;
 
 import com.example.backend.application.dto.credentials.github.GitHubCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
+import com.example.backend.common.exceptions.CredentialNotFoundException;
 import com.example.backend.domain.credentials.github.GitHubCredential;
 import com.example.backend.domain.credentials.github.IGitHubCredentialRepository;
 
@@ -67,7 +68,7 @@ public class GitHubCredentialUseCase {
     
     public void deleteById(UUID id) {
         if (!gitHubCredentialRepository.existsById(id)) {
-            throw new RuntimeException("GitHub認証情報が見つかりません: " + id);
+            throw new CredentialNotFoundException("GitHub認証情報が見つかりません: " + id);
         }
         gitHubCredentialRepository.deleteById(id);
     }
