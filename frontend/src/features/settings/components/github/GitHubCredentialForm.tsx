@@ -38,9 +38,7 @@ export function GitHubCredentialForm({
   } = useForm<GitHubCredentialFormData>({
     resolver: zodResolver(gitHubCredentialSchema),
     defaultValues: {
-      apiKey: initialData?.maskedApiKey?.includes("****")
-        ? ""
-        : initialData?.maskedApiKey || "",
+      apiKey: initialData?.apiKey || "",
       baseUrl: initialData?.baseUrl || "https://api.github.com",
       owner: initialData?.owner || "",
       repo: initialData?.repo || "",

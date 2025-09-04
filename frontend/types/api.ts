@@ -96,7 +96,7 @@ export interface paths {
   };
   "/api/credentials/github/test": {
     /**
-     * GitHub接続テスト
+     * GitHub接続テスト（簡易版）
      * @description GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します
      */
     get: operations["testConnection_2"];
@@ -176,8 +176,6 @@ export interface components {
     };
     /** @description 日報生成リクエスト */
     ReportGenerationRequestDto: {
-      /** Format: uuid */
-      userId?: string;
       /** Format: date */
       reportDate?: string;
       additionalNotes?: string;
@@ -617,6 +615,12 @@ export interface operations {
    * @description GitHub、Toggl、NotionデータをもとにAIで新しい日報を生成
    */
   generateReport: {
+    parameters: {
+      header: {
+        /** @description ユーザーID */
+        "X-User-Id": string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["ReportGenerationRequestDto"];
@@ -744,9 +748,7 @@ export interface operations {
    */
   getReports: {
     parameters: {
-      query: {
-        /** @description ユーザーID */
-        userId: string;
+      query?: {
         /**
          * @description フィルタリング開始日 (YYYY-MM-DD形式)
          * @example 2024-01-01
@@ -757,6 +759,10 @@ export interface operations {
          * @example 2024-12-31
          */
         endDate?: string;
+      };
+      header: {
+        /** @description ユーザーID */
+        "X-User-Id": string;
       };
     };
     responses: {
@@ -782,9 +788,9 @@ export interface operations {
    */
   getReportByDate: {
     parameters: {
-      query: {
+      header: {
         /** @description ユーザーID */
-        userId: string;
+        "X-User-Id": string;
       };
       path: {
         /**
@@ -916,7 +922,7 @@ export interface operations {
     };
   };
   /**
-   * GitHub接続テスト
+   * GitHub接続テスト（簡易版）
    * @description GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します
    */
   testConnection_2: {
