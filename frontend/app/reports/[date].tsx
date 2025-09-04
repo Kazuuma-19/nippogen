@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
+import { CURRENT_USER_ID } from "../../src/constants/user";
 import type { components } from "@/types/api";
 
 // Import components that will be implemented next
@@ -24,7 +25,7 @@ export default function ReportDetailScreen() {
       // Mock data - later replace with actual API call
       const mockReport: DailyReport = {
         id: "mock-report-id",
-        userId: "mock-user-id",
+        userId: CURRENT_USER_ID,
         reportDate: date,
         generatedContent: `# ${date} の日報
 

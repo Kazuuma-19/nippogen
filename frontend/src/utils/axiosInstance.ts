@@ -1,4 +1,5 @@
 import axios from "axios";
+import { CURRENT_USER_ID } from "../constants/user";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_BASE_URL || "http://localhost:8080",
@@ -8,8 +9,7 @@ export const axiosInstance = axios.create({
 // Request interceptor for adding user ID
 axiosInstance.interceptors.request.use(
   (config) => {
-    // TODO: 実際のユーザーIDを取得して設定
-    config.headers["X-User-Id"] = "78b955df-5c79-4514-85b0-6b2282093361";
+    config.headers["X-User-Id"] = CURRENT_USER_ID;
     return config;
   },
   (error) => Promise.reject(error)
