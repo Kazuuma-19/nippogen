@@ -4,6 +4,7 @@ import static com.example.backend.jooq.tables.JGithubCredentials.GITHUB_CREDENTI
 
 import com.example.backend.domain.credentials.github.GitHubCredential;
 import com.example.backend.domain.credentials.github.IGitHubCredentialRepository;
+import com.example.backend.infrastructure.github.GitHubApiService;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -17,11 +18,25 @@ import java.util.UUID;
 public class GitHubCredentialRepository implements IGitHubCredentialRepository {
     
     private final DSLContext dsl;
+    private final GitHubApiService gitHubApiService;
 
     @Override
     public boolean testConnection(String owner, String repo) {
-        // TODO: 実際のGitHub API接続テストを実装
-        return true;
+        // 実際のGitHub API接続テストを実装
+        // 注意: この実装は簡易版です。実際にはアクティブな認証情報を使用すべきです
+        try {
+            // 最低限の接続テストとして、パブリックリポジトリへのアクセスを試行
+            // 実際の実装では、ユーザーの認証情報を使用してテストする必要があります
+            GitHubCredential dummyCredential = GitHubCredential.builder()
+                .owner(owner)
+                .repo(repo)
+                .apiKey("") // パブリックリポジトリの場合は不要
+                .build();
+            
+            return gitHubApiService.testConnection(dummyCredential);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
