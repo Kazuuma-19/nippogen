@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Alert } from 'react-native'
 import { credentialsApi } from '../../../utils/apiClient'
+import { showSuccess, showError } from '../../../utils/notification'
 import type { components } from '@/types/api'
 
 type NotionCredential = components['schemas']['NotionCredentialResponseDto']
@@ -17,7 +17,7 @@ export function useNotionCredentials() {
       const response = await credentialsApi.notion.findAllByUserId()
       setCredentials(response.data)
     } catch {
-      Alert.alert('エラー', 'Notion認証情報の読み込みに失敗しました')
+      showError('Notion認証情報の読み込みに失敗しました')
     } finally {
       setLoading(false)
     }
@@ -27,10 +27,10 @@ export function useNotionCredentials() {
     try {
       const response = await credentialsApi.notion.create(data)
       setCredentials(prev => [...prev, response.data])
-      Alert.alert('成功', 'Notion認証情報を保存しました')
+      showSuccess('Notion認証情報を保存しました')
       return response.data
     } catch (error) {
-      Alert.alert('エラー', 'Notion認証情報の保存に失敗しました')
+      showError('Notion認証情報の保存に失敗しました')
       throw error
     }
   }, [])
@@ -39,18 +39,18 @@ export function useNotionCredentials() {
     try {
       await credentialsApi.notion.delete(id)
       setCredentials(prev => prev.filter(cred => cred.id !== id))
-      Alert.alert('成功', 'Notion認証情報を削除しました')
+      showSuccess('Notion認証情報を削除しました')
     } catch {
-      Alert.alert('エラー', 'Notion認証情報の削除に失敗しました')
+      showError('Notion認証情報の削除に失敗しました')
     }
   }, [])
 
   const testConnection = useCallback(async () => {
     try {
       await credentialsApi.notion.test()
-      Alert.alert('成功', 'Notion接続テストに成功しました')
+      showSuccess('Notion接続テストに成功しました')
     } catch {
-      Alert.alert('エラー', 'Notion接続テストに失敗しました')
+      showError('Notion接続テストに失敗しました')
     }
   }, [])
 

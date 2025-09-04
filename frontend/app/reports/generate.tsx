@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { router } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { axiosInstance } from "../../src/utils/axiosInstance";
+import { showSuccess, showError } from "../../src/utils/notification";
 import { reportGenerationSchema, type ReportGenerationFormData } from "../../src/features/reports/schemas/reportGeneration";
 
 
@@ -25,19 +27,21 @@ export default function GenerateReportScreen() {
     setIsGenerating(true);
     
     try {
-      // Mock request data - later will be replaced with actual API call
-
-      // Mock delay to simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await axiosInstance.post('/api/reports/generate', {
+        reportDate: data.selectedDate,
+        additionalNotes: data.additionalNotes || ""
+      });
       
-      // For now, just navigate to the report detail page
-      router.push(`/reports/${data.selectedDate}`);
+      if (response.status === 201) {
+        showSuccess("日報が生成されました！");
+        router.push(`/reports/${data.selectedDate}`);
+      }
       
-      Alert.alert("成功", "日報が生成されました！");
-      
-    } catch (error) {
+    } catch (error: any) {
       console.error("Report generation failed:", error);
-      Alert.alert("エラー", "日報の生成に失敗しました。もう一度お試しください。");
+      const errorMessage = error.response?.data?.message || 
+                          "日報の生成に失敗しました。もう一度お試しください。";
+      showError(errorMessage);
     } finally {
       setIsGenerating(false);
     }
