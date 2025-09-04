@@ -59,28 +59,29 @@ public class ReportGenerationUseCase {
     /**
      * 新規日報を生成する
      * 
+     * @param userId ユーザーID（HTTPヘッダーから取得）
      * @param request 日報生成リクエスト
      * @return 生成結果レスポンス
      */
     @Transactional
-    public ReportGenerationResponseDto generateReport(ReportGenerationRequestDto request) {
+    public ReportGenerationResponseDto generateReport(UUID userId, ReportGenerationRequestDto request) {
         if (!request.isValid()) {
             throw new ReportValidationException("必須項目が不足しています");
         }
         
         // 既存日報の重複チェック
-        if (dailyReportRepository.existsByUserIdAndDate(request.getUserId(), request.getReportDate())) {
+        if (dailyReportRepository.existsByUserIdAndDate(userId, request.getReportDate())) {
             throw new ReportAlreadyExistsException("指定された日付の日報が既に存在しています");
         }
         
         // 3サービスからデータを統合取得
-        String githubData = collectGitHubData(request.getUserId(), request.getReportDate());
-        String togglData = collectTogglData(request.getUserId(), request.getReportDate());  
-        String notionData = collectNotionData(request.getUserId(), request.getReportDate());
+        String githubData = collectGitHubData(userId, request.getReportDate());
+        String togglData = collectTogglData(userId, request.getReportDate());  
+        String notionData = collectNotionData(userId, request.getReportDate());
         
         // AI日報生成
         String generatedContent = reportGenerationService.generateReport(
-            request.getUserId(),
+            userId,
             request.getReportDate(),
             githubData,
             togglData,
@@ -91,7 +92,7 @@ public class ReportGenerationUseCase {
         // 生成された日報をDBに直接保存
         DailyReport report = DailyReport.builder()
                 .id(UUID.randomUUID())
-                .userId(request.getUserId())
+                .userId(userId)
                 .reportDate(request.getReportDate())
                 .finalContent(generatedContent)
                 .additionalNotes(request.getAdditionalNotes())
@@ -104,7 +105,7 @@ public class ReportGenerationUseCase {
         
         return ReportGenerationResponseDto.builder()
             .reportId(createdReport.getId())
-            .userId(createdReport.getUserId())
+            .userId(userId)
             .reportDate(createdReport.getReportDate())
             .finalContent(createdReport.getFinalContent())
             .generatedAt(LocalDateTime.now())
@@ -278,9 +279,9 @@ public class ReportGenerationUseCase {
             // Notion APIから指定日のページ情報を取得
             // データベースIDが設定されている場合はそのデータベースから取得
             List<NotionPageDto> pages;
-            if (credential.getDatabaseIds() != null && !credential.getDatabaseIds().isEmpty()) {
+            if (credential.getDatabaseId() != null && !credential.getDatabaseId().trim().isEmpty()) {
                 // 設定されたデータベースから取得
-                String databaseId = credential.getDatabaseIds().get(0);
+                String databaseId = credential.getDatabaseId();
                 pages = notionApiService.getPagesByDatabase(credential, databaseId, date);
             } else {
                 // 全体検索で日付に関連するページを取得
@@ -292,8 +293,7 @@ public class ReportGenerationUseCase {
             var notionData = Map.of(
                 "source", "Notion",
                 "date", date.toString(),
-                "workspaceId", credential.getWorkspaceId() != null ? credential.getWorkspaceId() : "",
-                "databaseIds", credential.getDatabaseIds() != null ? credential.getDatabaseIds() : List.of(),
+                "databaseId", credential.getDatabaseId() != null ? credential.getDatabaseId() : "",
                 "pages", pages.stream().map(page -> Map.of(
                     "id", page.getId() != null ? page.getId() : "",
                     "title", page.getTitle() != null ? page.getTitle() : "",

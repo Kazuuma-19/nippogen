@@ -37,7 +37,7 @@ public class TogglApiService {
      */
     public boolean testConnection(TogglCredential credential) {
         try {
-            String authHeader = createAuthorizationHeader(credential.getApiToken());
+            String authHeader = createAuthorizationHeader(credential.getApiKey());
             
             TogglUserDto user = webClient
                 .get()
@@ -65,7 +65,7 @@ public class TogglApiService {
      */
     public List<TogglTimeEntryDto> getTimeEntriesByDate(TogglCredential credential, LocalDate date) {
         try {
-            String authHeader = createAuthorizationHeader(credential.getApiToken());
+            String authHeader = createAuthorizationHeader(credential.getApiKey());
             String startDate = date.format(DateTimeFormatter.ISO_LOCAL_DATE);
             String endDate = date.format(DateTimeFormatter.ISO_LOCAL_DATE);
             
@@ -109,7 +109,7 @@ public class TogglApiService {
      */
     public TogglTimeStats getTimeStats(TogglCredential credential, LocalDate startDate, LocalDate endDate) {
         try {
-            String authHeader = createAuthorizationHeader(credential.getApiToken());
+            String authHeader = createAuthorizationHeader(credential.getApiKey());
             String start = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
             String end = endDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
             

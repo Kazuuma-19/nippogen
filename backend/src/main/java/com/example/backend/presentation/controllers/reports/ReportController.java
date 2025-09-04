@@ -171,10 +171,12 @@ public class ReportController {
     })
     @CommonApiResponses.StandardErrorResponses
     public ResponseEntity<ReportGenerationResponseDto> generateReport(
+            @Parameter(description = "ユーザーID", required = true)
+            @RequestHeader("X-User-Id") UUID userId,
             @Parameter(description = "日報生成リクエスト", required = true)
             @RequestBody ReportGenerationRequestDto request
     ) {
-        ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(request);
+        ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(userId, request);
         return ResponseEntity.status(201).body(response);
     }
     
