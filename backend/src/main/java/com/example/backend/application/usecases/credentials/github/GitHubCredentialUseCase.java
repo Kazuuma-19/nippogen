@@ -4,6 +4,7 @@ import com.example.backend.application.dto.credentials.github.GitHubCredentialCr
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
 import com.example.backend.domain.credentials.github.GitHubCredential;
 import com.example.backend.domain.credentials.github.IGitHubCredentialRepository;
+import com.example.backend.infrastructure.github.GitHubApiService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class GitHubCredentialUseCase {
     
     private final IGitHubCredentialRepository gitHubCredentialRepository;
+    private final GitHubApiService gitHubApiService;
 
     public GitHubCredentialResponseDto create(UUID userId, GitHubCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
@@ -78,7 +80,7 @@ public class GitHubCredentialUseCase {
     }
     
     /**
-     * GitHub接続テスト
+     * GitHub接続テスト（指定のowner/repoでテスト）
      * 
      * @param owner リポジトリオーナー
      * @param repo リポジトリ名
@@ -87,5 +89,28 @@ public class GitHubCredentialUseCase {
     @Transactional(readOnly = true)
     public boolean testConnection(String owner, String repo) {
         return gitHubCredentialRepository.testConnection(owner, repo);
+    }
+    
+    /**
+     * ユーザーのアクティブな認証情報でGitHub接続テスト
+     * 
+     * @param userId ユーザーID
+     * @return 接続成功時true
+     */
+    @Transactional(readOnly = true)
+    public boolean testActiveConnection(UUID userId) {
+        List<GitHubCredential> activeCredentials = gitHubCredentialRepository.findActiveByUserId(userId);
+        
+        if (activeCredentials.isEmpty()) {
+            throw new RuntimeException("アクティブなGitHub認証情報がありません");
+        }
+        
+        GitHubCredential credential = activeCredentials.get(0);
+        
+        try {
+            return gitHubApiService.testConnection(credential);
+        } catch (Exception e) {
+            throw new RuntimeException("GitHub接続テストに失敗しました: " + e.getMessage(), e);
+        }
     }
 }

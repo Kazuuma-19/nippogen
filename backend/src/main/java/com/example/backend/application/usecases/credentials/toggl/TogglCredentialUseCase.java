@@ -4,6 +4,7 @@ import com.example.backend.application.dto.credentials.toggl.TogglCredentialCrea
 import com.example.backend.application.dto.credentials.toggl.TogglCredentialResponseDto;
 import com.example.backend.domain.credentials.toggl.TogglCredential;
 import com.example.backend.domain.credentials.toggl.ITogglCredentialRepository;
+import com.example.backend.infrastructure.toggl.TogglApiService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class TogglCredentialUseCase {
     
     private final ITogglCredentialRepository togglCredentialRepository;
+    private final TogglApiService togglApiService;
     
     public TogglCredentialResponseDto create(UUID userId, TogglCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
@@ -73,7 +75,30 @@ public class TogglCredentialUseCase {
     }
     
     /**
-     * ToggleTrack接続テスト
+     * ユーザーのアクティブなToggl認証情報で接続テスト
+     * 
+     * @param userId ユーザーID
+     * @return 接続成功時true
+     */
+    @Transactional(readOnly = true)
+    public boolean testActiveConnection(UUID userId) {
+        List<TogglCredential> activeCredentials = togglCredentialRepository.findActiveByUserId(userId);
+        
+        if (activeCredentials.isEmpty()) {
+            throw new RuntimeException("アクティブなToggl認証情報がありません");
+        }
+        
+        TogglCredential credential = activeCredentials.get(0);
+        
+        try {
+            return togglApiService.testConnection(credential);
+        } catch (Exception e) {
+            throw new RuntimeException("Toggl接続テストに失敗しました: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Toggl Track接続テスト（汎用）
      * 
      * @return 接続成功時true
      */
