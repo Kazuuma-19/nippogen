@@ -90,27 +90,4 @@ public class GitHubCredentialUseCase {
     public boolean testConnection(String owner, String repo) {
         return gitHubCredentialRepository.testConnection(owner, repo);
     }
-    
-    /**
-     * ユーザーのアクティブな認証情報でGitHub接続テスト
-     * 
-     * @param userId ユーザーID
-     * @return 接続成功時true
-     */
-    @Transactional(readOnly = true)
-    public boolean testActiveConnection(UUID userId) {
-        List<GitHubCredential> activeCredentials = gitHubCredentialRepository.findActiveByUserId(userId);
-        
-        if (activeCredentials.isEmpty()) {
-            throw new RuntimeException("アクティブなGitHub認証情報がありません");
-        }
-        
-        GitHubCredential credential = activeCredentials.get(0);
-        
-        try {
-            return gitHubApiService.testConnection(credential);
-        } catch (Exception e) {
-            throw new RuntimeException("GitHub接続テストに失敗しました: " + e.getMessage(), e);
-        }
-    }
 }

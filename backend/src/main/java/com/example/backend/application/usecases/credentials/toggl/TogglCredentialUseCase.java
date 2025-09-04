@@ -75,29 +75,6 @@ public class TogglCredentialUseCase {
     }
     
     /**
-     * ユーザーのアクティブなToggl認証情報で接続テスト
-     * 
-     * @param userId ユーザーID
-     * @return 接続成功時true
-     */
-    @Transactional(readOnly = true)
-    public boolean testActiveConnection(UUID userId) {
-        List<TogglCredential> activeCredentials = togglCredentialRepository.findActiveByUserId(userId);
-        
-        if (activeCredentials.isEmpty()) {
-            throw new RuntimeException("アクティブなToggl認証情報がありません");
-        }
-        
-        TogglCredential credential = activeCredentials.get(0);
-        
-        try {
-            return togglApiService.testConnection(credential);
-        } catch (Exception e) {
-            throw new RuntimeException("Toggl接続テストに失敗しました: " + e.getMessage(), e);
-        }
-    }
-    
-    /**
      * Toggl Track接続テスト（汎用）
      * 
      * @return 接続成功時true
