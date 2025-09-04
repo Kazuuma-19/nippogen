@@ -72,4 +72,19 @@ public class GitHubCredentialController {
         }
     }
     
+    @GetMapping("/test")
+    @Operation(summary = "GitHub接続テスト（簡易版）", description = "GitHub リポジトリ接続をテストして、アクセス権限とリポジトリの存在を確認します")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "接続テストが正常に完了")
+    })
+    @CommonApiResponses.CredentialErrorResponses
+    public ResponseEntity<Boolean> testConnection(
+            @Parameter(description = "リポジトリオーナー/組織名", example = "octocat", required = true) 
+            @RequestParam String owner,
+            @Parameter(description = "リポジトリ名", example = "Hello-World", required = true) 
+            @RequestParam String repo) {
+        
+        boolean isConnected = gitHubCredentialUseCase.testConnection(owner, repo);
+        return ResponseEntity.ok(isConnected);
+    }
 }
