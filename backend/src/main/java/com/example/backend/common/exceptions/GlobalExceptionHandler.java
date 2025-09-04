@@ -58,6 +58,28 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
     
+    @ExceptionHandler(CredentialNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleCredentialNotFound(CredentialNotFoundException e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", "CREDENTIAL_NOT_FOUND");
+        errorResponse.put("message", e.getMessage());
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", 404);
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    
+    @ExceptionHandler(ReportAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleReportAlreadyExists(ReportAlreadyExistsException e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", "REPORT_ALREADY_EXISTS");
+        errorResponse.put("message", e.getMessage());
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", 400);
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception e) {
         

@@ -23,7 +23,6 @@ interface UseReportsReturn extends UseReportsState {
   clearError: () => void;
 }
 
-const DEFAULT_USER_ID = "default-user"; // TODO: 実際のユーザー認証実装後に動的に取得
 
 export default function useReports(): UseReportsReturn {
   const [state, setState] = useState<UseReportsState>({
@@ -42,7 +41,6 @@ export default function useReports(): UseReportsReturn {
 
   const buildQueryParams = useCallback((filters: FilterOptions = {}, page = 0) => {
     const params = new URLSearchParams();
-    params.append("userId", DEFAULT_USER_ID);
     
     if (filters.startDate) {
       params.append("startDate", filters.startDate);
@@ -52,7 +50,6 @@ export default function useReports(): UseReportsReturn {
       params.append("endDate", filters.endDate);
     }
     
-
     // Note: Search functionality would need backend support for text search
     // This is a placeholder for when backend implements search
     if (filters.searchText && filters.searchText.trim()) {

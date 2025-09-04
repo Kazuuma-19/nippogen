@@ -2,8 +2,10 @@ package com.example.backend.application.usecases.credentials.github;
 
 import com.example.backend.application.dto.credentials.github.GitHubCredentialCreateRequestDto;
 import com.example.backend.application.dto.credentials.github.GitHubCredentialResponseDto;
+import com.example.backend.common.exceptions.CredentialNotFoundException;
 import com.example.backend.domain.credentials.github.GitHubCredential;
 import com.example.backend.domain.credentials.github.IGitHubCredentialRepository;
+import com.example.backend.infrastructure.github.GitHubApiService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class GitHubCredentialUseCase {
     
     private final IGitHubCredentialRepository gitHubCredentialRepository;
+    private final GitHubApiService gitHubApiService;
 
     public GitHubCredentialResponseDto create(UUID userId, GitHubCredentialCreateRequestDto request) {
         // 既存のアクティブな認証情報を無効化
@@ -67,7 +70,7 @@ public class GitHubCredentialUseCase {
     
     public void deleteById(UUID id) {
         if (!gitHubCredentialRepository.existsById(id)) {
-            throw new RuntimeException("GitHub認証情報が見つかりません: " + id);
+            throw new CredentialNotFoundException("GitHub認証情報が見つかりません: " + id);
         }
         gitHubCredentialRepository.deleteById(id);
     }
@@ -78,7 +81,7 @@ public class GitHubCredentialUseCase {
     }
     
     /**
-     * GitHub接続テスト
+     * GitHub接続テスト（指定のowner/repoでテスト）
      * 
      * @param owner リポジトリオーナー
      * @param repo リポジトリ名

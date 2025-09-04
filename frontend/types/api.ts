@@ -171,11 +171,8 @@ export interface components {
       /** Format: date */
       reportDate?: string;
       finalContent?: string;
-      status?: string;
       /** Format: date-time */
       generatedAt?: string;
-      success?: boolean;
-      errorMessage?: string;
     };
     /** @description 日報生成リクエスト */
     ReportGenerationRequestDto: {
@@ -534,23 +531,17 @@ export interface operations {
           "application/json": components["schemas"]["DailyReportDto"];
         };
       };
-      /** @description リクエストデータが不正または編集不可 */
+      /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
-      /** @description 日報が見つからない */
+      /** @description リソースが見つからない */
       404: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
       /** @description サーバー内部エラー */
       500: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
     };
   };
@@ -570,15 +561,17 @@ export interface operations {
       204: {
         content: never;
       };
-      /** @description 日報が見つからない */
+      /** @description リクエストデータが不正 */
+      400: {
+        content: never;
+      };
+      /** @description リソースが見つからない */
       404: {
         content: never;
       };
       /** @description サーバー内部エラー */
       500: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
     };
   };
@@ -607,21 +600,15 @@ export interface operations {
       };
       /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
-      /** @description 日報が見つからない */
+      /** @description リソースが見つからない */
       404: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
-      /** @description サーバー内部エラーまたはAI再生成失敗 */
+      /** @description サーバー内部エラー */
       500: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
     };
   };
@@ -642,17 +629,13 @@ export interface operations {
           "application/json": components["schemas"]["ReportGenerationResponseDto"];
         };
       };
-      /** @description リクエストデータが不正または指定日の日報が既に存在 */
+      /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
-      /** @description サーバー内部エラーまたはAI生成失敗 */
+      /** @description サーバー内部エラー */
       500: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
     };
   };
@@ -681,15 +664,11 @@ export interface operations {
       };
       /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
+        content: never;
       };
       /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"];
-        };
+        content: never;
       };
     };
   };
@@ -718,15 +697,11 @@ export interface operations {
       };
       /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
+        content: never;
       };
       /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"];
-        };
+        content: never;
       };
     };
   };
@@ -755,15 +730,11 @@ export interface operations {
       };
       /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
+        content: never;
       };
       /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"];
-        };
+        content: never;
       };
     };
   };
@@ -795,17 +766,13 @@ export interface operations {
           "application/json": components["schemas"]["DailyReportListResponseDto"];
         };
       };
-      /** @description リクエストパラメータが不正 */
+      /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
       /** @description サーバー内部エラー */
       500: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
     };
   };
@@ -834,23 +801,17 @@ export interface operations {
           "application/json": components["schemas"]["DailyReportDto"];
         };
       };
-      /** @description 日付形式が不正 */
+      /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
-      /** @description 指定された日付の日報が見つからない */
+      /** @description リソースが見つからない */
       404: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
       /** @description サーバー内部エラー */
       500: {
-        content: {
-          "application/json": unknown;
-        };
+        content: never;
       };
     };
   };
@@ -866,11 +827,13 @@ export interface operations {
           "*/*": boolean;
         };
       };
-      /** @description 内部サーバーエラーまたはToggleTrack API接続失敗 */
+      /** @description リクエストデータが不正 */
+      400: {
+        content: never;
+      };
+      /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": boolean;
-        };
+        content: never;
       };
     };
   };
@@ -892,11 +855,13 @@ export interface operations {
           "*/*": components["schemas"]["TogglCredentialResponseDto"][];
         };
       };
+      /** @description リクエストデータが不正 */
+      400: {
+        content: never;
+      };
       /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": components["schemas"]["TogglCredentialResponseDto"][];
-        };
+        content: never;
       };
     };
   };
@@ -912,11 +877,13 @@ export interface operations {
           "*/*": boolean;
         };
       };
-      /** @description 内部サーバーエラーまたはNotion API接続失敗 */
+      /** @description リクエストデータが不正 */
+      400: {
+        content: never;
+      };
+      /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": boolean;
-        };
+        content: never;
       };
     };
   };
@@ -938,11 +905,13 @@ export interface operations {
           "*/*": components["schemas"]["NotionCredentialResponseDto"][];
         };
       };
+      /** @description リクエストデータが不正 */
+      400: {
+        content: never;
+      };
       /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": components["schemas"]["NotionCredentialResponseDto"][];
-        };
+        content: never;
       };
     };
   };
@@ -972,17 +941,13 @@ export interface operations {
           "*/*": boolean;
         };
       };
-      /** @description リクエストパラメータが無効（owner または repo が不足） */
+      /** @description リクエストデータが不正 */
       400: {
-        content: {
-          "*/*": boolean;
-        };
+        content: never;
       };
-      /** @description 内部サーバーエラーまたは接続失敗 */
+      /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": boolean;
-        };
+        content: never;
       };
     };
   };
@@ -1004,11 +969,13 @@ export interface operations {
           "*/*": components["schemas"]["GitHubCredentialResponseDto"][];
         };
       };
+      /** @description リクエストデータが不正 */
+      400: {
+        content: never;
+      };
       /** @description サーバーエラー */
       500: {
-        content: {
-          "*/*": components["schemas"]["GitHubCredentialResponseDto"][];
-        };
+        content: never;
       };
     };
   };

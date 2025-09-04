@@ -177,17 +177,7 @@ public class ReportController {
             @RequestBody ReportGenerationRequestDto request
     ) {
         ReportGenerationResponseDto response = reportGenerationUseCase.generateReport(userId, request);
-        
-        if (response.isSuccess()) {
-            return ResponseEntity.status(201).body(response);
-        } else {
-            // エラーメッセージに応じて適切なHTTPステータスを返す
-            if (response.getErrorMessage() != null && 
-                response.getErrorMessage().contains("既に存在")) {
-                return ResponseEntity.badRequest().body(response);
-            }
-            return ResponseEntity.internalServerError().body(response);
-        }
+        return ResponseEntity.status(201).body(response);
     }
     
     @PostMapping("/{id}/regenerate")
@@ -213,28 +203,9 @@ public class ReportController {
             @Parameter(description = "日報再生成リクエスト", required = true)
             @RequestBody ReportRegenerationRequestDto request
     ) {
-        // リクエストにreportIdを設定（パスパラメータから）
-        ReportRegenerationRequestDto requestWithId = ReportRegenerationRequestDto.builder()
-            .reportId(id)
-            .userFeedback(request.getUserFeedback())
-            .additionalNotes(request.getAdditionalNotes())
-            .build();
-        
-        ReportGenerationResponseDto response = reportGenerationUseCase.regenerateReport(requestWithId);
-        
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            // エラーメッセージに応じて適切なHTTPステータスを返す
-            if (response.getErrorMessage() != null && 
-                response.getErrorMessage().contains("見つかりません")) {
-                return ResponseEntity.notFound().build();
-            }
-            if (response.getErrorMessage() != null && 
-                response.getErrorMessage().contains("必須項目")) {
-                return ResponseEntity.badRequest().body(response);
-            }
-            return ResponseEntity.internalServerError().body(response);
-        }
+        ReportGenerationResponseDto response = reportGenerationUseCase.regenerateReport(
+            id, request.getUserFeedback(), request.getAdditionalNotes()
+        );
+        return ResponseEntity.ok(response);
     }
 }
